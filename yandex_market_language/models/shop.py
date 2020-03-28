@@ -38,6 +38,7 @@ class Shop(BaseModel):
             "company",
             "url"
         ):
-            XMLSubElement(shop_el, tag, text=self.__getattribute__(tag))
+            el = XMLSubElement(shop_el, tag)
+            el.text = getattr(self, tag)
 
         return shop_el

@@ -49,6 +49,8 @@ class ShopModelTestCase(TestCase):
             "url"
         ]
         self.assertEqual(list(el.tag for el in shop_el), expected_tags)
+        for el in shop_el:
+            self.assertEqual(el.text, getattr(shop, el.tag))
 
     def test_url_validation_error(self):
         with self.assertRaises(ValidationError) as e:
