@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest import mock
 
 from faker import Faker
 from unittest import TestCase
@@ -10,6 +10,15 @@ from .factories import ShopFactory, CurrencyFactory
 
 
 fake = Faker()
+
+
+class BaseModelTestCase(TestCase):
+    def test_to_xml_with_parent(self):
+        el = ET.Element("el")
+        parent_el = mock.MagicMock()
+        parent_el.append = mock.MagicMock()
+        models.BaseModel._to_xml(el, parent_el)
+        self.assertEqual(parent_el.append.call_count, 1)
 
 
 class FeedModelTestCase(TestCase):
@@ -130,9 +139,3 @@ class CurrencyModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(plus="err")
             self.assertEqual(str(e), "The plus parameter only can be int.")
-
-    @patch("yandex_market_language.models.currency.XMLSubElement")
-    def test_to_xml_with_parent_el(self, p):
-        c = CurrencyFactory()
-        c.to_xml(ET.Element("test"))
-        self.assertEqual(p.call_count, 1)

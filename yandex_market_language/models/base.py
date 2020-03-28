@@ -11,6 +11,12 @@ class BaseModel(ABC):
     def to_dict(self) -> dict:
         raise NotImplementedError
 
+    @staticmethod
+    def _to_xml(el: XMLElement, root_el: XMLElement = None) -> XMLElement:
+        if root_el is not None:
+            root_el.append(el)
+        return el
+
     @abstractmethod
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         raise NotImplementedError

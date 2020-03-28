@@ -50,10 +50,7 @@ class Shop(BaseModel):
         )
 
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
-        if root_el is not None:
-            shop_el = XMLSubElement(root_el, "shop")
-        else:
-            shop_el = XMLElement("shop")
+        shop_el = XMLElement("shop")
 
         # Add simple elements
         for tag in (
@@ -73,4 +70,4 @@ class Shop(BaseModel):
         for c in self.currencies:
             c.to_xml(currencies_el)
 
-        return shop_el
+        return super()._to_xml(shop_el, root_el)

@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .base import BaseModel, XMLElement, XMLSubElement
+from .base import BaseModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -27,8 +27,6 @@ class RateValidationError(ValidationError):
 
 
 class Currency(BaseModel):
-    XML_TAG = "currency"
-
     def __init__(self, currency, rate, plus=None):
         self.currency = currency
         self.rate = rate
@@ -78,7 +76,5 @@ class Currency(BaseModel):
 
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         attribs = self.to_dict(clean=True)
-        if root_el is not None:
-            return XMLSubElement(root_el, self.XML_TAG, attribs)
-        else:
-            return XMLElement(self.XML_TAG, attribs)
+        el = XMLElement("currency", attribs)
+        return super()._to_xml(el, root_el)
