@@ -41,6 +41,7 @@ class ShopModelTestCase(TestCase):
             "version",
             "agency",
             "email",
+            "currencies",
         ]
     )
 
@@ -50,7 +51,10 @@ class ShopModelTestCase(TestCase):
         keys = sorted(list(shop_dict.keys()))
         self.assertEqual(keys, self.EXPECTED_KEYS)
         for k in self.EXPECTED_KEYS:
-            self.assertEqual(shop_dict[k], getattr(shop, k))
+            if k in ("currencies",):
+                continue
+            else:
+                self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
         shop = ShopFactory()
@@ -58,7 +62,10 @@ class ShopModelTestCase(TestCase):
         keys = sorted(list(el.tag for el in shop_el))
         self.assertEqual(keys, self.EXPECTED_KEYS)
         for el in shop_el:
-            self.assertEqual(el.text, getattr(shop, el.tag))
+            if el.tag in ("currencies",):
+                continue
+            else:
+                self.assertEqual(el.text, getattr(shop, el.tag))
 
     def test_url_validation_error(self):
         with self.assertRaises(ValidationError) as e:
@@ -83,6 +90,13 @@ class CurrencyModelTestCase(TestCase):
         c = CurrencyFactory()
         el = c.to_xml()
         expected_xml = ET.Element("currency", c.to_dict())
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_xml))
+
+    def test_to_xml_none_plus_attr(self):
+        c = CurrencyFactory(plus=None)
+        el = c.to_xml()
+        expected_attribs = {"id": c.currency, "rate": c.rate}
+        expected_xml = ET.Element("currency", expected_attribs)
         self.assertEqual(ET.tostring(el), ET.tostring(expected_xml))
 
     def test_currency_validation_error(self):

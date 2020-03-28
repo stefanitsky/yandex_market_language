@@ -1,4 +1,7 @@
+from typing import List
+
 from .base import BaseModel, XMLElement, XMLSubElement
+from .currency import Currency
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -9,6 +12,7 @@ class Shop(BaseModel):
         name: str,
         company: str,
         url: str,
+        currencies: List[Currency],
         platform: str = None,
         version: str = None,
         agency: str = None,
@@ -21,6 +25,7 @@ class Shop(BaseModel):
         self.version = version
         self.agency = agency
         self.email = email
+        self.currencies = currencies
 
     @property
     def url(self):
@@ -41,6 +46,7 @@ class Shop(BaseModel):
             version=self.version,
             agency=self.agency,
             email=self.email,
+            currencies=[c.to_dict() for c in self.currencies]
         )
 
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
@@ -61,5 +67,10 @@ class Shop(BaseModel):
         ):
             el = XMLSubElement(shop_el, tag)
             el.text = getattr(self, tag)
+
+        # Add currencies
+        currencies_el = XMLSubElement(shop_el, "currencies")
+        for c in self.currencies:
+            c.to_xml(currencies_el)
 
         return shop_el
