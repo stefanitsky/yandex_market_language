@@ -38,7 +38,9 @@ class ShopModelTestCase(TestCase):
             "company",
             "url",
         ]
-        self.assertEqual(list(shop_dict.keys()), expected_keys)
+        self.assertEqual(sorted(list(shop_dict.keys())), sorted(expected_keys))
+        for k in expected_keys:
+            self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
         shop = ShopFactory()
