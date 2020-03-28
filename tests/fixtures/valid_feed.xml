@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<yml_catalog date="2019-11-01 17:22">
+    <shop>
+        <name>ZS</name>
+        <company>ZoneSmart</company>
+        <url>https://zonesmart.ru</url>
+        <platform>Django</platform>
+        <version>2.2.5</version>
+        <agency>Технологичные решения</agency>
+        <email>stefanitsky.mozdor@gmail.com</email>
+        <currencies>
+            <currency id="RUR" rate="1"/>
+            <currency id="USD" rate="60"/>
+            <currency id="EUR" rate="CBRF" plus="1"/>
+            <currency id="UAH" rate="NBU" plus="3"/>
+            <currency id="KZT" rate="CB"/>
+        </currencies>
+        <categories>
+            <category id="1">Книги</category>
+            <category id="2" parentId="1">Детективы</category>
+            <category id="3" parentId="1">Боевики</category>
+            <category id="4">Видео</category>
+            <category id="5" parentId="4">Комедии</category>
+            <category id="6">Принтеры</category>
+            <category id="7">Оргтехника</category>
+        </categories>
+        <delivery-options>
+            <option cost="0" days="10"/>
+            <option cost="300" days="4"/>
+            <option cost="350" days="3-4" order-before="15"/>
+            <option cost="400" days="3" order-before="18"/>
+            <option cost="500" days="2" order-before="15"/>
+        </delivery-options>
+        <pickup-options>
+            <option cost="150" days="3"/>
+            <option cost="300" days="2" order-before="18"/>
+            <option cost="400" days="1" order-before="15"/>
+        </pickup-options>
+        <enable_auto_discounts>1</enable_auto_discounts>
+        <offers>
+            <offer id="1511-AB" bid="80">
+                <name>Принтер Brother 331</name>
+                <vendor>Brother</vendor>
+                <vendorCode>ABC1234</vendorCode>
+                <url>https://example.shop/product_page.asp?pid=1</url>
+                <price>80990</price>
+                <oldprice>89990</oldprice>
+                <enable_auto_discounts>true</enable_auto_discounts>
+                <currencyId>RUR</currencyId>
+                <categoryId>6</categoryId>
+                <picture>https://example.shop/img/model_1.jpg</picture>
+                <delivery>true</delivery>
+                <pickup>true</pickup>
+                <delivery-options>
+                    <option cost="300" days="1" order-before="18"/>
+                </delivery-options>
+                <pickup-options>
+                    <option cost="300" days="1-3"/>
+                </pickup-options>
+                <store>true</store>
+                <description>
+                    <![CDATA[
+                        <h3>Принтер Brother.</h3>
+                        <p>Неплохой.</p>
+                    ]]>
+                </description>
+                <sales_notes>Необходима предоплата.</sales_notes>
+                <min-quantity>1</min-quantity>
+                <manufacturer_warranty>true</manufacturer_warranty>
+                <country_of_origin>Китай</country_of_origin>
+                <barcode>4601546021298</barcode>
+                <param name="Цвет">черный</param>
+                <param name="Цвет">black</param>
+                <param name="Размер дисплея" unit="дюйм">5.6</param>
+                <condition type="likenew">
+                    <reason>Повреждена упаковка</reason>
+                </condition>
+                <credit-template id="20034"/>
+                <weight>3.6</weight>
+                <dimensions>20.1/20.551/22.5</dimensions>
+            </offer>
+            <offer id="755-B" type="book" bid="60">
+                <url>https://example.shop/product_page.asp?pid=2</url>
+                <price>80</price>
+                <oldprice>90</oldprice>
+                <currencyId>RUR</currencyId>
+                <categoryId>3</categoryId>
+                <picture>https://example.shop/img/model_2.jpg</picture>
+                <picture>https://example.shop/img/model_2_1.jpg</picture>
+                <picture>https://example.shop/img/model_2_2.jpg</picture>
+                <store>false</store>
+                <pickup>false</pickup>
+                <delivery>true</delivery>
+                <delivery-options>
+                    <option cost="200" days="1"/>
+                </delivery-options>
+                <author>Александра Маринина</author>
+                <name>Все не так. В 2 томах. Том 1</name>
+                <publisher>Эксмо</publisher>
+                <series>А. Маринина — королева детектива</series>
+                <year>2007</year>
+                <ISBN>978-5-699-23647-3</ISBN>
+                <volume>2</volume>
+                <part>1</part>
+                <language>rus</language>
+                <binding>70x90/32</binding>
+                <page_extent>288</page_extent>
+                <description>
+                    Все прекрасно в большом патриархальном семействе Руденко...
+                </description>
+                <downloadable>false</downloadable>
+                <age unit="year">18</age>
+            </offer>
+            <offer id="888-AB" type="audiobook" bid="80">
+              <url>https://example.shop/product_page.asp?pid=3</url>
+              <price>200</price>
+              <oldprice>250</oldprice>
+              <currencyId>RUR</currencyId>
+              <categoryId>3</categoryId>
+              <picture>https://example.shop/img/model_3.jpg</picture>
+              <author>Владимир Кунин</author>
+              <name>Иваnов и Rабинович, или Аj'гоу ту 'Хаjфа!</name>
+              <publisher>1С-Паблишинг, Союз</publisher>
+              <year>2008</year>
+              <ISBN>978-5-9677-0757-5</ISBN>
+              <language>ru</language>
+              <performed_by>Николай Фоменко</performed_by>
+              <performance_type>радиоспектакль</performance_type>
+              <storage>CD</storage>
+              <format>mp3</format>
+              <recording_length>13.37</recording_length>
+              <description>
+                  Перу Владимира Кунина принадлежат десятки сценариев к кинофильмам, серия книг про КЫСЮ и многое, многое другое.
+              </description>
+              <downloadable>true</downloadable>
+              <age unit="year">18</age>
+            </offer>
+            <offer id="1511-AT" type="artist.title" bid="80">
+              <title>Свадьба Мюриэл</title>
+              <year>1999</year>
+              <media>DVD</media>
+              <starring>Тони Колетт (Toni Collette), Рэйчел Грифитс (Rachel Griffiths)</starring>
+              <director>П Дж Хоген</director>
+              <originalName>Muriel's wedding</originalName>
+              <country>Австралия</country>
+              <url>https://example.shop/product_page.asp?pid=4</url>
+              <price>93</price>
+              <oldprice>100</oldprice>
+              <currencyId>RUR</currencyId>
+              <categoryId>2</categoryId>
+              <picture>https://example.shop/img/model_4.jpg</picture>
+              <store>false</store>
+              <pickup>false</pickup>
+              <delivery>true</delivery>
+              <description>
+                  Гадкий утенок из провинциального городка покидает свое гнездо, и в компании своей подруги отправляется искать веселой жизни в большой и загадочный город...
+              </description>
+              <age unit="year">18</age>
+              <barcode>3456789012345</barcode>
+            </offer>
+            <offer id="12541-M" type="medicine" bid="80" cbid="90">
+              <name>БАД Селен-актив n30 таблетки</name>
+              <vendor>ОАО ДИОД Завод эко.тех.и питания</vendor>
+              <vendorCode>123456</vendorCode>
+              <currencyId>RUB</currencyId>
+              <categoryId>4062</categoryId>
+              <url>https://example.shop/product_page.asp?pid=5</url>
+              <picture>https://example.shop/img/model_5.jpg</picture>
+              <price>1000</price>
+              <delivery>false</delivery>
+              <pickup>true</pickup>
+              <store>true</store>
+              <barcode>4981046350037</barcode>
+              <available>1</available>
+              <sales_notes>Самовывоз возможен через 3 часа после заказа</sales_notes>
+              <description>Биоусвояемый селен 50 мкг, витамин С 50 мг. Селен-актив обеспечивает
+            оптимальную и постоянную антиоксидантную защиту.</description>
+              <country_of_origin>Россия</country_of_origin>
+              <expiry>P1Y2M10DT2H30M</expiry>
+              <param name="Побочные действия">нет</param>
+            </offer>
+            <offer id="123144-ET" type="event-ticket" bid="80">
+              <url>https://example.shop/product_page.asp?pid=6</url>
+              <price>1000</price>
+              <oldprice>1100</oldprice>
+              <currencyId>RUR</currencyId>
+              <categoryId>3</categoryId>
+              <picture>https://example.shop/img/model_6.jpg</picture>
+              <store>false</store>
+              <pickup>false</pickup>
+              <delivery>true</delivery>
+              <local_delivery_cost>300</local_delivery_cost>
+              <name>Дмитрий Хворостовский и Национальный филармонический оркестр России...</name>
+              <place>Московский международный Дом музыки</place>
+              <hall>Большой зал</hall>
+              <hall_part>Партер р. 1-5</hall_part>
+              <date>2012-02-25 12:03:14</date>
+              <is_premiere>0</is_premiere>
+              <is_kids>0</is_kids>
+              <description>
+              Концерт Дмитрия Хворостовского и Национального филармонического оркестра России...
+              </description>
+              <age>6</age>
+            </offer>
+        </offers>
+        <gifts>
+            <gift id="33">
+                <name>Кружка 300 мл Brand 16</name>
+                <picture>https://example.shop/promos/33.jpg</picture>
+            </gift>
+        </gifts>
+        <promos>
+            <promo id="PromoGift" type="gift with purchase">
+                <start-date>2020-02-01 09:00:00</start-date>
+                <end-date>2020-03-01 22:00:00</end-date>
+                <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>
+                <url>http://example.com/promos/gift</url>
+                <purchase>
+                    <product offer-id="12345"/>
+                </purchase>
+                <promo-gifts>
+                    <promo-gift gift-id="33"/>
+                </promo-gifts>
+            </promo>
+        </promos>
+    </shop>
+</yml_catalog>
