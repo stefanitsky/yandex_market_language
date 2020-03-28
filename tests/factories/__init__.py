@@ -1,4 +1,5 @@
 from .shop import ShopFactory
+from .currency import CurrencyFactory
 
 
-__all__ = ["ShopFactory"]
+__all__ = ["ShopFactory", "CurrencyFactory"]
