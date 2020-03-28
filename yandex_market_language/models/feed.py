@@ -1,5 +1,35 @@
-from .base import BaseModel
+from datetime import datetime
+
+from .base import BaseModel, XMLElement
+from .shop import Shop
+
+DATE_FORMAT = "YYYY-MM-DD hh:mm"
 
 
 class Feed(BaseModel):
-    pass
+    """
+    YML Feed model.
+
+    Docs: https://yandex.ru/support/partnermarket/export/yml.html
+    """
+    def __init__(self, shop: Shop, date: datetime.date = None):
+        self.shop = shop
+        self._date = date
+
+        # Set default date if not specified
+        if self._date is None:
+            self._date = datetime.now()
+
+        # Format date by YML required format
+        self.date = self._date.strftime(DATE_FORMAT)
+
+    def to_dict(self) -> dict:
+        return dict(
+            shop=self.shop.to_dict(),
+            date=self.date,
+        )
+
+    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
+        feed_el = XMLElement("yml_catalog", {"date": self.date})
+        self.shop.to_xml(feed_el)
+        return feed_el

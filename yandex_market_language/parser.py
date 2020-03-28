@@ -1,6 +1,6 @@
 from xml.etree import ElementTree as ET
 
-from yandex_market_language.models import Feed
+from yandex_market_language.models import Feed, Shop
 
 
 class YMLParser:
@@ -9,4 +9,4 @@ class YMLParser:
         self._tree = ET.parse(file_or_path)
 
     def parse(self) -> Feed:
-        return Feed()
+        return Feed(Shop("test"))
