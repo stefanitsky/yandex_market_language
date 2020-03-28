@@ -32,13 +32,12 @@
             <option cost="500" days="2" order-before="15"/>
         </delivery-options>
         <pickup-options>
+            <!-- Only 1 pickup-option can be specified! -->
             <option cost="150" days="3"/>
-            <option cost="300" days="2" order-before="18"/>
-            <option cost="400" days="1" order-before="15"/>
         </pickup-options>
         <enable_auto_discounts>1</enable_auto_discounts>
         <offers>
-            <offer id="1511-AB" bid="80">
+            <offer id="1511AB" bid="80">
                 <name>Принтер Brother 331</name>
                 <vendor>Brother</vendor>
                 <vendorCode>ABC1234</vendorCode>
@@ -79,7 +78,7 @@
                 <weight>3.6</weight>
                 <dimensions>20.1/20.551/22.5</dimensions>
             </offer>
-            <offer id="755-B" type="book" bid="60">
+            <offer id="755B" type="book" bid="60">
                 <url>https://example.shop/product_page.asp?pid=2</url>
                 <price>80</price>
                 <oldprice>90</oldprice>
@@ -111,7 +110,7 @@
                 <downloadable>false</downloadable>
                 <age unit="year">18</age>
             </offer>
-            <offer id="888-AB" type="audiobook" bid="80">
+            <offer id="888AB" type="audiobook" bid="80">
               <url>https://example.shop/product_page.asp?pid=3</url>
               <price>200</price>
               <oldprice>250</oldprice>
@@ -135,7 +134,7 @@
               <downloadable>true</downloadable>
               <age unit="year">18</age>
             </offer>
-            <offer id="1511-AT" type="artist.title" bid="80">
+            <offer id="1511AT" type="artist.title" bid="80">
               <title>Свадьба Мюриэл</title>
               <year>1999</year>
               <media>DVD</media>
@@ -158,12 +157,12 @@
               <age unit="year">18</age>
               <barcode>3456789012345</barcode>
             </offer>
-            <offer id="12541-M" type="medicine" bid="80" cbid="90">
+            <offer id="12541M" type="medicine" bid="80" cbid="90">
               <name>БАД Селен-актив n30 таблетки</name>
               <vendor>ОАО ДИОД Завод эко.тех.и питания</vendor>
               <vendorCode>123456</vendorCode>
               <currencyId>RUB</currencyId>
-              <categoryId>4062</categoryId>
+              <categoryId>7</categoryId>
               <url>https://example.shop/product_page.asp?pid=5</url>
               <picture>https://example.shop/img/model_5.jpg</picture>
               <price>1000</price>
@@ -171,7 +170,6 @@
               <pickup>true</pickup>
               <store>true</store>
               <barcode>4981046350037</barcode>
-              <available>1</available>
               <sales_notes>Самовывоз возможен через 3 часа после заказа</sales_notes>
               <description>Биоусвояемый селен 50 мкг, витамин С 50 мг. Селен-актив обеспечивает
             оптимальную и постоянную антиоксидантную защиту.</description>
@@ -179,7 +177,7 @@
               <expiry>P1Y2M10DT2H30M</expiry>
               <param name="Побочные действия">нет</param>
             </offer>
-            <offer id="123144-ET" type="event-ticket" bid="80">
+            <offer id="123144ET" type="event-ticket" bid="80">
               <url>https://example.shop/product_page.asp?pid=6</url>
               <price>1000</price>
               <oldprice>1100</oldprice>
@@ -189,7 +187,6 @@
               <store>false</store>
               <pickup>false</pickup>
               <delivery>true</delivery>
-              <local_delivery_cost>300</local_delivery_cost>
               <name>Дмитрий Хворостовский и Национальный филармонический оркестр России...</name>
               <place>Московский международный Дом музыки</place>
               <hall>Большой зал</hall>
@@ -216,7 +213,7 @@
                 <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>
                 <url>http://example.com/promos/gift</url>
                 <purchase>
-                    <product offer-id="12345"/>
+                    <product offer-id="1511AB"/>
                 </purchase>
                 <promo-gifts>
                     <promo-gift gift-id="33"/>
