@@ -36,6 +36,9 @@ class ShopModelTestCase(TestCase):
             "company",
             "url",
             "platform",
+            "version",
+            "agency",
+            "email",
         ]
     )
 
