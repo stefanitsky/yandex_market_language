@@ -86,9 +86,8 @@ class CurrencyModelTestCase(TestCase):
         self.assertEqual(ET.tostring(el), ET.tostring(expected_xml))
 
     def test_currency_validation_error(self):
-        msg = (
-            "Price data is accepted only in: "
-            f"{', '.join(models.currency.CURRENCY_CHOICES)}"
+        msg = "Price data is accepted only in: (formatted_choices)".format(
+            formatted_choices=", ".join(models.currency.CURRENCY_CHOICES)
         )
         with self.assertRaises(
             models.currency.CurrencyChoicesValidationError
@@ -97,18 +96,21 @@ class CurrencyModelTestCase(TestCase):
             self.assertEqual(str(e), msg)
 
         self.assertEqual(
-            str(models.currency.CurrencyChoicesValidationError()),
-            msg
+            str(models.currency.CurrencyChoicesValidationError()), msg
         )
 
     def test_rate_validation_error(self):
         msg = (
             "The rate parameter can have the following values: "
-            f"number (int or float), {', '.join(models.currency.RATE_CHOICES)}"
+            "number (int or float), (rate_choices)".format(
+                rate_choices=', '.join(models.currency.RATE_CHOICES)
+            )
         )
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(rate="err")
             self.assertEqual(str(e), msg)
+
+        self.assertEqual(str(models.currency.RateValidationError()), msg)
 
     def test_plus_validation_error(self):
         with self.assertRaises(ValidationError) as e:

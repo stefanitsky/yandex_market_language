@@ -9,8 +9,19 @@ RATE_CHOICES = ("CBRF", "NBU", "NBK", "CB")
 
 class CurrencyChoicesValidationError(ValidationError):
     def __str__(self):
-        formatted_choices = ", ".join(CURRENCY_CHOICES)
-        return f"Price data is accepted only in: {formatted_choices}"
+        return "Price data is accepted only in: (formatted_choices)".format(
+            formatted_choices=", ".join(CURRENCY_CHOICES)
+        )
+
+
+class RateValidationError(ValidationError):
+    def __str__(self):
+        return (
+            "The rate parameter can have the following values: "
+            "number (int or float), (rate_choices)".format(
+                rate_choices=', '.join(RATE_CHOICES)
+            )
+        )
 
 
 class Currency(BaseModel):
@@ -39,10 +50,7 @@ class Currency(BaseModel):
             try:
                 float(value)
             except (TypeError, ValueError):
-                raise ValidationError(
-                    "The rate parameter can have the following values: "
-                    f"number (int or float), {', '.join(RATE_CHOICES)}"
-                )
+                raise RateValidationError
 
         self._rate = str(value)
 
