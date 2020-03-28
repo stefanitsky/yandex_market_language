@@ -9,6 +9,9 @@ Yandex Market Language (YML) for Python
 .. image:: https://travis-ci.com/stefanitsky/yandex_market_language.svg?branch=master
         :target: https://travis-ci.com/stefanitsky/yandex_market_language
 
+.. image:: https://codecov.io/gh/stefanitsky/yandex_market_language/branch/master/graph/badge.svg
+        :target: https://codecov.io/gh/stefanitsky/yandex_market_language
+
 .. image:: https://readthedocs.org/projects/yandex-market-language/badge/?version=latest
         :target: https://yandex-market-language.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
