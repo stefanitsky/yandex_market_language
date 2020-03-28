@@ -30,27 +30,28 @@ class FeedModelTestCase(TestCase):
 
 
 class ShopModelTestCase(TestCase):
-    def test_to_dict(self):
-        shop = ShopFactory()
-        shop_dict = shop.to_dict()
-        expected_keys = [
+    EXPECTED_KEYS = sorted(
+        [
             "name",
             "company",
             "url",
+            "platform",
         ]
-        self.assertEqual(sorted(list(shop_dict.keys())), sorted(expected_keys))
-        for k in expected_keys:
+    )
+
+    def test_to_dict(self):
+        shop = ShopFactory()
+        shop_dict = shop.to_dict()
+        keys = sorted(list(shop_dict.keys()))
+        self.assertEqual(keys, self.EXPECTED_KEYS)
+        for k in self.EXPECTED_KEYS:
             self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
         shop = ShopFactory()
         shop_el = shop.to_xml()
-        expected_tags = [
-            "name",
-            "company",
-            "url"
-        ]
-        self.assertEqual(list(el.tag for el in shop_el), expected_tags)
+        keys = sorted(list(el.tag for el in shop_el))
+        self.assertEqual(keys, self.EXPECTED_KEYS)
         for el in shop_el:
             self.assertEqual(el.text, getattr(shop, el.tag))
 
