@@ -9,4 +9,4 @@ class YMLParser:
         self._tree = ET.parse(file_or_path)
 
     def parse(self) -> Feed:
-        return Feed(Shop("test"))
+        return Feed(Shop("test", "", ""))
