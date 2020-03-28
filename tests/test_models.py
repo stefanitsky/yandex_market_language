@@ -20,6 +20,11 @@ class BaseModelTestCase(TestCase):
         models.BaseModel._to_xml(el, parent_el)
         self.assertEqual(parent_el.append.call_count, 1)
 
+    def test_clean_dict(self):
+        d = {"a": 1, "b": 2, "c": None}
+        cd = models.BaseModel._clean_dict(d)
+        self.assertEqual(cd, {"a": 1, "b": 2})
+
 
 class FeedModelTestCase(TestCase):
     def test_to_dict(self):
