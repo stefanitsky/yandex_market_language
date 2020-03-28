@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .base import BaseModel, XMLElement, XMLSubElement
 
 from yandex_market_language.exceptions import ValidationError
@@ -25,7 +27,9 @@ class RateValidationError(ValidationError):
 
 
 class Currency(BaseModel):
-    def __init__(self, currency, rate, plus):
+    XML_TAG = "currency"
+
+    def __init__(self, currency, rate, plus=None):
         self.currency = currency
         self.rate = rate
         self.plus = plus
@@ -55,22 +59,26 @@ class Currency(BaseModel):
         self._rate = str(value)
 
     @property
-    def plus(self) -> str:
+    def plus(self) -> Optional[str]:
         return self._plus
 
     @plus.setter
     def plus(self, value):
         try:
-            int(value)
-            self._plus = str(value)
+            if value:
+                int(value)
+                value = str(value)
+            self._plus = value
         except (TypeError, ValueError):
             raise ValidationError("The plus parameter only can be int.")
 
-    def to_dict(self) -> dict:
-        return dict(id=self.currency, rate=self.rate, plus=self.plus)
+    def to_dict(self, *, clean: bool = False) -> dict:
+        d = dict(id=self.currency, rate=self.rate, plus=self.plus)
+        return super()._clean_dict(d) if clean else d
 
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
+        attribs = self.to_dict(clean=True)
         if root_el is not None:
-            return XMLSubElement(root_el, "currency", self.to_dict())
+            return XMLSubElement(root_el, self.XML_TAG, attribs)
         else:
-            return XMLElement("currency", self.to_dict())
+            return XMLElement(self.XML_TAG, attribs)
