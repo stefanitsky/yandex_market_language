@@ -8,7 +8,7 @@ class FeedModelTestCase(TestCase):
         shop = models.Shop("test")
         feed = models.Feed(shop)
         feed_dict = feed.to_dict()
-        self.assertEqual(list(feed_dict.keys()), ["shop", "date"])
+        self.assertEqual(sorted(list(feed_dict.keys())), ["date", "shop"])
         self.assertEqual(feed_dict["date"], feed.date)
         self.assertEqual(feed_dict["shop"], feed.shop.to_dict())
 
