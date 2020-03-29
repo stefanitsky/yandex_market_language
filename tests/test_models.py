@@ -54,37 +54,35 @@ class FeedModelTestCase(TestCase):
 
 
 class ShopModelTestCase(TestCase):
-    EXPECTED_KEYS = sorted(
-        [
-            "name",
-            "company",
-            "url",
-            "platform",
-            "version",
-            "agency",
-            "email",
-            "currencies",
-        ]
-    )
+    CHECK_KEYS = [
+        "name",
+        "company",
+        "url",
+        "platform",
+        "version",
+        "agency",
+        "email",
+    ]
+    NESTED_KEYS = [
+        "currencies",
+        "categories",
+    ]
 
     def test_to_dict(self):
         shop = ShopFactory()
         shop_dict = shop.to_dict()
         keys = sorted(list(shop_dict.keys()))
-        self.assertEqual(keys, self.EXPECTED_KEYS)
-        for k in self.EXPECTED_KEYS:
-            if k in ("currencies",):
-                continue
-            else:
-                self.assertEqual(shop_dict[k], getattr(shop, k))
+        self.assertEqual(keys, sorted(self.CHECK_KEYS + self.NESTED_KEYS))
+        for k in self.CHECK_KEYS:
+            self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
         shop = ShopFactory()
         shop_el = shop.to_xml()
         keys = sorted(list(el.tag for el in shop_el))
-        self.assertEqual(keys, self.EXPECTED_KEYS)
+        self.assertEqual(keys, sorted(self.CHECK_KEYS + self.NESTED_KEYS))
         for el in shop_el:
-            if el.tag in ("currencies",):
+            if el.tag in self.NESTED_KEYS:
                 continue
             else:
                 self.assertEqual(el.text, getattr(shop, el.tag))
