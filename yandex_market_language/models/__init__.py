@@ -5,6 +5,7 @@ from .currency import Currency
 from .category import Category
 from .option import Option
 from .price import Price
+from .offers import SimplifiedOffer
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "Category",
     "Option",
     "Price",
+    "SimplifiedOffer",
 ]

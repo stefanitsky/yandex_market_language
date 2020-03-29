@@ -3,6 +3,7 @@ from .currency import CurrencyFactory
 from .category import CategoryFactory
 from .option import OptionFactory
 from .price import PriceFactory
+from .offers import BaseOfferFactory, SimplifiedOfferFactory
 
 
 __all__ = [
@@ -11,4 +12,6 @@ __all__ = [
     "CategoryFactory",
     "OptionFactory",
     "PriceFactory",
+    "BaseOfferFactory",
+    "SimplifiedOfferFactory",
 ]

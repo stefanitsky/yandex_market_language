@@ -12,6 +12,8 @@ from .factories import (
     CategoryFactory,
     OptionFactory,
     PriceFactory,
+    BaseOfferFactory,
+    SimplifiedOfferFactory,
 )
 
 
@@ -277,3 +279,58 @@ class PriceModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             PriceFactory(value="err")
             self.assertEqual(str(e), "price can be int or float type")
+
+
+class BaseOfferModelTestCase(TestCase):
+    def test_to_dict(self):
+        o = BaseOfferFactory()
+        d = o.to_dict()
+        expected_keys = [
+            "vendor",
+            "vendor_code",
+            "offer_id",
+            "bid",
+            "url",
+            "price",
+        ]
+        self.assertEqual(sorted(d.keys()), sorted(expected_keys))
+
+    def test_to_xml(self):
+        o = BaseOfferFactory()
+        el = o.to_xml()
+        expected_el = ET.Element("offer", {"id": o.offer_id, "bid": o.bid})
+
+        for tag in ("vendor", "url"):
+            el_ = ET.SubElement(expected_el, tag)
+            el_.text = getattr(o, tag)
+
+        vendor_code_el = ET.Element("vendorCode")
+        vendor_code_el.text = o.vendor_code
+        expected_el.append(vendor_code_el)
+        o.price.to_xml(expected_el)
+
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+
+class SimplifiedOfferModelTestCase(TestCase):
+    def test_to_dict(self):
+        o = SimplifiedOfferFactory()
+        d = o.to_dict()
+        keys = d.keys()
+        expected_keys = ["name"]
+        self.assertTrue(all(k in keys for k in expected_keys))
+        self.assertEqual(d["name"], o.name)
+
+    def test_to_xml(self):
+        o = SimplifiedOfferFactory()
+        el = o.to_xml()
+
+        d = o.to_dict()
+        name = d.pop("name")
+        expected_el = BaseOfferFactory(**d).to_xml()
+
+        name_el = ET.Element("name")
+        name_el.text = name
+        expected_el.insert(0, name_el)
+
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
