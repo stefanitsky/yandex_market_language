@@ -6,7 +6,12 @@ from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 
-from .factories import ShopFactory, CurrencyFactory, CategoryFactory
+from .factories import (
+    ShopFactory,
+    CurrencyFactory,
+    CategoryFactory,
+    OptionFactory,
+)
 
 
 fake = Faker()
@@ -166,4 +171,22 @@ class CategoryModelTestCase(TestCase):
         el = c.to_xml()
         expected_el = ET.Element("category", {"id": c.category_id})
         expected_el.text = c.name
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+
+class OptionModelTestCase(TestCase):
+    def test_to_dict(self):
+        o = OptionFactory()
+        d = o.to_dict()
+        self.assertEqual(
+            sorted(d.keys()), sorted(["cost", "days", "order_before"])
+        )
+        self.assertEqual(d["cost"], o.cost)
+        self.assertEqual(d["days"], o.days)
+        self.assertEqual(d["order_before"], o.order_before)
+
+    def test_to_xml(self):
+        o = OptionFactory(order_before=None)
+        el = o.to_xml()
+        expected_el = ET.Element("option", {"cost": o.cost, "days": o.days})
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
