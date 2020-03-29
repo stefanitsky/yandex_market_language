@@ -132,41 +132,6 @@ class ShopModelTestCase(TestCase):
                 str(e), "The maximum url length is 512 characters."
             )
 
-    def test_enable_auto_discounts_validation_error(self):
-        msg = (
-            "enable_auto_discounts should be True, False or str from available"
-            " values: {v}".format(
-                v=", ".join(models.shop.ENABLE_AUTO_DISCOUNTS_CHOICES)
-            )
-        )
-        with self.assertRaises(
-            models.shop.EnableAutoDiscountsValidationError
-        ) as e:
-            ShopFactory(enable_auto_discounts="err")
-            self.assertEqual(str(e), msg)
-        self.assertEqual(
-            str(models.shop.EnableAutoDiscountsValidationError()), msg
-        )
-
-    def test_enable_auto_discounts_property(self):
-        s = ShopFactory()
-        for v in ["yes", "true", "1"]:
-            s.enable_auto_discounts = v
-            self.assertEqual(s.enable_auto_discounts, True)
-
-        for v in ["no", "false", "0"]:
-            s.enable_auto_discounts = v
-            self.assertEqual(s.enable_auto_discounts, False)
-
-        s.enable_auto_discounts = None
-        self.assertEqual(s.enable_auto_discounts, None)
-
-        s.enable_auto_discounts = True
-        self.assertEqual(s.enable_auto_discounts, True)
-
-        s.enable_auto_discounts = False
-        self.assertEqual(s.enable_auto_discounts, False)
-
 
 class CurrencyModelTestCase(TestCase):
     def test_to_dict(self):
@@ -293,6 +258,7 @@ class BaseOfferModelTestCase(TestCase):
             "url",
             "price",
             "old_price",
+            "enable_auto_discounts",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -305,6 +271,7 @@ class BaseOfferModelTestCase(TestCase):
             ("vendor", "vendor"),
             ("url", "url"),
             ("oldprice", "old_price"),
+            ("enable_auto_discounts", "_enable_auto_discounts"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)

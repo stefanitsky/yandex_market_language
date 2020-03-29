@@ -16,7 +16,8 @@ def create_random_base_offer(
     bid=str(fake.pyint()),
     url=fake.url(),
     price=PriceFactory(),
-    old_price=str(fake.pyint())
+    old_price=str(fake.pyint()),
+    enable_auto_discounts=fake.pybool(),
 ) -> BaseOffer:
     return BaseOffer(
         vendor=vendor,
@@ -26,6 +27,7 @@ def create_random_base_offer(
         url=url,
         price=price,
         old_price=old_price,
+        enable_auto_discounts=enable_auto_discounts
     )
 
 

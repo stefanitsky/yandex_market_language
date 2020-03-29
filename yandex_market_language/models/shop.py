@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
