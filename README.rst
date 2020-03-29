@@ -33,7 +33,10 @@ Yandex Market Language for Python provides user-friendly interface for parsing o
 Features
 --------
 
-* TODO
+* The ability to convert from XML to dictionary and vice versa using models.
+* Parse XML file into the ready-to-use Feed model.
+* Convert dict-like objects into the ready-to-use XML file.
+* Validation for in-out data.
 
 Credits
 -------
