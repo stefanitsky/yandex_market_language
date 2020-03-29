@@ -28,6 +28,7 @@ Yandex Market Language for Python provides user-friendly interface for parsing o
 
 * Free software: GNU General Public License v3
 * Documentation: https://yandex-market-language.readthedocs.io.
+* Usage: https://yandex-market-language.readthedocs.io/en/latest/usage.html
 
 
 Features
