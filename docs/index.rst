@@ -1,5 +1,5 @@
 Welcome to Yandex Market Language (YML) for Python's documentation!
-======================================
+===================================================================
 
 .. toctree::
    :maxdepth: 2
