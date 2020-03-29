@@ -8,19 +8,22 @@ XMLSubElement = ET.SubElement
 
 class BaseModel(ABC):
     @abstractmethod
-    def to_dict(self) -> dict:
+    def create_dict(self, **kwargs) -> dict:
         raise NotImplementedError
 
-    @staticmethod
-    def _to_xml(el: XMLElement, root_el: XMLElement = None) -> XMLElement:
+    @abstractmethod
+    def create_xml(self, **kwargs) -> XMLElement:
+        raise NotImplementedError
+
+    @property
+    def clean_dict(self) -> dict:
+        return dict(**{k: v for k, v in self.create_dict().items() if v})
+
+    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
+        el = self.create_xml()
         if root_el is not None:
             root_el.append(el)
         return el
 
-    @abstractmethod
-    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
-        raise NotImplementedError
-
-    @staticmethod
-    def _clean_dict(d: dict) -> dict:
-        return dict(**{k: v for k, v in d.items() if v})
+    def to_dict(self, clean: bool = False) -> dict:
+        return self.clean_dict if clean else self.create_dict()

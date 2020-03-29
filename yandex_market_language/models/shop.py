@@ -37,7 +37,7 @@ class Shop(BaseModel):
             raise ValidationError("The maximum url length is 512 characters.")
         self._url = value
 
-    def to_dict(self) -> dict:
+    def create_dict(self, **kwargs) -> dict:
         return dict(
             name=self.name,
             company=self.company,
@@ -49,7 +49,7 @@ class Shop(BaseModel):
             currencies=[c.to_dict() for c in self.currencies]
         )
 
-    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
+    def create_xml(self, **kwargs) -> XMLElement:
         shop_el = XMLElement("shop")
 
         # Add simple elements
@@ -70,4 +70,4 @@ class Shop(BaseModel):
         for c in self.currencies:
             c.to_xml(currencies_el)
 
-        return super()._to_xml(shop_el, root_el)
+        return shop_el

@@ -23,13 +23,13 @@ class Feed(BaseModel):
         # Format date by YML required format
         self.date = self._date.strftime(DATE_FORMAT)
 
-    def to_dict(self) -> dict:
+    def create_dict(self, **kwargs) -> dict:
         return dict(
             shop=self.shop.to_dict(),
             date=self.date,
         )
 
-    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
+    def create_xml(self, **kwargs) -> XMLElement:
         feed_el = XMLElement("yml_catalog", {"date": self.date})
         self.shop.to_xml(feed_el)
         return feed_el

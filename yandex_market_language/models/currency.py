@@ -70,11 +70,9 @@ class Currency(BaseModel):
         except (TypeError, ValueError):
             raise ValidationError("The plus parameter only can be int.")
 
-    def to_dict(self, *, clean: bool = False) -> dict:
-        d = dict(id=self.currency, rate=self.rate, plus=self.plus)
-        return super()._clean_dict(d) if clean else d
+    def create_dict(self, **kwargs) -> dict:
+        return dict(id=self.currency, rate=self.rate, plus=self.plus)
 
-    def to_xml(self, root_el: XMLElement = None) -> XMLElement:
-        attribs = self.to_dict(clean=True)
-        el = XMLElement("currency", attribs)
-        return super()._to_xml(el, root_el)
+    def create_xml(self, **kwargs) -> XMLElement:
+        el = XMLElement("currency", self.clean_dict)
+        return el
