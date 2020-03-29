@@ -1,3 +1,5 @@
+from . import fields
+
 from .base import BaseModel
 from .feed import Feed
 from .shop import Shop
@@ -9,6 +11,7 @@ from .offers import SimplifiedOffer
 
 
 __all__ = [
+    "fields",
     "BaseModel",
     "Feed",
     "Shop",
