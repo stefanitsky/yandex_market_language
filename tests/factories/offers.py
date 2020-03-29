@@ -16,6 +16,7 @@ def create_random_base_offer(
     bid=str(fake.pyint()),
     url=fake.url(),
     price=PriceFactory(),
+    old_price=str(fake.pyint())
 ) -> BaseOffer:
     return BaseOffer(
         vendor=vendor,
@@ -24,6 +25,7 @@ def create_random_base_offer(
         bid=bid,
         url=url,
         price=price,
+        old_price=old_price,
     )
 
 

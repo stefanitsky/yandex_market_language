@@ -292,6 +292,7 @@ class BaseOfferModelTestCase(TestCase):
             "bid",
             "url",
             "price",
+            "old_price",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -300,9 +301,13 @@ class BaseOfferModelTestCase(TestCase):
         el = o.to_xml()
         expected_el = ET.Element("offer", {"id": o.offer_id, "bid": o.bid})
 
-        for tag in ("vendor", "url"):
+        for tag, attr in (
+            ("vendor", "vendor"),
+            ("url", "url"),
+            ("oldprice", "old_price"),
+        ):
             el_ = ET.SubElement(expected_el, tag)
-            el_.text = getattr(o, tag)
+            el_.text = getattr(o, attr)
 
         vendor_code_el = ET.Element("vendorCode")
         vendor_code_el.text = o.vendor_code

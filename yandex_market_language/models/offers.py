@@ -12,6 +12,7 @@ class BaseOffer(BaseModel, ABC):
         vendor=None,
         vendor_code=None,
         bid=None,
+        old_price=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -19,6 +20,7 @@ class BaseOffer(BaseModel, ABC):
         self.bid = bid
         self.url = url
         self.price = price
+        self.old_price = old_price
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -29,6 +31,7 @@ class BaseOffer(BaseModel, ABC):
             bid=self.bid,
             url=self.url,
             price=self.price,
+            old_price=self.old_price,
             **kwargs
         )
 
@@ -41,8 +44,12 @@ class BaseOffer(BaseModel, ABC):
             offer_el.attrib["bid"] = self.bid
 
         # Add simple values
-        for tag in ("vendor", "url"):
-            value = getattr(self, tag)
+        for tag, attr in (
+            ("vendor", "vendor"),
+            ("url", "url"),
+            ("oldprice", "old_price"),
+        ):
+            value = getattr(self, attr)
             if value:
                 el = XMLSubElement(offer_el, tag)
                 el.text = value
