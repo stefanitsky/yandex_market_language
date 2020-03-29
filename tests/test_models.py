@@ -12,17 +12,25 @@ from .factories import ShopFactory, CurrencyFactory
 fake = Faker()
 
 
+@mock.patch.multiple(models.BaseModel, __abstractmethods__=set())
 class BaseModelTestCase(TestCase):
-    def test_to_xml_with_parent(self):
-        el = ET.Element("el")
+    @mock.patch("yandex_market_language.models.BaseModel.create_xml")
+    def test_to_xml_with_parent(self, p):
         parent_el = mock.MagicMock()
         parent_el.append = mock.MagicMock()
-        models.BaseModel._to_xml(el, parent_el)
+        p.return_value = ET.Element("test")
+        base = models.BaseModel()
+        base.to_xml(parent_el)
+        self.assertEqual(p.call_count, 1)
         self.assertEqual(parent_el.append.call_count, 1)
 
-    def test_clean_dict(self):
+    @mock.patch("yandex_market_language.models.BaseModel.create_dict")
+    def test_clean_dict(self, p):
         d = {"a": 1, "b": 2, "c": None}
-        cd = models.BaseModel._clean_dict(d)
+        p.return_value = d
+        base = models.BaseModel()
+        cd = base.to_dict(clean=True)
+        self.assertEqual(p.call_count, 1)
         self.assertEqual(cd, {"a": 1, "b": 2})
 
 
