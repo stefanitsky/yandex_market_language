@@ -19,7 +19,7 @@ And then transform them into a dictionary::
 
     >>> d = category.to_dict()
     >>> d
-    >>> {'id': '1', 'name': 'Shoes', 'parent_id': None}
+    {'id': '1', 'name': 'Shoes', 'parent_id': None}
 
 Or XML element::
 
