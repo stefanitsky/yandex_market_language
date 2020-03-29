@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 
-from .factories import ShopFactory, CurrencyFactory
+from .factories import ShopFactory, CurrencyFactory, CategoryFactory
 
 
 fake = Faker()
@@ -152,3 +152,20 @@ class CurrencyModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(plus="err")
             self.assertEqual(str(e), "The plus parameter only can be int.")
+
+
+class CategoryModelTestCase(TestCase):
+    def test_to_dict(self):
+        c = CategoryFactory()
+        d = c.to_dict()
+        self.assertEqual(sorted(d.keys()), sorted(["id", "name", "parent_id"]))
+        self.assertEqual(d["id"], c.category_id)
+        self.assertEqual(d["name"], c.name)
+        self.assertEqual(d["parent_id"], c.parent_id)
+
+    def test_to_xml(self):
+        c = CategoryFactory(parent_id=None)
+        el = c.to_xml()
+        expected_el = ET.Element("category", {"id": c.category_id})
+        expected_el.text = c.name
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
