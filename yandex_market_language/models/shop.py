@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
@@ -6,6 +6,17 @@ from .category import Category
 from .option import Option
 
 from yandex_market_language.exceptions import ValidationError
+
+
+ENABLE_AUTO_DISCOUNTS_CHOICES = ("yes", "true", "1", "no", "false", "0")
+
+
+class EnableAutoDiscountsValidationError(ValidationError):
+    def __str__(self):
+        return (
+            "enable_auto_discounts should be True, False or str from available"
+            " values: {v}".format(v=", ".join(ENABLE_AUTO_DISCOUNTS_CHOICES))
+        )
 
 
 class Shop(BaseModel):
@@ -22,6 +33,7 @@ class Shop(BaseModel):
         email: str = None,
         delivery_options: List[Option] = None,
         pickup_options: List[Option] = None,
+        enable_auto_discounts=None,
     ):
         self.name = name
         self.company = company
@@ -34,6 +46,7 @@ class Shop(BaseModel):
         self.categories = categories
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
+        self.enable_auto_discounts = enable_auto_discounts
 
     @property
     def url(self):
@@ -61,6 +74,28 @@ class Shop(BaseModel):
     def pickup_options(self, options):
         self._pickup_options = options if options else []
 
+    @property
+    def enable_auto_discounts(self) -> Optional[bool]:
+        if self._enable_auto_discounts:
+            if self._enable_auto_discounts in ["yes", "true", "1"]:
+                return True
+            elif self._enable_auto_discounts in ["no", "false", "0"]:
+                return False
+        return None
+
+    @enable_auto_discounts.setter
+    def enable_auto_discounts(self, value):
+        if value in ["yes", "true", "1", "no", "false", "0"]:
+            self._enable_auto_discounts = value
+        elif value is True:
+            self._enable_auto_discounts = "true"
+        elif value is False:
+            self._enable_auto_discounts = "false"
+        elif value is None:
+            self._enable_auto_discounts = value
+        else:
+            raise EnableAutoDiscountsValidationError
+
     def create_dict(self, **kwargs) -> dict:
         return dict(
             name=self.name,
@@ -74,6 +109,7 @@ class Shop(BaseModel):
             categories=[c.to_dict() for c in self.categories],
             delivery_options=[o.to_dict() for o in self.delivery_options],
             pickup_options=[o.to_dict() for o in self.pickup_options],
+            enable_auto_discounts=self.enable_auto_discounts,
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
@@ -89,8 +125,17 @@ class Shop(BaseModel):
             "agency",
             "email",
         ):
-            el = XMLSubElement(shop_el, tag)
-            el.text = getattr(self, tag)
+            value = getattr(self, tag)
+            if value:
+                el = XMLSubElement(shop_el, tag)
+                el.text = value
+
+        # Add enable_auto_discounts
+        if self._enable_auto_discounts:
+            enable_auto_discounts_el = XMLSubElement(
+                shop_el, "enable_auto_discounts"
+            )
+            enable_auto_discounts_el.text = self._enable_auto_discounts
 
         # Add currencies
         currencies_el = XMLSubElement(shop_el, "currencies")

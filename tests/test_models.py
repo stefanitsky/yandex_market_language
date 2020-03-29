@@ -75,6 +75,7 @@ class ShopModelTestCase(TestCase):
             "categories",
             "delivery_options",
             "pickup_options",
+            "enable_auto_discounts",
         ])
         self.assertEqual(keys, expected_keys)
         for k in (
@@ -85,6 +86,7 @@ class ShopModelTestCase(TestCase):
             "version",
             "agency",
             "email",
+            "enable_auto_discounts",
         ):
             self.assertEqual(shop_dict[k], getattr(shop, k))
 
@@ -104,6 +106,7 @@ class ShopModelTestCase(TestCase):
             "categories",
             "delivery-options",
             "pickup-options",
+            "enable_auto_discounts",
         ])
         self.assertEqual(keys, expected_keys)
         for el in shop_el:
@@ -114,6 +117,8 @@ class ShopModelTestCase(TestCase):
                 "pickup-options",
             ):
                 continue
+            elif el.tag == "enable_auto_discounts":
+                self.assertEqual(el.text, shop._enable_auto_discounts)
             else:
                 self.assertEqual(el.text, getattr(shop, el.tag))
 
@@ -123,6 +128,41 @@ class ShopModelTestCase(TestCase):
             self.assertEqual(
                 str(e), "The maximum url length is 512 characters."
             )
+
+    def test_enable_auto_discounts_validation_error(self):
+        msg = (
+            "enable_auto_discounts should be True, False or str from available"
+            " values: {v}".format(
+                v=", ".join(models.shop.ENABLE_AUTO_DISCOUNTS_CHOICES)
+            )
+        )
+        with self.assertRaises(
+            models.shop.EnableAutoDiscountsValidationError
+        ) as e:
+            ShopFactory(enable_auto_discounts="err")
+            self.assertEqual(str(e), msg)
+        self.assertEqual(
+            str(models.shop.EnableAutoDiscountsValidationError()), msg
+        )
+
+    def test_enable_auto_discounts_property(self):
+        s = ShopFactory()
+        for v in ["yes", "true", "1"]:
+            s.enable_auto_discounts = v
+            self.assertEqual(s.enable_auto_discounts, True)
+
+        for v in ["no", "false", "0"]:
+            s.enable_auto_discounts = v
+            self.assertEqual(s.enable_auto_discounts, False)
+
+        s.enable_auto_discounts = None
+        self.assertEqual(s.enable_auto_discounts, None)
+
+        s.enable_auto_discounts = True
+        self.assertEqual(s.enable_auto_discounts, True)
+
+        s.enable_auto_discounts = False
+        self.assertEqual(s.enable_auto_discounts, False)
 
 
 class CurrencyModelTestCase(TestCase):

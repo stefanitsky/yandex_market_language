@@ -12,10 +12,15 @@ def generate_random_shop(
     name=fake.company_suffix(),
     company=fake.company(),
     url=fake.url(),
+    platform=fake.pystr(),
+    version=fake.pystr(),
+    agency=fake.pystr(),
+    email=fake.pystr(),
     currencies=None,
     categories=None,
     delivery_options=None,
     pickup_options=None,
+    enable_auto_discounts=fake.pybool()
 ):
     if currencies is None:
         currencies = [CurrencyFactory() for _ in range(3)]
@@ -30,10 +35,15 @@ def generate_random_shop(
         name=name,
         company=company,
         url=url,
+        platform=platform,
+        version=version,
+        agency=agency,
+        email=email,
         currencies=currencies,
         categories=categories,
         delivery_options=delivery_options,
-        pickup_options=pickup_options
+        pickup_options=pickup_options,
+        enable_auto_discounts=enable_auto_discounts,
     )
 
 
