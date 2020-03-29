@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
+from .fields import EnableAutoDiscountField
 
 
-class BaseOffer(BaseModel, ABC):
+class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
     def __init__(
         self,
         offer_id,
@@ -13,6 +14,7 @@ class BaseOffer(BaseModel, ABC):
         vendor_code=None,
         bid=None,
         old_price=None,
+        enable_auto_discounts=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -21,6 +23,7 @@ class BaseOffer(BaseModel, ABC):
         self.url = url
         self.price = price
         self.old_price = old_price
+        self.enable_auto_discounts = enable_auto_discounts
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -32,6 +35,7 @@ class BaseOffer(BaseModel, ABC):
             url=self.url,
             price=self.price,
             old_price=self.old_price,
+            enable_auto_discounts=self.enable_auto_discounts,
             **kwargs
         )
 
@@ -48,6 +52,7 @@ class BaseOffer(BaseModel, ABC):
             ("vendor", "vendor"),
             ("url", "url"),
             ("oldprice", "old_price"),
+            ("enable_auto_discounts", "_enable_auto_discounts"),
         ):
             value = getattr(self, attr)
             if value:
