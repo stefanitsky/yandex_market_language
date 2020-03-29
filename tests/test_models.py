@@ -59,35 +59,60 @@ class FeedModelTestCase(TestCase):
 
 
 class ShopModelTestCase(TestCase):
-    CHECK_KEYS = [
-        "name",
-        "company",
-        "url",
-        "platform",
-        "version",
-        "agency",
-        "email",
-    ]
-    NESTED_KEYS = [
-        "currencies",
-        "categories",
-    ]
-
     def test_to_dict(self):
         shop = ShopFactory()
         shop_dict = shop.to_dict()
         keys = sorted(list(shop_dict.keys()))
-        self.assertEqual(keys, sorted(self.CHECK_KEYS + self.NESTED_KEYS))
-        for k in self.CHECK_KEYS:
+        expected_keys = sorted([
+            "name",
+            "company",
+            "url",
+            "platform",
+            "version",
+            "agency",
+            "email",
+            "currencies",
+            "categories",
+            "delivery_options",
+            "pickup_options",
+        ])
+        self.assertEqual(keys, expected_keys)
+        for k in (
+            "name",
+            "company",
+            "url",
+            "platform",
+            "version",
+            "agency",
+            "email",
+        ):
             self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
         shop = ShopFactory()
         shop_el = shop.to_xml()
         keys = sorted(list(el.tag for el in shop_el))
-        self.assertEqual(keys, sorted(self.CHECK_KEYS + self.NESTED_KEYS))
+        expected_keys = sorted([
+            "name",
+            "company",
+            "url",
+            "platform",
+            "version",
+            "agency",
+            "email",
+            "currencies",
+            "categories",
+            "delivery-options",
+            "pickup-options",
+        ])
+        self.assertEqual(keys, expected_keys)
         for el in shop_el:
-            if el.tag in self.NESTED_KEYS:
+            if el.tag in (
+                "currencies",
+                "categories",
+                "delivery-options",
+                "pickup-options",
+            ):
                 continue
             else:
                 self.assertEqual(el.text, getattr(shop, el.tag))
