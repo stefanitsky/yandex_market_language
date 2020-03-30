@@ -5,7 +5,6 @@ from unittest import TestCase
 from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
-from yandex_market_language.models.base import XMLSubElement
 
 from .factories import (
     ShopFactory,
@@ -15,6 +14,7 @@ from .factories import (
     PriceFactory,
     BaseOfferFactory,
     SimplifiedOfferFactory,
+    ParameterFactory,
 )
 
 
@@ -370,3 +370,33 @@ class SimplifiedOfferModelTestCase(TestCase):
         expected_el.insert(0, name_el)
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+
+class ParameterModelTestCase(TestCase):
+    def test_to_dict(self):
+        name, value, unit = "Size", "33", "M"
+        p = ParameterFactory(name, value, unit)
+        d = p.to_dict()
+        self.assertEqual(d["name"], name)
+        self.assertEqual(d["value"], value)
+        self.assertEqual(d["unit"], unit)
+
+    def test_to_xml(self):
+        name, value, unit = "Size", "33", "M"
+        p = ParameterFactory(name, value, unit)
+        el = p.to_xml()
+        expected_el = ET.Element("param", {"name": name, "unit": unit})
+        expected_el.text = value
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+    def test_value_property(self):
+        p = ParameterFactory()
+        with self.assertRaises(ValidationError) as e:
+
+            class Err:
+                def __str__(self):
+                    return 1
+
+            p.value = Err()
+
+            self.assertEqual(str(e), "value must be a string")

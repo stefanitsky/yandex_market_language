@@ -4,6 +4,7 @@ from .category import CategoryFactory
 from .option import OptionFactory
 from .price import PriceFactory
 from .offers import BaseOfferFactory, SimplifiedOfferFactory
+from .parameter import ParameterFactory
 
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "PriceFactory",
     "BaseOfferFactory",
     "SimplifiedOfferFactory",
+    "ParameterFactory",
 ]
