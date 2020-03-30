@@ -53,6 +53,8 @@ class BaseOffer(
         expiry=None,
         weight=None,
         dimensions: Dimensions = None,
+        downloadable=None,
+        available=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -82,6 +84,8 @@ class BaseOffer(
         self.expiry = expiry
         self.weight = weight
         self.dimensions = dimensions
+        self.downloadable = downloadable
+        self.available = available
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -148,9 +152,7 @@ class BaseOffer(
 
     @property
     def adult(self) -> Optional[bool]:
-        return {"true": True, "false": False}.get(
-            self._adult, None
-        )
+        return {"true": True, "false": False}.get(self._adult, None)
 
     @adult.setter
     def adult(self, value):
@@ -193,6 +195,22 @@ class BaseOffer(
         except (TypeError, ValueError):
             raise ValidationError("weight must be a valid float of int")
 
+    @property
+    def downloadable(self) -> Optional[bool]:
+        return {"true": True, "false": False}.get(self._downloadable, None)
+
+    @downloadable.setter
+    def downloadable(self, value):
+        self._downloadable = self._value_to_bool(value, "downloadable", True)
+
+    @property
+    def available(self) -> Optional[bool]:
+        return {"true": True, "false": False}.get(self._available, None)
+
+    @available.setter
+    def available(self, value):
+        self._available = self._value_to_bool(value, "available", True)
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -224,6 +242,8 @@ class BaseOffer(
             expiry=self.expiry,
             weight=self.weight,
             dimensions=self.dimensions.to_dict() if self.dimensions else None,
+            downloadable=self.downloadable,
+            available=self.available,
             **kwargs
         )
 
@@ -234,6 +254,10 @@ class BaseOffer(
         # Add offer bid attribute
         if self.bid:
             offer_el.attrib["bid"] = self.bid
+
+        # Add offer available attribute
+        if self.available is not None:
+            offer_el.attrib["available"] = self._available
 
         # Add simple values
         for tag, attr in (
@@ -254,6 +278,7 @@ class BaseOffer(
             ("adult", "_adult"),
             ("expiry", "_expiry"),
             ("weight", "_weight"),
+            ("downloadable", "_downloadable"),
         ):
             value = getattr(self, attr)
             if value:

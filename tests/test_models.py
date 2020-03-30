@@ -275,13 +275,20 @@ class BaseOfferModelTestCase(TestCase):
             "expiry",
             "weight",
             "dimensions",
+            "downloadable",
+            "available",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
     def test_to_xml(self):
         o = BaseOfferFactory().create()
         el = o.to_xml()
-        expected_el = ET.Element("offer", {"id": o.offer_id, "bid": o.bid})
+
+        attributes = {"id": o.offer_id, "bid": o.bid}
+        if o._available is not None:
+            attributes["available"] = o._available
+
+        expected_el = ET.Element("offer", attributes)
 
         for tag, attr in (
             ("vendor", "vendor"),
@@ -301,6 +308,7 @@ class BaseOfferModelTestCase(TestCase):
             ("adult", "_adult"),
             ("expiry", "_expiry"),
             ("weight", "_weight"),
+            ("downloadable", "_downloadable"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -343,6 +351,8 @@ class BaseOfferModelTestCase(TestCase):
         # Add dimensions
         o.dimensions.to_xml(expected_el)
 
+        if o._available is not None:
+            self.assertEqual(el.attrib.get("available"), o._available)
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 
     def test_value_to_bool(self):

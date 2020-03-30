@@ -51,6 +51,8 @@ class BaseOfferFactory:
         expiry=fake.date(EXPIRY_FORMAT),
         weight=fake.pyfloat(),
         dimensions=DimensionsFactory(),
+        downloadable=fake.pybool(),
+        available=fake.random_element([True, False, None]),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -91,6 +93,8 @@ class BaseOfferFactory:
         self.expiry = expiry
         self.weight = weight
         self.dimensions = dimensions
+        self.downloadable = downloadable
+        self.available = available
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -122,6 +126,8 @@ class BaseOfferFactory:
             expiry=self.expiry,
             weight=self.weight,
             dimensions=self.dimensions,
+            downloadable=self.downloadable,
+            available=self.available,
             **kwargs,
         )
 
