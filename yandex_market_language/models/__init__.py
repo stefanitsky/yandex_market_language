@@ -9,6 +9,7 @@ from .option import Option
 from .price import Price
 from .offers import SimplifiedOffer
 from .parameter import Parameter
+from .condition import Condition
 
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     "Price",
     "SimplifiedOffer",
     "Parameter",
+    "Condition",
 ]
