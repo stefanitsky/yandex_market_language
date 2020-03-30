@@ -7,6 +7,7 @@ from faker import Faker
 from .price import PriceFactory
 from .option import OptionFactory
 from .parameter import ParameterFactory
+from .condition import ConditionFactory
 
 fake = Faker()
 
@@ -40,6 +41,7 @@ class BaseOfferFactory:
         adult=fake.pybool(),
         barcodes=None,
         parameters=None,
+        condition=ConditionFactory(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -75,6 +77,7 @@ class BaseOfferFactory:
         self.adult = adult
         self.barcodes = barcodes
         self.parameters = parameters
+        self.condition = condition
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -101,6 +104,7 @@ class BaseOfferFactory:
             adult=self.adult,
             barcodes=self.barcodes,
             parameters=self.parameters,
+            condition=self.condition,
             **kwargs,
         )
 

@@ -7,6 +7,7 @@ from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
 from .option import Option
 from .parameter import Parameter
+from .condition import Condition
 from . import fields
 
 
@@ -42,6 +43,7 @@ class BaseOffer(
         adult=None,
         barcodes: List[str] = None,
         parameters: List[Parameter] = None,
+        condition: Condition = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -66,6 +68,7 @@ class BaseOffer(
         self.adult = adult
         self.barcodes = barcodes
         self.parameters = parameters
+        self.condition = condition
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -174,6 +177,7 @@ class BaseOffer(
             adult=self.adult,
             barcodes=self.barcodes,
             parameters=[p.to_dict() for p in self.parameters],
+            condition=self.condition.to_dict() if self.condition else None,
             **kwargs
         )
 
@@ -238,6 +242,10 @@ class BaseOffer(
         # Add parameters
         for p in self.parameters:
             p.to_xml(offer_el)
+
+        # Add condition
+        if self.condition:
+            self.condition.to_xml(offer_el)
 
         return offer_el
 
