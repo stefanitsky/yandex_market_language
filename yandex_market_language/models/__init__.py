@@ -10,6 +10,7 @@ from .price import Price
 from .offers import SimplifiedOffer
 from .parameter import Parameter
 from .condition import Condition
+from .dimensions import Dimensions
 
 
 __all__ = [
@@ -24,4 +25,5 @@ __all__ = [
     "SimplifiedOffer",
     "Parameter",
     "Condition",
+    "Dimensions",
 ]
