@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import List, Optional
 
 from yandex_market_language.exceptions import ValidationError
@@ -9,6 +10,9 @@ from .option import Option
 from .parameter import Parameter
 from .condition import Condition
 from . import fields
+
+
+EXPIRY_FORMAT = "YYYY-MM-DDThh:mm"
 
 
 class BaseOffer(
@@ -44,6 +48,8 @@ class BaseOffer(
         barcodes: List[str] = None,
         parameters: List[Parameter] = None,
         condition: Condition = None,
+        credit_template_id: str = None,
+        expiry=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -69,6 +75,8 @@ class BaseOffer(
         self.barcodes = barcodes
         self.parameters = parameters
         self.condition = condition
+        self.credit_template_id = credit_template_id
+        self.expiry = expiry
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -151,6 +159,23 @@ class BaseOffer(
     def parameters(self, params):
         self._parameters = params or []
 
+    @property
+    def expiry(self) -> datetime:
+        return datetime.strptime(self._expiry, EXPIRY_FORMAT)
+
+    @expiry.setter
+    def expiry(self, dt):
+        if isinstance(dt, datetime):
+            self._expiry = dt.strftime(EXPIRY_FORMAT)
+        elif isinstance(dt, str):
+            try:
+                datetime.strptime(dt, EXPIRY_FORMAT)
+            except ValueError as e:
+                raise ValidationError(e)
+            self._expiry = dt
+        else:
+            raise ValidationError("expiry must be a valid datetime")
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -178,6 +203,8 @@ class BaseOffer(
             barcodes=self.barcodes,
             parameters=[p.to_dict() for p in self.parameters],
             condition=self.condition.to_dict() if self.condition else None,
+            credit_template_id=self.credit_template_id,
+            expiry=self.expiry,
             **kwargs
         )
 
@@ -206,6 +233,7 @@ class BaseOffer(
             ("manufacturer_warranty", "_manufacturer_warranty"),
             ("country_of_origin", "country_of_origin"),
             ("adult", "_adult"),
+            ("expiry", "_expiry"),
         ):
             value = getattr(self, attr)
             if value:
@@ -246,6 +274,12 @@ class BaseOffer(
         # Add condition
         if self.condition:
             self.condition.to_xml(offer_el)
+
+        # Add credit template
+        if self.credit_template_id:
+            XMLSubElement(
+                offer_el, "credit-template", {"id": self.credit_template_id}
+            )
 
         return offer_el
 

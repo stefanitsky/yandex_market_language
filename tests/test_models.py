@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import mock
 
 from faker import Faker
@@ -269,6 +270,8 @@ class BaseOfferModelTestCase(TestCase):
             "barcodes",
             "parameters",
             "condition",
+            "credit_template_id",
+            "expiry",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -293,6 +296,7 @@ class BaseOfferModelTestCase(TestCase):
             ("manufacturer_warranty", "_manufacturer_warranty"),
             ("country_of_origin", "country_of_origin"),
             ("adult", "_adult"),
+            ("expiry", "_expiry"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -327,6 +331,11 @@ class BaseOfferModelTestCase(TestCase):
         # Add condition
         o.condition.to_xml(expected_el)
 
+        # Add credit template
+        ET.SubElement(
+            expected_el, "credit-template", {"id": o.credit_template_id}
+        )
+
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 
     def test_value_to_bool(self):
@@ -355,6 +364,25 @@ class BaseOfferModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             o.min_quantity = "err"
             self.assertEqual(str(e), "min_quantity must be a number")
+
+    def test_expiry_property_dost_not_match_format_error(self):
+        with self.assertRaises(ValidationError) as e:
+            expiry = "err"
+            BaseOfferFactory(expiry=expiry).create()
+            expected_err = "time data {d} does not match format '{f}'".format(
+                d=expiry, f=models.offers.EXPIRY_FORMAT
+            )
+            self.assertEqual(str(e), expected_err)
+
+    def test_expiry_property_datetime_to_str(self):
+        dt = datetime.now()
+        o = BaseOfferFactory(expiry=dt).create()
+        self.assertEqual(o._expiry, dt.strftime(models.offers.EXPIRY_FORMAT))
+
+    def test_expiry_property_wrong_value_specified(self):
+        with self.assertRaises(ValidationError) as e:
+            BaseOfferFactory(expiry=1).create()
+            self.assertEqual(str(e), "expiry must be a valid datetime")
 
 
 class SimplifiedOfferModelTestCase(TestCase):

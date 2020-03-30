@@ -1,6 +1,10 @@
 from unittest import mock
 
-from yandex_market_language.models.offers import BaseOffer, SimplifiedOffer
+from yandex_market_language.models.offers import (
+    BaseOffer,
+    SimplifiedOffer,
+    EXPIRY_FORMAT
+)
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
 
@@ -42,6 +46,8 @@ class BaseOfferFactory:
         barcodes=None,
         parameters=None,
         condition=ConditionFactory(),
+        credit_template_id=fake.pystr(),
+        expiry=fake.date(EXPIRY_FORMAT),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -78,6 +84,8 @@ class BaseOfferFactory:
         self.barcodes = barcodes
         self.parameters = parameters
         self.condition = condition
+        self.credit_template_id = credit_template_id
+        self.expiry = expiry
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -105,6 +113,8 @@ class BaseOfferFactory:
             barcodes=self.barcodes,
             parameters=self.parameters,
             condition=self.condition,
+            credit_template_id=self.credit_template_id,
+            expiry=self.expiry,
             **kwargs,
         )
 
