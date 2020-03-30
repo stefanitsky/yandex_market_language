@@ -2,6 +2,13 @@
 History
 =======
 
+0.3.0 (2020-03-30)
+------------------
+
+* All missing fields and models were added for the BaseOffer.
+* SimplifiedOffer is now fully supported for xml / dict.
+* Custom exception classes removed and replaced with ValidationError.
+
 0.2.0 (2020-03-29)
 ------------------
 
