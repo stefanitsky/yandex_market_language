@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -36,6 +36,10 @@ class BaseOffer(
         description: str = None,
         sales_notes: str = None,
         min_quantity=1,
+        manufacturer_warranty=None,
+        country_of_origin=None,
+        adult=None,
+        barcodes: List[str] = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -55,15 +59,21 @@ class BaseOffer(
         self.description = description
         self.sales_notes = sales_notes
         self.min_quantity = min_quantity
+        self.manufacturer_warranty = manufacturer_warranty
+        self.country_of_origin = country_of_origin
+        self.adult = adult
+        self.barcodes = barcodes
 
     @staticmethod
-    def _value_to_bool(value, attr: str):
+    def _value_to_bool(value, attr: str, allow_none: bool = False):
         if value in ["true", "false"]:
             return value
         elif value is True:
             return "true"
         elif value is False:
             return "false"
+        elif value is None and allow_none:
+            return None
         else:
             raise ValidationError(
                 "The {attr} parameter should be boolean. "
@@ -105,6 +115,28 @@ class BaseOffer(
             except (TypeError, ValueError):
                 raise ValidationError("min_quantity must be a number")
 
+    @property
+    def manufacturer_warranty(self) -> Optional[bool]:
+        return {"true": True, "false": False}.get(
+            self._manufacturer_warranty, None
+        )
+
+    @manufacturer_warranty.setter
+    def manufacturer_warranty(self, value):
+        self._manufacturer_warranty = self._value_to_bool(
+            value, "manufacturer_warranty", True
+        )
+
+    @property
+    def adult(self) -> Optional[bool]:
+        return {"true": True, "false": False}.get(
+            self._adult, None
+        )
+
+    @adult.setter
+    def adult(self, value):
+        self._adult = self._value_to_bool(value, "adult", True)
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -126,6 +158,10 @@ class BaseOffer(
             description=self.description,
             sales_notes=self.sales_notes,
             min_quantity=self.min_quantity,
+            manufacturer_warranty=self.manufacturer_warranty,
+            country_of_origin=self.country_of_origin,
+            adult=self.adult,
+            barcodes=self.barcodes,
             **kwargs
         )
 
@@ -151,6 +187,9 @@ class BaseOffer(
             ("description", "description"),
             ("sales_notes", "sales_notes"),
             ("min-quantity", "_min_quantity"),
+            ("manufacturer_warranty", "_manufacturer_warranty"),
+            ("country_of_origin", "country_of_origin"),
+            ("adult", "_adult"),
         ):
             value = getattr(self, attr)
             if value:
@@ -177,6 +216,12 @@ class BaseOffer(
             pickup_options_el = XMLSubElement(offer_el, "pickup-options")
             for o in self.pickup_options:
                 o.to_xml(pickup_options_el)
+
+        # Add barcodes
+        if self.barcodes:
+            for b in self.barcodes:
+                b_el = XMLSubElement(offer_el, "barcode")
+                b_el.text = b
 
         return offer_el
 

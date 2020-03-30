@@ -34,6 +34,10 @@ class BaseOfferFactory:
         description=fake.text(),
         sales_notes=fake.text(),
         min_quantity=fake.pyint(),
+        manufacturer_warranty=fake.pybool(),
+        country_of_origin=fake.random_element(["Австралия", "Австрия"]),
+        adult=fake.pybool(),
+        barcodes=None,
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -41,6 +45,8 @@ class BaseOfferFactory:
             delivery_options = [OptionFactory() for _ in range(3)]
         if pickup_options is None:
             pickup_options = [OptionFactory() for _ in range(3)]
+        if barcodes is None:
+            barcodes = [fake.pystr() for _ in range(3)]
 
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -60,6 +66,10 @@ class BaseOfferFactory:
         self.description = description
         self.sales_notes = sales_notes
         self.min_quantity = min_quantity
+        self.manufacturer_warranty = manufacturer_warranty
+        self.country_of_origin = country_of_origin
+        self.adult = adult
+        self.barcodes = barcodes
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -81,6 +91,10 @@ class BaseOfferFactory:
             description=self.description,
             sales_notes=self.sales_notes,
             min_quantity=self.min_quantity,
+            manufacturer_warranty=self.manufacturer_warranty,
+            country_of_origin=self.country_of_origin,
+            adult=self.adult,
+            barcodes=self.barcodes,
             **kwargs,
         )
 

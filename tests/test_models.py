@@ -262,6 +262,10 @@ class BaseOfferModelTestCase(TestCase):
             "description",
             "sales_notes",
             "min_quantity",
+            "manufacturer_warranty",
+            "country_of_origin",
+            "adult",
+            "barcodes",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -283,6 +287,9 @@ class BaseOfferModelTestCase(TestCase):
             ("description", "description"),
             ("sales_notes", "sales_notes"),
             ("min-quantity", "_min_quantity"),
+            ("manufacturer_warranty", "_manufacturer_warranty"),
+            ("country_of_origin", "country_of_origin"),
+            ("adult", "_adult"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -305,6 +312,11 @@ class BaseOfferModelTestCase(TestCase):
         for _ in o.pickup_options:
             _.to_xml(pickup_options_el)
 
+        # Add barcodes
+        for barcode in o.barcodes:
+            el_ = ET.SubElement(expected_el, "barcode")
+            el_.text = barcode
+
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 
     def test_value_to_bool(self):
@@ -313,8 +325,9 @@ class BaseOfferModelTestCase(TestCase):
         self.assertEqual(m(False, "test"), "false")
         self.assertEqual(m("true", "test"), "true")
         self.assertEqual(m("false", "test"), "false")
+        self.assertEqual(m(None, "test", True), None)
         with self.assertRaises(ValidationError) as e:
-            v, a = "err", "test"
+            v, a = None, "test"
             m(v, a)
             expected_msg = (
                 "The {attr} parameter should be boolean. "
