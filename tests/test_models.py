@@ -5,6 +5,7 @@ from unittest import TestCase
 from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models.base import XMLSubElement
 
 from .factories import (
     ShopFactory,
@@ -240,7 +241,7 @@ class PriceModelTestCase(TestCase):
 
 class BaseOfferModelTestCase(TestCase):
     def test_to_dict(self):
-        o = BaseOfferFactory()
+        o = BaseOfferFactory().create()
         d = o.to_dict()
         expected_keys = [
             "vendor",
@@ -256,11 +257,13 @@ class BaseOfferModelTestCase(TestCase):
             "pictures",
             "delivery",
             "pickup",
+            "delivery_options",
+            "pickup_options",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
     def test_to_xml(self):
-        o = BaseOfferFactory()
+        o = BaseOfferFactory().create()
         el = o.to_xml()
         expected_el = ET.Element("offer", {"id": o.offer_id, "bid": o.bid})
 
@@ -290,6 +293,16 @@ class BaseOfferModelTestCase(TestCase):
             el_ = ET.SubElement(expected_el, "picture")
             el_.text = url
 
+        # Add delivery options
+        delivery_options_el = ET.SubElement(expected_el, "delivery-options")
+        for _ in o.delivery_options:
+            _.to_xml(delivery_options_el)
+
+        # Add pickup options
+        pickup_options_el = ET.SubElement(expected_el, "pickup-options")
+        for _ in o.pickup_options:
+            _.to_xml(pickup_options_el)
+
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 
     def test_value_to_bool(self):
@@ -310,7 +323,7 @@ class BaseOfferModelTestCase(TestCase):
 
 class SimplifiedOfferModelTestCase(TestCase):
     def test_to_dict(self):
-        o = SimplifiedOfferFactory()
+        o = SimplifiedOfferFactory().create()
         d = o.to_dict()
         keys = d.keys()
         expected_keys = ["name"]
@@ -318,12 +331,13 @@ class SimplifiedOfferModelTestCase(TestCase):
         self.assertEqual(d["name"], o.name)
 
     def test_to_xml(self):
-        o = SimplifiedOfferFactory()
+        f = SimplifiedOfferFactory()
+        o = f.create()
         el = o.to_xml()
 
-        d = o.to_dict()
-        name = d.pop("name")
-        expected_el = BaseOfferFactory(**d).to_xml()
+        values = f.get_values()
+        name = values.pop("name")
+        expected_el = BaseOfferFactory(**values).create().to_xml()
 
         name_el = ET.Element("name")
         name_el.text = name
