@@ -272,6 +272,7 @@ class BaseOfferModelTestCase(TestCase):
             "condition",
             "credit_template_id",
             "expiry",
+            "weight",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -297,6 +298,7 @@ class BaseOfferModelTestCase(TestCase):
             ("country_of_origin", "country_of_origin"),
             ("adult", "_adult"),
             ("expiry", "_expiry"),
+            ("weight", "_weight"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -383,6 +385,11 @@ class BaseOfferModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             BaseOfferFactory(expiry=1).create()
             self.assertEqual(str(e), "expiry must be a valid datetime")
+
+    def test_weight_property_raises_validation_error(self):
+        with self.assertRaises(ValidationError) as e:
+            BaseOfferFactory(weight="err").create()
+            self.assertEqual(str(e), "weight must be a valid float of int")
 
 
 class SimplifiedOfferModelTestCase(TestCase):

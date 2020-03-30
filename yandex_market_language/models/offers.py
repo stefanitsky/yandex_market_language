@@ -50,6 +50,7 @@ class BaseOffer(
         condition: Condition = None,
         credit_template_id: str = None,
         expiry=None,
+        weight=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -77,6 +78,7 @@ class BaseOffer(
         self.condition = condition
         self.credit_template_id = credit_template_id
         self.expiry = expiry
+        self.weight = weight
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -176,6 +178,18 @@ class BaseOffer(
         else:
             raise ValidationError("expiry must be a valid datetime")
 
+    @property
+    def weight(self) -> float:
+        return float(self._weight)
+
+    @weight.setter
+    def weight(self, value):
+        try:
+            float(value)
+            self._weight = str(value)
+        except (TypeError, ValueError):
+            raise ValidationError("weight must be a valid float of int")
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -205,6 +219,7 @@ class BaseOffer(
             condition=self.condition.to_dict() if self.condition else None,
             credit_template_id=self.credit_template_id,
             expiry=self.expiry,
+            weight=self.weight,
             **kwargs
         )
 
@@ -234,6 +249,7 @@ class BaseOffer(
             ("country_of_origin", "country_of_origin"),
             ("adult", "_adult"),
             ("expiry", "_expiry"),
+            ("weight", "_weight"),
         ):
             value = getattr(self, attr)
             if value:

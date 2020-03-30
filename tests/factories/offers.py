@@ -48,6 +48,7 @@ class BaseOfferFactory:
         condition=ConditionFactory(),
         credit_template_id=fake.pystr(),
         expiry=fake.date(EXPIRY_FORMAT),
+        weight=fake.pyfloat(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -86,6 +87,7 @@ class BaseOfferFactory:
         self.condition = condition
         self.credit_template_id = credit_template_id
         self.expiry = expiry
+        self.weight = weight
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -115,6 +117,7 @@ class BaseOfferFactory:
             condition=self.condition,
             credit_template_id=self.credit_template_id,
             expiry=self.expiry,
+            weight=self.weight,
             **kwargs,
         )
 
