@@ -11,6 +11,7 @@ from .offers import SimplifiedOffer
 from .parameter import Parameter
 from .condition import Condition
 from .dimensions import Dimensions
+from .age import Age
 
 
 __all__ = [
@@ -26,4 +27,5 @@ __all__ = [
     "Parameter",
     "Condition",
     "Dimensions",
+    "Age",
 ]
