@@ -33,6 +33,9 @@ class BaseOffer(
         pickup=True,
         delivery_options: List[Option] = None,
         pickup_options: List[Option] = None,
+        description: str = None,
+        sales_notes: str = None,
+        min_quantity=1,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -49,6 +52,9 @@ class BaseOffer(
         self.pickup = pickup
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
+        self.description = description
+        self.sales_notes = sales_notes
+        self.min_quantity = min_quantity
 
     @staticmethod
     def _value_to_bool(value, attr: str):
@@ -70,6 +76,8 @@ class BaseOffer(
 
     @delivery.setter
     def delivery(self, value):
+        if value is None:
+            value = True
         self._delivery = self._value_to_bool(value, "delivery")
 
     @property
@@ -78,7 +86,24 @@ class BaseOffer(
 
     @pickup.setter
     def pickup(self, value):
+        if value is None:
+            value = True
         self._pickup = self._value_to_bool(value, "pickup")
+
+    @property
+    def min_quantity(self) -> int:
+        return int(self._min_quantity)
+
+    @min_quantity.setter
+    def min_quantity(self, value):
+        if value is None:
+            self._min_quantity = "1"
+        else:
+            try:
+                int(value)
+                self._min_quantity = str(value)
+            except (TypeError, ValueError):
+                raise ValidationError("min_quantity must be a number")
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -98,6 +123,9 @@ class BaseOffer(
             pickup=self.pickup,
             delivery_options=[o.to_dict() for o in self.delivery_options],
             pickup_options=[o.to_dict() for o in self.pickup_options],
+            description=self.description,
+            sales_notes=self.sales_notes,
+            min_quantity=self.min_quantity,
             **kwargs
         )
 
@@ -112,6 +140,7 @@ class BaseOffer(
         # Add simple values
         for tag, attr in (
             ("vendor", "vendor"),
+            ("vendorCode", "vendor_code"),
             ("url", "url"),
             ("oldprice", "old_price"),
             ("enable_auto_discounts", "_enable_auto_discounts"),
@@ -119,16 +148,14 @@ class BaseOffer(
             ("categoryId", "category_id"),
             ("delivery", "_delivery"),
             ("pickup", "_pickup"),
+            ("description", "description"),
+            ("sales_notes", "sales_notes"),
+            ("min-quantity", "_min_quantity"),
         ):
             value = getattr(self, attr)
             if value:
                 el = XMLSubElement(offer_el, tag)
                 el.text = value
-
-        # Add vendor code
-        if self.vendor_code:
-            vendor_code_el = XMLSubElement(offer_el, "vendorCode")
-            vendor_code_el.text = self.vendor_code
 
         # Add price
         self.price.to_xml(offer_el)

@@ -259,6 +259,9 @@ class BaseOfferModelTestCase(TestCase):
             "pickup",
             "delivery_options",
             "pickup_options",
+            "description",
+            "sales_notes",
+            "min_quantity",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -269,6 +272,7 @@ class BaseOfferModelTestCase(TestCase):
 
         for tag, attr in (
             ("vendor", "vendor"),
+            ("vendorCode", "vendor_code"),
             ("url", "url"),
             ("oldprice", "old_price"),
             ("enable_auto_discounts", "_enable_auto_discounts"),
@@ -276,14 +280,12 @@ class BaseOfferModelTestCase(TestCase):
             ("categoryId", "category_id"),
             ("delivery", "_delivery"),
             ("pickup", "_pickup"),
+            ("description", "description"),
+            ("sales_notes", "sales_notes"),
+            ("min-quantity", "_min_quantity"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
-
-        # Add vendor code
-        vendor_code_el = ET.Element("vendorCode")
-        vendor_code_el.text = o.vendor_code
-        expected_el.append(vendor_code_el)
 
         # Add price
         o.price.to_xml(expected_el)
@@ -319,6 +321,17 @@ class BaseOfferModelTestCase(TestCase):
                 "Got {t} instead.".format(attr=a, t=type(v))
             )
             self.assertEqual(str(e), expected_msg)
+
+    def test_min_quantity_property_default(self):
+        o = BaseOfferFactory().create()
+        o.min_quantity = None
+        self.assertEqual(o._min_quantity, "1")
+
+    def test_min_quantity_property_raises_validation_error(self):
+        o = BaseOfferFactory().create()
+        with self.assertRaises(ValidationError) as e:
+            o.min_quantity = "err"
+            self.assertEqual(str(e), "min_quantity must be a number")
 
 
 class SimplifiedOfferModelTestCase(TestCase):

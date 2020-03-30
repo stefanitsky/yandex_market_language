@@ -27,10 +27,13 @@ class BaseOfferFactory:
         currency=fake.random_element(CURRENCY_CHOICES),
         category_id=str(fake.pyint()),
         pictures=None,
-        delivery=True,
-        pickup=True,
+        delivery=None,
+        pickup=None,
         delivery_options=None,
         pickup_options=None,
+        description=fake.text(),
+        sales_notes=fake.text(),
+        min_quantity=fake.pyint(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -54,6 +57,9 @@ class BaseOfferFactory:
         self.pickup = pickup
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
+        self.description = description
+        self.sales_notes = sales_notes
+        self.min_quantity = min_quantity
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -72,6 +78,9 @@ class BaseOfferFactory:
             pickup=self.pickup,
             delivery_options=self.delivery_options,
             pickup_options=self.pickup_options,
+            description=self.description,
+            sales_notes=self.sales_notes,
+            min_quantity=self.min_quantity,
             **kwargs,
         )
 
