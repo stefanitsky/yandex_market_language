@@ -10,6 +10,7 @@ from .option import Option
 from .parameter import Parameter
 from .condition import Condition
 from .dimensions import Dimensions
+from .age import Age
 from . import fields
 
 
@@ -55,6 +56,7 @@ class BaseOffer(
         dimensions: Dimensions = None,
         downloadable=None,
         available=None,
+        age: Age = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -86,6 +88,7 @@ class BaseOffer(
         self.dimensions = dimensions
         self.downloadable = downloadable
         self.available = available
+        self.age = age
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -244,6 +247,7 @@ class BaseOffer(
             dimensions=self.dimensions.to_dict() if self.dimensions else None,
             downloadable=self.downloadable,
             available=self.available,
+            age=self.age,
             **kwargs
         )
 
@@ -329,6 +333,10 @@ class BaseOffer(
         # Add dimensions
         if self.dimensions:
             self.dimensions.to_xml(offer_el)
+
+        # Add age
+        if self.age:
+            self.age.to_xml(offer_el)
 
         return offer_el
 

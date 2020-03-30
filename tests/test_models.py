@@ -278,6 +278,7 @@ class BaseOfferModelTestCase(TestCase):
             "dimensions",
             "downloadable",
             "available",
+            "age",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -351,6 +352,9 @@ class BaseOfferModelTestCase(TestCase):
 
         # Add dimensions
         o.dimensions.to_xml(expected_el)
+
+        # Add age
+        o.age.to_xml(expected_el)
 
         if o._available is not None:
             self.assertEqual(el.attrib.get("available"), o._available)

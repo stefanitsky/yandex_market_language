@@ -13,6 +13,8 @@ from .option import OptionFactory
 from .parameter import ParameterFactory
 from .condition import ConditionFactory
 from .dimensions import DimensionsFactory
+from .age import AgeFactory
+
 
 fake = Faker()
 
@@ -53,6 +55,7 @@ class BaseOfferFactory:
         dimensions=DimensionsFactory(),
         downloadable=fake.pybool(),
         available=fake.random_element([True, False, None]),
+        age=AgeFactory(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -95,6 +98,7 @@ class BaseOfferFactory:
         self.dimensions = dimensions
         self.downloadable = downloadable
         self.available = available
+        self.age = age
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -128,6 +132,7 @@ class BaseOfferFactory:
             dimensions=self.dimensions,
             downloadable=self.downloadable,
             available=self.available,
+            age=self.age,
             **kwargs,
         )
 
