@@ -57,6 +57,7 @@ class BaseOffer(
         downloadable=None,
         available=None,
         age: Age = None,
+        group_id=None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -89,6 +90,7 @@ class BaseOffer(
         self.downloadable = downloadable
         self.available = available
         self.age = age
+        self.group_id = group_id
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -214,6 +216,25 @@ class BaseOffer(
     def available(self, value):
         self._available = self._value_to_bool(value, "available", True)
 
+    @property
+    def group_id(self) -> Optional[int]:
+        return int(self._group_id)
+
+    @group_id.setter
+    def group_id(self, value):
+        try:
+            int(value)
+            value = str(value)
+
+            if len(value) > 9:
+                raise ValueError
+
+            self._group_id = value
+        except (TypeError, ValueError):
+            raise ValidationError(
+                "group_id must be an integer, maximum 9 characters."
+            )
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -248,6 +269,7 @@ class BaseOffer(
             downloadable=self.downloadable,
             available=self.available,
             age=self.age,
+            group_id=self.group_id,
             **kwargs
         )
 
@@ -283,6 +305,7 @@ class BaseOffer(
             ("expiry", "_expiry"),
             ("weight", "_weight"),
             ("downloadable", "_downloadable"),
+            ("group_id", "_group_id"),
         ):
             value = getattr(self, attr)
             if value:

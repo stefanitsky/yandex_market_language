@@ -279,6 +279,7 @@ class BaseOfferModelTestCase(TestCase):
             "downloadable",
             "available",
             "age",
+            "group_id",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -311,6 +312,7 @@ class BaseOfferModelTestCase(TestCase):
             ("expiry", "_expiry"),
             ("weight", "_weight"),
             ("downloadable", "_downloadable"),
+            ("group_id", "_group_id"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -410,6 +412,21 @@ class BaseOfferModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             BaseOfferFactory(weight="err").create()
             self.assertEqual(str(e), "weight must be a valid float of int")
+
+    def test_group_id_wrong_type(self):
+        with self.assertRaises(ValidationError) as e:
+            BaseOfferFactory(group_id="err").create()
+            self.assertEqual(
+                str(e), "group_id must be an integer, maximum 9 characters."
+            )
+
+    def test_group_id_not_valid_maximum_length(self):
+        with self.assertRaises(ValidationError) as e:
+            group_id = fake.pyint(min_value=1000000000, max_value=9999999999)
+            BaseOfferFactory(group_id=group_id).create()
+            self.assertEqual(
+                str(e), "group_id must be an integer, maximum 9 characters."
+            )
 
 
 class SimplifiedOfferModelTestCase(TestCase):

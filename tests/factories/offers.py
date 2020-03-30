@@ -56,6 +56,7 @@ class BaseOfferFactory:
         downloadable=fake.pybool(),
         available=fake.random_element([True, False, None]),
         age=AgeFactory(),
+        group_id=fake.pyint(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -99,6 +100,7 @@ class BaseOfferFactory:
         self.downloadable = downloadable
         self.available = available
         self.age = age
+        self.group_id = group_id
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -133,6 +135,7 @@ class BaseOfferFactory:
             downloadable=self.downloadable,
             available=self.available,
             age=self.age,
+            group_id=self.group_id,
             **kwargs,
         )
 
