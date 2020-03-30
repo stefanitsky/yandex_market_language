@@ -266,6 +266,7 @@ class BaseOfferModelTestCase(TestCase):
             "country_of_origin",
             "adult",
             "barcodes",
+            "parameters",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -316,6 +317,9 @@ class BaseOfferModelTestCase(TestCase):
         for barcode in o.barcodes:
             el_ = ET.SubElement(expected_el, "barcode")
             el_.text = barcode
+
+        for _ in o.parameters:
+            _.to_xml(expected_el)
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 

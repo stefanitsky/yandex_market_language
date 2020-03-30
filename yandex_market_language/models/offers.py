@@ -6,6 +6,7 @@ from yandex_market_language.exceptions import ValidationError
 from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
 from .option import Option
+from .parameter import Parameter
 from . import fields
 
 
@@ -40,6 +41,7 @@ class BaseOffer(
         country_of_origin=None,
         adult=None,
         barcodes: List[str] = None,
+        parameters: List[Parameter] = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -63,6 +65,7 @@ class BaseOffer(
         self.country_of_origin = country_of_origin
         self.adult = adult
         self.barcodes = barcodes
+        self.parameters = parameters
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -137,6 +140,14 @@ class BaseOffer(
     def adult(self, value):
         self._adult = self._value_to_bool(value, "adult", True)
 
+    @property
+    def parameters(self) -> List[Parameter]:
+        return self._parameters or []
+
+    @parameters.setter
+    def parameters(self, params):
+        self._parameters = params or []
+
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -162,6 +173,7 @@ class BaseOffer(
             country_of_origin=self.country_of_origin,
             adult=self.adult,
             barcodes=self.barcodes,
+            parameters=[p.to_dict() for p in self.parameters],
             **kwargs
         )
 
@@ -222,6 +234,10 @@ class BaseOffer(
             for b in self.barcodes:
                 b_el = XMLSubElement(offer_el, "barcode")
                 b_el.text = b
+
+        # Add parameters
+        for p in self.parameters:
+            p.to_xml(offer_el)
 
         return offer_el
 

@@ -6,6 +6,7 @@ from faker import Faker
 
 from .price import PriceFactory
 from .option import OptionFactory
+from .parameter import ParameterFactory
 
 fake = Faker()
 
@@ -38,6 +39,7 @@ class BaseOfferFactory:
         country_of_origin=fake.random_element(["Австралия", "Австрия"]),
         adult=fake.pybool(),
         barcodes=None,
+        parameters=None,
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -47,6 +49,8 @@ class BaseOfferFactory:
             pickup_options = [OptionFactory() for _ in range(3)]
         if barcodes is None:
             barcodes = [fake.pystr() for _ in range(3)]
+        if parameters is None:
+            parameters = [ParameterFactory() for _ in range(3)]
 
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -70,6 +74,7 @@ class BaseOfferFactory:
         self.country_of_origin = country_of_origin
         self.adult = adult
         self.barcodes = barcodes
+        self.parameters = parameters
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -95,6 +100,7 @@ class BaseOfferFactory:
             country_of_origin=self.country_of_origin,
             adult=self.adult,
             barcodes=self.barcodes,
+            parameters=self.parameters,
             **kwargs,
         )
 
