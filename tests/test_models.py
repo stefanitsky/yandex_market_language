@@ -161,15 +161,9 @@ class CurrencyModelTestCase(TestCase):
         msg = "Price data is accepted only in: (formatted_choices)".format(
             formatted_choices=", ".join(models.currency.CURRENCY_CHOICES)
         )
-        with self.assertRaises(
-            models.currency.CurrencyChoicesValidationError
-        ) as e:
+        with self.assertRaises(ValidationError) as e:
             CurrencyFactory(currency="UAN")
             self.assertEqual(str(e), msg)
-
-        self.assertEqual(
-            str(models.currency.CurrencyChoicesValidationError()), msg
-        )
 
     def test_rate_validation_error(self):
         msg = (
@@ -181,8 +175,6 @@ class CurrencyModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(rate="err")
             self.assertEqual(str(e), msg)
-
-        self.assertEqual(str(models.currency.RateValidationError()), msg)
 
     def test_plus_validation_error(self):
         with self.assertRaises(ValidationError) as e:

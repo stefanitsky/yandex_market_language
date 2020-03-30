@@ -6,14 +6,6 @@ from yandex_market_language.exceptions import ValidationError
 ENABLE_AUTO_DISCOUNTS_CHOICES = ("yes", "true", "1", "no", "false", "0")
 
 
-class EnableAutoDiscountsValidationError(ValidationError):
-    def __str__(self):
-        return (
-            "enable_auto_discounts should be True, False or str from available"
-            " values: {v}".format(v=", ".join(ENABLE_AUTO_DISCOUNTS_CHOICES))
-        )
-
-
 class EnableAutoDiscountField:
     _enable_auto_discounts = None
 
@@ -37,4 +29,11 @@ class EnableAutoDiscountField:
         elif value is None:
             self._enable_auto_discounts = value
         else:
-            raise EnableAutoDiscountsValidationError
+            raise ValidationError(
+                (
+                    "enable_auto_discounts should be True, False "
+                    "or str from available values: {values}".format(
+                        values=", ".join(ENABLE_AUTO_DISCOUNTS_CHOICES)
+                    )
+                )
+            )

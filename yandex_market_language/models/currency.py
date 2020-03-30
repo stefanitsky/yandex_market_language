@@ -9,23 +9,6 @@ CURRENCY_CHOICES = ("RUR", "RUB", "UAH", "BYN", "KZT", "USD", "EUR")
 RATE_CHOICES = ("CBRF", "NBU", "NBK", "CB")
 
 
-class CurrencyChoicesValidationError(ValidationError):
-    def __str__(self):
-        return "Price data is accepted only in: (formatted_choices)".format(
-            formatted_choices=", ".join(CURRENCY_CHOICES)
-        )
-
-
-class RateValidationError(ValidationError):
-    def __str__(self):
-        return (
-            "The rate parameter can have the following values: "
-            "number (int or float), (rate_choices)".format(
-                rate_choices=', '.join(RATE_CHOICES)
-            )
-        )
-
-
 class Currency(BaseModel):
     def __init__(self, currency, rate, plus=None):
         self.currency = currency
@@ -39,7 +22,11 @@ class Currency(BaseModel):
     @currency.setter
     def currency(self, value):
         if value not in CURRENCY_CHOICES:
-            raise CurrencyChoicesValidationError
+            raise ValidationError(
+                "Price data is accepted only in: (formatted_choices)".format(
+                    formatted_choices=", ".join(CURRENCY_CHOICES)
+                )
+            )
         self._currency = value
 
     @property
@@ -52,7 +39,14 @@ class Currency(BaseModel):
             try:
                 float(value)
             except (TypeError, ValueError):
-                raise RateValidationError
+                raise ValidationError(
+                    (
+                        "The rate parameter can have the following values: "
+                        "number (int or float), (rate_choices)".format(
+                            rate_choices=', '.join(RATE_CHOICES)
+                        )
+                    )
+                )
 
         self._rate = str(value)
 

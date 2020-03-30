@@ -1,8 +1,8 @@
 from unittest import TestCase
 
+from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.fields.enable_auto_discounts import (
     EnableAutoDiscountField,
-    EnableAutoDiscountsValidationError,
     ENABLE_AUTO_DISCOUNTS_CHOICES,
 )
 
@@ -11,15 +11,14 @@ class EnableAutoDiscountsFieldTestCase(TestCase):
     def test_enable_auto_discounts_validation_error(self):
         msg = (
             "enable_auto_discounts should be True, False or str from available"
-            " values: {v}".format(
-                v=", ".join(ENABLE_AUTO_DISCOUNTS_CHOICES)
+            " values: {values}".format(
+                values=", ".join(ENABLE_AUTO_DISCOUNTS_CHOICES)
             )
         )
-        with self.assertRaises(EnableAutoDiscountsValidationError) as e:
+        with self.assertRaises(ValidationError) as e:
             f = EnableAutoDiscountField()
             f.enable_auto_discounts = "err"
             self.assertEqual(str(e), msg)
-        self.assertEqual(str(EnableAutoDiscountsValidationError()), msg)
 
     def test_enable_auto_discounts_property(self):
         f = EnableAutoDiscountField()
