@@ -22,6 +22,8 @@ def create_random_base_offer(
     currency=fake.random_element(CURRENCY_CHOICES),
     category_id=str(fake.pyint()),
     pictures=None,
+    delivery=True,
+    pickup=True,
 ) -> BaseOffer:
     if pictures is None:
         pictures = [fake.url() for _ in range(3)]
@@ -38,6 +40,8 @@ def create_random_base_offer(
         currency=currency,
         category_id=category_id,
         pictures=pictures,
+        delivery=delivery,
+        pickup=pickup,
     )
 
 

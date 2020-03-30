@@ -254,6 +254,8 @@ class BaseOfferModelTestCase(TestCase):
             "currency",
             "category_id",
             "pictures",
+            "delivery",
+            "pickup",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -269,6 +271,8 @@ class BaseOfferModelTestCase(TestCase):
             ("enable_auto_discounts", "_enable_auto_discounts"),
             ("currencyId", "currency"),
             ("categoryId", "category_id"),
+            ("delivery", "_delivery"),
+            ("pickup", "_pickup"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
@@ -287,6 +291,21 @@ class BaseOfferModelTestCase(TestCase):
             el_.text = url
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+    def test_value_to_bool(self):
+        m = models.offers.BaseOffer._value_to_bool
+        self.assertEqual(m(True, "test"), "true")
+        self.assertEqual(m(False, "test"), "false")
+        self.assertEqual(m("true", "test"), "true")
+        self.assertEqual(m("false", "test"), "false")
+        with self.assertRaises(ValidationError) as e:
+            v, a = "err", "test"
+            m(v, a)
+            expected_msg = (
+                "The {attr} parameter should be boolean. "
+                "Got {t} instead.".format(attr=a, t=type(v))
+            )
+            self.assertEqual(str(e), expected_msg)
 
 
 class SimplifiedOfferModelTestCase(TestCase):

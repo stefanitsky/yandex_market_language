@@ -4,6 +4,7 @@ from typing import List
 from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
 from .fields import EnableAutoDiscountField
+from ..exceptions import ValidationError
 
 
 class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
@@ -20,6 +21,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         old_price=None,
         enable_auto_discounts=None,
         pictures: List[str] = None,
+        delivery=True,
+        pickup=True,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -32,6 +35,38 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         self.currency = currency
         self.category_id = category_id
         self.pictures = pictures
+        self.delivery = delivery
+        self.pickup = pickup
+
+    @staticmethod
+    def _value_to_bool(value, attr: str):
+        if value in ["true", "false"]:
+            return value
+        elif value is True:
+            return "true"
+        elif value is False:
+            return "false"
+        else:
+            raise ValidationError(
+                "The {attr} parameter should be boolean. "
+                "Got {t} instead.".format(attr=attr, t=type(value))
+            )
+
+    @property
+    def delivery(self) -> bool:
+        return True if self._delivery == "true" else False
+
+    @delivery.setter
+    def delivery(self, value):
+        self._delivery = self._value_to_bool(value, "delivery")
+
+    @property
+    def pickup(self) -> bool:
+        return True if self._delivery == "true" else False
+
+    @pickup.setter
+    def pickup(self, value):
+        self._pickup = self._value_to_bool(value, "pickup")
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -47,6 +82,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             currency=self.currency,
             category_id=self.category_id,
             pictures=self.pictures,
+            delivery=self.delivery,
+            pickup=self.pickup,
             **kwargs
         )
 
@@ -66,6 +103,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             ("enable_auto_discounts", "_enable_auto_discounts"),
             ("currencyId", "currency"),
             ("categoryId", "category_id"),
+            ("delivery", "_delivery"),
+            ("pickup", "_pickup"),
         ):
             value = getattr(self, attr)
             if value:
