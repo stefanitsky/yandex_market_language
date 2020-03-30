@@ -4,12 +4,17 @@ from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
 from .option import Option
-from .fields import EnableAutoDiscountField
+from . import fields
 
 from yandex_market_language.exceptions import ValidationError
 
 
-class Shop(BaseModel, EnableAutoDiscountField):
+class Shop(
+    fields.EnableAutoDiscountField,
+    fields.DeliveryOptionsField,
+    fields.PickupOptionsField,
+    BaseModel
+):
     def __init__(
         self,
         name: str,
@@ -47,22 +52,6 @@ class Shop(BaseModel, EnableAutoDiscountField):
         if len(value) > 512:
             raise ValidationError("The maximum url length is 512 characters.")
         self._url = value
-
-    @property
-    def delivery_options(self):
-        return self._delivery_options
-
-    @delivery_options.setter
-    def delivery_options(self, options):
-        self._delivery_options = options if options else []
-
-    @property
-    def pickup_options(self):
-        return self._pickup_options
-
-    @pickup_options.setter
-    def pickup_options(self, options):
-        self._pickup_options = options if options else []
 
     def create_dict(self, **kwargs) -> dict:
         return dict(

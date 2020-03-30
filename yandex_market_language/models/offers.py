@@ -1,13 +1,21 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from yandex_market_language.exceptions import ValidationError
+
 from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
-from .fields import EnableAutoDiscountField
-from ..exceptions import ValidationError
+from .option import Option
+from . import fields
 
 
-class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
+class BaseOffer(
+    fields.EnableAutoDiscountField,
+    fields.DeliveryOptionsField,
+    fields.PickupOptionsField,
+    BaseModel,
+    ABC
+):
     def __init__(
         self,
         offer_id,
@@ -23,6 +31,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         pictures: List[str] = None,
         delivery=True,
         pickup=True,
+        delivery_options: List[Option] = None,
+        pickup_options: List[Option] = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -37,6 +47,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         self.pictures = pictures
         self.delivery = delivery
         self.pickup = pickup
+        self.delivery_options = delivery_options
+        self.pickup_options = pickup_options
 
     @staticmethod
     def _value_to_bool(value, attr: str):
@@ -84,6 +96,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             pictures=self.pictures,
             delivery=self.delivery,
             pickup=self.pickup,
+            delivery_options=[o.to_dict() for o in self.delivery_options],
+            pickup_options=[o.to_dict() for o in self.pickup_options],
             **kwargs
         )
 
@@ -124,6 +138,18 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             for url in self.pictures:
                 picture_el = XMLSubElement(offer_el, "picture")
                 picture_el.text = url
+
+        # Add delivery options
+        if self.delivery_options:
+            delivery_options_el = XMLSubElement(offer_el, "delivery-options")
+            for o in self.delivery_options:
+                o.to_xml(delivery_options_el)
+
+        # Add pickup options
+        if self.pickup_options:
+            pickup_options_el = XMLSubElement(offer_el, "pickup-options")
+            for o in self.pickup_options:
+                o.to_xml(pickup_options_el)
 
         return offer_el
 
