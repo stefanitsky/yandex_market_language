@@ -9,6 +9,7 @@ from .price import Price
 from .option import Option
 from .parameter import Parameter
 from .condition import Condition
+from .dimensions import Dimensions
 from . import fields
 
 
@@ -51,6 +52,7 @@ class BaseOffer(
         credit_template_id: str = None,
         expiry=None,
         weight=None,
+        dimensions: Dimensions = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -79,6 +81,7 @@ class BaseOffer(
         self.credit_template_id = credit_template_id
         self.expiry = expiry
         self.weight = weight
+        self.dimensions = dimensions
 
     @staticmethod
     def _value_to_bool(value, attr: str, allow_none: bool = False):
@@ -220,6 +223,7 @@ class BaseOffer(
             credit_template_id=self.credit_template_id,
             expiry=self.expiry,
             weight=self.weight,
+            dimensions=self.dimensions.to_dict() if self.dimensions else None,
             **kwargs
         )
 
@@ -296,6 +300,10 @@ class BaseOffer(
             XMLSubElement(
                 offer_el, "credit-template", {"id": self.credit_template_id}
             )
+
+        # Add dimensions
+        if self.dimensions:
+            self.dimensions.to_xml(offer_el)
 
         return offer_el
 

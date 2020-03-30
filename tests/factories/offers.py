@@ -12,6 +12,7 @@ from .price import PriceFactory
 from .option import OptionFactory
 from .parameter import ParameterFactory
 from .condition import ConditionFactory
+from .dimensions import DimensionsFactory
 
 fake = Faker()
 
@@ -49,6 +50,7 @@ class BaseOfferFactory:
         credit_template_id=fake.pystr(),
         expiry=fake.date(EXPIRY_FORMAT),
         weight=fake.pyfloat(),
+        dimensions=DimensionsFactory(),
     ):
         if pictures is None:
             pictures = [fake.url() for _ in range(3)]
@@ -88,6 +90,7 @@ class BaseOfferFactory:
         self.credit_template_id = credit_template_id
         self.expiry = expiry
         self.weight = weight
+        self.dimensions = dimensions
 
     def get_values(self, **kwargs) -> dict:
         return dict(
@@ -118,6 +121,7 @@ class BaseOfferFactory:
             credit_template_id=self.credit_template_id,
             expiry=self.expiry,
             weight=self.weight,
+            dimensions=self.dimensions,
             **kwargs,
         )
 

@@ -274,6 +274,7 @@ class BaseOfferModelTestCase(TestCase):
             "credit_template_id",
             "expiry",
             "weight",
+            "dimensions",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -338,6 +339,9 @@ class BaseOfferModelTestCase(TestCase):
         ET.SubElement(
             expected_el, "credit-template", {"id": o.credit_template_id}
         )
+
+        # Add dimensions
+        o.dimensions.to_xml(expected_el)
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 
