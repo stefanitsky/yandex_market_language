@@ -1,6 +1,7 @@
 from unittest import mock
 
 from yandex_market_language.models.offers import BaseOffer, SimplifiedOffer
+from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
 
 from .price import PriceFactory
@@ -18,7 +19,13 @@ def create_random_base_offer(
     price=PriceFactory(),
     old_price=str(fake.pyint()),
     enable_auto_discounts=fake.pybool(),
+    currency=fake.random_element(CURRENCY_CHOICES),
+    category_id=str(fake.pyint()),
+    pictures=None,
 ) -> BaseOffer:
+    if pictures is None:
+        pictures = [fake.url() for _ in range(3)]
+
     return BaseOffer(
         vendor=vendor,
         vendor_code=vendor_code,
@@ -27,7 +34,10 @@ def create_random_base_offer(
         url=url,
         price=price,
         old_price=old_price,
-        enable_auto_discounts=enable_auto_discounts
+        enable_auto_discounts=enable_auto_discounts,
+        currency=currency,
+        category_id=category_id,
+        pictures=pictures,
     )
 
 

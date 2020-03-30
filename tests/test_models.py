@@ -251,6 +251,9 @@ class BaseOfferModelTestCase(TestCase):
             "price",
             "old_price",
             "enable_auto_discounts",
+            "currency",
+            "category_id",
+            "pictures",
         ]
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
@@ -264,14 +267,24 @@ class BaseOfferModelTestCase(TestCase):
             ("url", "url"),
             ("oldprice", "old_price"),
             ("enable_auto_discounts", "_enable_auto_discounts"),
+            ("currencyId", "currency"),
+            ("categoryId", "category_id"),
         ):
             el_ = ET.SubElement(expected_el, tag)
             el_.text = getattr(o, attr)
 
+        # Add vendor code
         vendor_code_el = ET.Element("vendorCode")
         vendor_code_el.text = o.vendor_code
         expected_el.append(vendor_code_el)
+
+        # Add price
         o.price.to_xml(expected_el)
+
+        # Add pictures
+        for url in o.pictures:
+            el_ = ET.SubElement(expected_el, "picture")
+            el_.text = url
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
 

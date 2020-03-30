@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from typing import List
+
 from .base import BaseModel, XMLElement, XMLSubElement
 from .price import Price
 from .fields import EnableAutoDiscountField
@@ -10,11 +12,14 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         offer_id,
         url,
         price: Price,
+        currency: str,
+        category_id,
         vendor=None,
         vendor_code=None,
         bid=None,
         old_price=None,
         enable_auto_discounts=None,
+        pictures: List[str] = None,
     ):
         self.vendor = vendor
         self.vendor_code = vendor_code
@@ -24,6 +29,9 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
         self.price = price
         self.old_price = old_price
         self.enable_auto_discounts = enable_auto_discounts
+        self.currency = currency
+        self.category_id = category_id
+        self.pictures = pictures
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -36,6 +44,9 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             price=self.price,
             old_price=self.old_price,
             enable_auto_discounts=self.enable_auto_discounts,
+            currency=self.currency,
+            category_id=self.category_id,
+            pictures=self.pictures,
             **kwargs
         )
 
@@ -53,6 +64,8 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
             ("url", "url"),
             ("oldprice", "old_price"),
             ("enable_auto_discounts", "_enable_auto_discounts"),
+            ("currencyId", "currency"),
+            ("categoryId", "category_id"),
         ):
             value = getattr(self, attr)
             if value:
@@ -66,6 +79,12 @@ class BaseOffer(BaseModel, EnableAutoDiscountField, ABC):
 
         # Add price
         self.price.to_xml(offer_el)
+
+        # Add pictures
+        if self.pictures:
+            for url in self.pictures:
+                picture_el = XMLSubElement(offer_el, "picture")
+                picture_el.text = url
 
         return offer_el
 
