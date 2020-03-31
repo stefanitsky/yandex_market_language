@@ -70,6 +70,22 @@ class BaseModelTestCase(TestCase):
             models.BaseModel._is_valid_int(None, "test")
             self.assertEqual(str(e), "test must be a valid int")
 
+    def test_is_valid_bool(self):
+        m = models.BaseModel._is_valid_bool
+        self.assertEqual(m(True, "test"), "true")
+        self.assertEqual(m(False, "test"), "false")
+        self.assertEqual(m("true", "test"), "true")
+        self.assertEqual(m("false", "test"), "false")
+        self.assertEqual(m(None, "test", True), None)
+        with self.assertRaises(ValidationError) as e:
+            v, a = None, "test"
+            m(v, a)
+            expected_msg = (
+                "The {attr} parameter should be boolean. "
+                "Got {t} instead.".format(attr=a, t=type(v))
+            )
+            self.assertEqual(str(e), expected_msg)
+
 
 class FeedModelTestCase(TestCase):
     def test_to_dict(self):
@@ -410,22 +426,6 @@ class BaseOfferModelTestCase(TestCase):
         if o._available is not None:
             self.assertEqual(el.attrib.get("available"), o._available)
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
-
-    def test_value_to_bool(self):
-        m = models.offers.BaseOffer._value_to_bool
-        self.assertEqual(m(True, "test"), "true")
-        self.assertEqual(m(False, "test"), "false")
-        self.assertEqual(m("true", "test"), "true")
-        self.assertEqual(m("false", "test"), "false")
-        self.assertEqual(m(None, "test", True), None)
-        with self.assertRaises(ValidationError) as e:
-            v, a = None, "test"
-            m(v, a)
-            expected_msg = (
-                "The {attr} parameter should be boolean. "
-                "Got {t} instead.".format(attr=a, t=type(v))
-            )
-            self.assertEqual(str(e), expected_msg)
 
     def test_min_quantity_property_default(self):
         o = BaseOfferFactory().create()

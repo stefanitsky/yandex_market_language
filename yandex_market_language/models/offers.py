@@ -97,22 +97,6 @@ class BaseOffer(
         self.age = age
         self.group_id = group_id
 
-    @staticmethod
-    def _value_to_bool(value, attr: str, allow_none: bool = False):
-        if value in ["true", "false"]:
-            return value
-        elif value is True:
-            return "true"
-        elif value is False:
-            return "false"
-        elif value is None and allow_none:
-            return None
-        else:
-            raise ValidationError(
-                "The {attr} parameter should be boolean. "
-                "Got {t} instead.".format(attr=attr, t=type(value))
-            )
-
     @property
     def delivery(self) -> bool:
         return True if self._delivery == "true" else False
@@ -121,7 +105,7 @@ class BaseOffer(
     def delivery(self, value):
         if value is None:
             value = True
-        self._delivery = self._value_to_bool(value, "delivery")
+        self._delivery = self._is_valid_bool(value, "delivery")
 
     @property
     def pickup(self) -> bool:
@@ -131,7 +115,7 @@ class BaseOffer(
     def pickup(self, value):
         if value is None:
             value = True
-        self._pickup = self._value_to_bool(value, "pickup")
+        self._pickup = self._is_valid_bool(value, "pickup")
 
     @property
     def store(self) -> Optional[bool]:
@@ -144,7 +128,7 @@ class BaseOffer(
 
     @store.setter
     def store(self, value):
-        self._store = self._value_to_bool(value, "store", True)
+        self._store = self._is_valid_bool(value, "store", True)
 
     @property
     def min_quantity(self) -> int:
@@ -169,7 +153,7 @@ class BaseOffer(
 
     @manufacturer_warranty.setter
     def manufacturer_warranty(self, value):
-        self._manufacturer_warranty = self._value_to_bool(
+        self._manufacturer_warranty = self._is_valid_bool(
             value, "manufacturer_warranty", True
         )
 
@@ -179,7 +163,7 @@ class BaseOffer(
 
     @adult.setter
     def adult(self, value):
-        self._adult = self._value_to_bool(value, "adult", True)
+        self._adult = self._is_valid_bool(value, "adult", True)
 
     @property
     def parameters(self) -> List[Parameter]:
@@ -224,7 +208,7 @@ class BaseOffer(
 
     @downloadable.setter
     def downloadable(self, value):
-        self._downloadable = self._value_to_bool(value, "downloadable", True)
+        self._downloadable = self._is_valid_bool(value, "downloadable", True)
 
     @property
     def available(self) -> Optional[bool]:
@@ -232,7 +216,7 @@ class BaseOffer(
 
     @available.setter
     def available(self, value):
-        self._available = self._value_to_bool(value, "available", True)
+        self._available = self._is_valid_bool(value, "available", True)
 
     @property
     def group_id(self) -> Optional[int]:

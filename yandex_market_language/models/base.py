@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional, Union
 from xml.etree import ElementTree as ET
 
 from yandex_market_language.exceptions import ValidationError
@@ -26,7 +27,7 @@ class BaseModel(ABC):
         attr: str,
         allow_none: bool = False,
         convert_to_str: bool = True
-    ):
+    ) -> Optional[Union[int, str]]:
         try:
             int(value)
             return str(value) if convert_to_str else value
@@ -34,6 +35,26 @@ class BaseModel(ABC):
             if value is None and allow_none:
                 return None
             raise ValidationError("{v} must be a valid int".format(v=attr))
+
+    @staticmethod
+    def _is_valid_bool(
+        value,
+        attr: str,
+        allow_none: bool = False
+    ) -> Optional[str]:
+        if value in ["true", "false"]:
+            return value
+        elif value is True:
+            return "true"
+        elif value is False:
+            return "false"
+        elif value is None and allow_none:
+            return None
+        else:
+            raise ValidationError(
+                "The {attr} parameter should be boolean. "
+                "Got {t} instead.".format(attr=attr, t=type(value))
+            )
 
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         el = self.create_xml()
