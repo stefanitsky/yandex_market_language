@@ -34,7 +34,7 @@ class BaseModel(ABC):
         except (TypeError, ValueError):
             if value is None and allow_none:
                 return None
-            raise ValidationError("{v} must be a valid int".format(v=attr))
+            raise ValidationError("{a} must be a valid int".format(a=attr))
 
     @staticmethod
     def _is_valid_bool(
@@ -55,6 +55,21 @@ class BaseModel(ABC):
                 "The {attr} parameter should be boolean. "
                 "Got {t} instead.".format(attr=attr, t=type(value))
             )
+
+    @staticmethod
+    def _is_valid_float(
+        value,
+        attr: str,
+        allow_none: bool = False,
+        convert_to_str: bool = True
+    ) -> Optional[Union[float, str]]:
+        try:
+            float(value)
+            return str(value) if convert_to_str else value
+        except (TypeError, ValueError):
+            if value is None and allow_none:
+                return None
+            raise ValidationError("{a} must be a valid float".format(a=attr))
 
     @staticmethod
     def _str_to_bool(value) -> Optional[bool]:

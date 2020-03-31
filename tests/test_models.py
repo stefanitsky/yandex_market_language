@@ -70,6 +70,25 @@ class BaseModelTestCase(TestCase):
             models.BaseModel._is_valid_int(None, "test")
             self.assertEqual(str(e), "test must be a valid int")
 
+    def test_is_valid_float_returns_converted_float(self):
+        v = fake.pyfloat()
+        r = models.BaseModel._is_valid_float(v, "test")
+        self.assertEqual(r, str(v))
+
+    def test_is_valid_float_returns_none(self):
+        r = models.BaseModel._is_valid_float(None, "test", True)
+        self.assertEqual(r, None)
+
+    def test_is_valid_float_returns_not_converted_float(self):
+        v = fake.pyfloat()
+        r = models.BaseModel._is_valid_float(v, "test", convert_to_str=False)
+        self.assertEqual(v, r)
+
+    def test_is_valid_float_raises_validation_error(self):
+        with self.assertRaises(ValidationError) as e:
+            models.BaseModel._is_valid_float(None, "test")
+            self.assertEqual(str(e), "test must be a valid float")
+
     def test_is_valid_bool(self):
         m = models.BaseModel._is_valid_bool
         self.assertEqual(m(True, "test"), "true")
@@ -461,11 +480,6 @@ class BaseOfferModelTestCase(TestCase):
         o = BaseOfferFactory(expiry=None).create()
         self.assertEqual(o._expiry, None)
         self.assertEqual(o.expiry, None)
-
-    def test_weight_property_raises_validation_error(self):
-        with self.assertRaises(ValidationError) as e:
-            BaseOfferFactory(weight="err").create()
-            self.assertEqual(str(e), "weight must be a valid float of int")
 
     def test_group_id_wrong_type(self):
         with self.assertRaises(ValidationError) as e:
