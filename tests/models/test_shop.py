@@ -81,7 +81,9 @@ class ShopModelTestCase(ModelTestCase):
                 str(e), "The maximum url length is 512 characters."
             )
 
-    # @mock.patch("yandex_market_language.models.offers.BaseOffer.from_xml")
+    @mock.patch("yandex_market_language.models.BookOffer.from_xml")
+    @mock.patch("yandex_market_language.models.ArbitraryOffer.from_xml")
+    @mock.patch("yandex_market_language.models.SimplifiedOffer.from_xml")
     @mock.patch("yandex_market_language.models.Option.from_xml")
     @mock.patch("yandex_market_language.models.Category.from_xml")
     @mock.patch("yandex_market_language.models.Currency.from_xml")
@@ -90,16 +92,33 @@ class ShopModelTestCase(ModelTestCase):
         currency_p,
         category_p,
         option_p,
-        # from_xml_p,
+        simplified_from_xml_p,
+        arbitrary_from_xml_p,
+        book_from_xml_p
     ):
-        shop = ShopFactory()
+        simplified_offers = [
+            SimplifiedOfferFactory().create() for _ in range(3)
+        ]
+        arbitrary_offers = [ArbitraryOfferFactory().create() for _ in range(3)]
+        book_offers = [BookOfferFactory().create() for _ in range(3)]
+        offers = simplified_offers + arbitrary_offers + book_offers
+
+        shop = ShopFactory(offers=offers)
         shop_el = shop.to_xml()
         options = shop.delivery_options + shop.pickup_options
+
         currency_p.side_effect = shop.currencies
         category_p.side_effect = shop.categories
         option_p.side_effect = options
+        simplified_from_xml_p.side_effect = simplified_offers
+        arbitrary_from_xml_p.side_effect = arbitrary_offers
+        book_from_xml_p.side_effect = book_offers
+
         parsed_shop = Shop.from_xml(shop_el)
         self.assertEqual(shop.to_dict(), parsed_shop.to_dict())
         self.assertEqual(currency_p.call_count, len(shop.currencies))
         self.assertEqual(category_p.call_count, len(shop.categories))
         self.assertEqual(option_p.call_count, len(options))
+        self.assertEqual(simplified_from_xml_p.call_count, 3)
+        self.assertEqual(arbitrary_from_xml_p.call_count, 3)
+        self.assertEqual(book_from_xml_p.call_count, 3)
