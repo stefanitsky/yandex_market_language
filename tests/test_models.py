@@ -481,13 +481,6 @@ class BaseOfferModelTestCase(TestCase):
         self.assertEqual(o._expiry, None)
         self.assertEqual(o.expiry, None)
 
-    def test_group_id_wrong_type(self):
-        with self.assertRaises(ValidationError) as e:
-            BaseOfferFactory(group_id="err").create()
-            self.assertEqual(
-                str(e), "group_id must be an integer, maximum 9 characters."
-            )
-
     def test_group_id_not_valid_maximum_length(self):
         with self.assertRaises(ValidationError) as e:
             group_id = fake.pyint(min_value=1000000000, max_value=9999999999)

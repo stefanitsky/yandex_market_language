@@ -210,22 +210,18 @@ class BaseOffer(
 
     @property
     def group_id(self) -> Optional[int]:
-        return int(self._group_id)
+        return int(self._group_id) if self._group_id else None
 
     @group_id.setter
     def group_id(self, value):
-        try:
-            int(value)
-            value = str(value)
+        value = self._is_valid_int(value, "group_id", True)
 
-            if len(value) > 9:
-                raise ValueError
-
-            self._group_id = value
-        except (TypeError, ValueError):
+        if len(str(value)) > 9:
             raise ValidationError(
                 "group_id must be an integer, maximum 9 characters."
             )
+        else:
+            self._group_id = str(value)
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
