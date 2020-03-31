@@ -1,6 +1,6 @@
 from xml.etree import ElementTree as ET
 
-from yandex_market_language.models import Feed, Shop, Currency, Category
+from yandex_market_language.models import Feed
 
 
 class YMLParser:
@@ -9,6 +9,4 @@ class YMLParser:
         self._tree = ET.parse(file_or_path)
 
     def parse(self) -> Feed:
-        currencies = [Currency("RUB", "1")]
-        categories = [Category("123", "Test")]
-        return Feed(Shop("test", "", "", currencies, categories))
+        return Feed.from_xml(self._tree.getroot())
