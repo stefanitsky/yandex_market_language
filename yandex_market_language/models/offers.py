@@ -163,8 +163,11 @@ class BaseOffer(
         self._parameters = params or []
 
     @property
-    def expiry(self) -> datetime:
-        return datetime.strptime(self._expiry, EXPIRY_FORMAT)
+    def expiry(self) -> Optional[datetime]:
+        if self._expiry:
+            return datetime.strptime(self._expiry, EXPIRY_FORMAT)
+        else:
+            return None
 
     @expiry.setter
     def expiry(self, dt):
@@ -176,6 +179,8 @@ class BaseOffer(
             except ValueError as e:
                 raise ValidationError(e)
             self._expiry = dt
+        elif dt is None:
+            self._expiry = None
         else:
             raise ValidationError("expiry must be a valid datetime")
 

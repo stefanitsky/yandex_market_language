@@ -457,6 +457,11 @@ class BaseOfferModelTestCase(TestCase):
             BaseOfferFactory(expiry=1).create()
             self.assertEqual(str(e), "expiry must be a valid datetime")
 
+    def test_expiry_property_none(self):
+        o = BaseOfferFactory(expiry=None).create()
+        self.assertEqual(o._expiry, None)
+        self.assertEqual(o.expiry, None)
+
     def test_weight_property_raises_validation_error(self):
         with self.assertRaises(ValidationError) as e:
             BaseOfferFactory(weight="err").create()
