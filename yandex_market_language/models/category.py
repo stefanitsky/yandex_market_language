@@ -21,4 +21,5 @@ class Category(BaseModel):
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Category":
-        return Category("1234", "test")
+        el.attrib["category_id"] = el.attrib.pop("id")
+        return Category(name=el.text, **el.attrib)
