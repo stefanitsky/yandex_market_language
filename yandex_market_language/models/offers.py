@@ -194,7 +194,7 @@ class BaseOffer(
 
     @property
     def downloadable(self) -> Optional[bool]:
-        return {"true": True, "false": False}.get(self._downloadable, None)
+        return self._str_to_bool(self._downloadable)
 
     @downloadable.setter
     def downloadable(self, value):
@@ -202,7 +202,7 @@ class BaseOffer(
 
     @property
     def available(self) -> Optional[bool]:
-        return {"true": True, "false": False}.get(self._available, None)
+        return self._str_to_bool(self._available)
 
     @available.setter
     def available(self, value):
