@@ -308,6 +308,7 @@ class BaseOfferModelTestCase(TestCase):
             "pickup",
             "delivery_options",
             "pickup_options",
+            "store",
             "description",
             "sales_notes",
             "min_quantity",
@@ -348,6 +349,7 @@ class BaseOfferModelTestCase(TestCase):
             ("categoryId", "category_id"),
             ("delivery", "_delivery"),
             ("pickup", "_pickup"),
+            ("store", "_store"),
             ("description", "description"),
             ("sales_notes", "sales_notes"),
             ("min-quantity", "_min_quantity"),
@@ -359,8 +361,10 @@ class BaseOfferModelTestCase(TestCase):
             ("downloadable", "_downloadable"),
             ("group_id", "_group_id"),
         ):
-            el_ = ET.SubElement(expected_el, tag)
-            el_.text = getattr(o, attr)
+            v = getattr(o, attr)
+            if v:
+                el_ = ET.SubElement(expected_el, tag)
+                el_.text = getattr(o, attr)
 
         # Add price
         o.price.to_xml(expected_el)

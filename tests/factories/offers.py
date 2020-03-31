@@ -42,6 +42,7 @@ class BaseOfferFactory:
         pickup=None,
         delivery_options=None,
         pickup_options=None,
+        store=fake.random_element([True, False, None]),
         description=fake.text(),
         sales_notes=fake.text(),
         min_quantity=fake.pyint(),
@@ -86,6 +87,7 @@ class BaseOfferFactory:
         self.pickup = pickup
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
+        self.store = store
         self.description = description
         self.sales_notes = sales_notes
         self.min_quantity = min_quantity
@@ -121,6 +123,7 @@ class BaseOfferFactory:
             pickup=self.pickup,
             delivery_options=self.delivery_options,
             pickup_options=self.pickup_options,
+            store=self.store,
             description=self.description,
             sales_notes=self.sales_notes,
             min_quantity=self.min_quantity,

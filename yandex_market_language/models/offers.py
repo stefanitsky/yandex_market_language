@@ -44,6 +44,7 @@ class BaseOffer(
         pickup=True,
         delivery_options: List[Option] = None,
         pickup_options: List[Option] = None,
+        store=None,
         description: str = None,
         sales_notes: str = None,
         min_quantity=1,
@@ -77,6 +78,7 @@ class BaseOffer(
         self.pickup = pickup
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
+        self.store = store
         self.description = description
         self.sales_notes = sales_notes
         self.min_quantity = min_quantity
@@ -130,6 +132,19 @@ class BaseOffer(
         if value is None:
             value = True
         self._pickup = self._value_to_bool(value, "pickup")
+
+    @property
+    def store(self) -> Optional[bool]:
+        if self._store == "true":
+            return True
+        elif self._store == "false":
+            return False
+        else:
+            return None
+
+    @store.setter
+    def store(self, value):
+        self._store = self._value_to_bool(value, "store", True)
 
     @property
     def min_quantity(self) -> int:
@@ -257,6 +272,7 @@ class BaseOffer(
             pickup=self.pickup,
             delivery_options=[o.to_dict() for o in self.delivery_options],
             pickup_options=[o.to_dict() for o in self.pickup_options],
+            store=self.store,
             description=self.description,
             sales_notes=self.sales_notes,
             min_quantity=self.min_quantity,
@@ -304,6 +320,7 @@ class BaseOffer(
             ("categoryId", "category_id"),
             ("delivery", "_delivery"),
             ("pickup", "_pickup"),
+            ("store", "_store"),
             ("description", "description"),
             ("sales_notes", "sales_notes"),
             ("min-quantity", "_min_quantity"),
