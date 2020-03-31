@@ -6,6 +6,8 @@ from unittest import TestCase
 from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import ArbitraryOffer
+from yandex_market_language.models.offers import BaseOffer, SimplifiedOffer
 
 from .factories import (
     ShopFactory,
@@ -15,6 +17,7 @@ from .factories import (
     PriceFactory,
     BaseOfferFactory,
     SimplifiedOfferFactory,
+    ArbitraryOfferFactory,
     ParameterFactory,
     ConditionFactory,
     DimensionsFactory,
@@ -244,10 +247,20 @@ class PriceModelTestCase(TestCase):
 
 
 class BaseOfferModelTestCase(TestCase):
+    def test_cls_type(self):
+        self.assertEqual(BaseOffer.__TYPE__, None)
+
+    def test_to_xml_offer_type(self):
+        o = BaseOfferFactory().create()
+        o.__TYPE__ = "test"
+        el = o.to_xml()
+        self.assertEqual(el.attrib["type"], "test")
+
     def test_to_dict(self):
         o = BaseOfferFactory().create()
         d = o.to_dict()
         expected_keys = [
+            "type",
             "vendor",
             "vendor_code",
             "offer_id",
@@ -430,6 +443,9 @@ class BaseOfferModelTestCase(TestCase):
 
 
 class SimplifiedOfferModelTestCase(TestCase):
+    def test_cls_type(self):
+        self.assertEqual(SimplifiedOffer.__TYPE__, None)
+
     def test_to_dict(self):
         o = SimplifiedOfferFactory().create()
         d = o.to_dict()
@@ -584,3 +600,43 @@ class AgeModelTestCase(TestCase):
         with self.assertRaises(ValidationError) as e:
             AgeFactory(unit="month", value=13)
             self.assertEqual(str(e), expected_error)
+
+
+class ArbitraryOfferTestCase(TestCase):
+    def test_cls_type(self):
+        self.assertEqual(ArbitraryOffer.__TYPE__, "vendor.model")
+
+    def test_to_dict(self):
+        o = ArbitraryOfferFactory().create()
+        d = o.to_dict()
+        keys = d.keys()
+        expected_keys = ["model", "vendor", "type_prefix"]
+        self.assertTrue(all(k in keys for k in expected_keys))
+        self.assertEqual(d["type"], o.__TYPE__)
+        self.assertEqual(d["model"], o.model)
+        self.assertEqual(d["vendor"], o.vendor)
+        self.assertEqual(d["type_prefix"], o.type_prefix)
+
+    def test_to_xml(self):
+        f = ArbitraryOfferFactory()
+        o = f.create()
+        el = o.to_xml()
+
+        # Get arbitrary offer values
+        values = f.get_values()
+        model = values.pop("model")
+        type_prefix = values.pop("type_prefix")
+
+        # Change offer type for BaseOffer cls and create base element
+        BaseOfferFactory.__cls__.__TYPE__ = ArbitraryOffer.__TYPE__
+        expected_el = BaseOfferFactory(**values).create().to_xml()
+
+        # Add model
+        model_el = ET.SubElement(expected_el, "model")
+        model_el.text = model
+
+        # Add typePrefix
+        type_prefix_el = ET.SubElement(expected_el, "typePrefix")
+        type_prefix_el.text = type_prefix
+
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))

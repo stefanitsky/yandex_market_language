@@ -7,7 +7,7 @@ from .currency import Currency
 from .category import Category
 from .option import Option
 from .price import Price
-from .offers import SimplifiedOffer
+from .offers import SimplifiedOffer, ArbitraryOffer
 from .parameter import Parameter
 from .condition import Condition
 from .dimensions import Dimensions
@@ -24,6 +24,7 @@ __all__ = [
     "Option",
     "Price",
     "SimplifiedOffer",
+    "ArbitraryOffer",
     "Parameter",
     "Condition",
     "Dimensions",

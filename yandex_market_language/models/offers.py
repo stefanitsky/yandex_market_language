@@ -24,6 +24,9 @@ class BaseOffer(
     BaseModel,
     ABC
 ):
+
+    __TYPE__ = None
+
     def __init__(
         self,
         offer_id,
@@ -238,6 +241,7 @@ class BaseOffer(
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         return dict(
+            type=self.__TYPE__,
             vendor=self.vendor,
             vendor_code=self.vendor_code,
             offer_id=self.offer_id,
@@ -276,6 +280,10 @@ class BaseOffer(
     @abstractmethod
     def create_xml(self, **kwargs) -> XMLElement:
         offer_el = XMLElement("offer", {"id": self.offer_id})
+
+        # Add offer type
+        if self.__TYPE__:
+            offer_el.attrib["type"] = self.__TYPE__
 
         # Add offer bid attribute
         if self.bid:
@@ -365,9 +373,17 @@ class BaseOffer(
 
 
 class SimplifiedOffer(BaseOffer):
+    """
+    Simplified offer.
+    In a simplified type, the manufacturer, type and name of the goods
+    are indicated in one element - name.
+
+    Yandex.Market docs:
+    https://yandex.ru/support/partnermarket/offers.html
+    """
     def __init__(self, name, **kwargs):
-        self.name = name
         super().__init__(**kwargs)
+        self.name = name
 
     def create_dict(self, **kwargs) -> dict:
         return super().create_dict(name=self.name)
@@ -377,4 +393,48 @@ class SimplifiedOffer(BaseOffer):
         name_el = XMLElement("name")
         name_el.text = self.name
         offer_el.insert(0, name_el)
+        return offer_el
+
+
+class ArbitraryOffer(BaseOffer):
+    """
+    Arbitrary offer.
+    In an arbitrary type, the manufacturer, type and name of the product
+    must be indicated in separate elements - model, vendor & typePrefix.
+
+    Yandex.Market docs:
+    https://yandex.ru/support/partnermarket/export/vendor-model.html
+    """
+
+    __TYPE__ = "vendor.model"
+
+    def __init__(
+        self,
+        model: str,
+        vendor: str,
+        type_prefix: str = None,
+        **kwargs
+    ):
+        self.model = model
+        self.type_prefix = type_prefix
+        super().__init__(vendor=vendor, **kwargs)
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            model=self.model,
+            type_prefix=self.type_prefix
+        )
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        offer_el = super().create_xml()
+
+        # Add model element
+        model_el = XMLSubElement(offer_el, "model")
+        model_el.text = self.model
+
+        # Add typePrefix element
+        if self.type_prefix:
+            type_prefix_el = XMLSubElement(offer_el, "typePrefix")
+            type_prefix_el.text = self.type_prefix
+
         return offer_el

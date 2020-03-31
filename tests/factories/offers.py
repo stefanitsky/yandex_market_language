@@ -1,9 +1,10 @@
 from unittest import mock
 
 from yandex_market_language.models.offers import (
+    EXPIRY_FORMAT,
     BaseOffer,
     SimplifiedOffer,
-    EXPIRY_FORMAT
+    ArbitraryOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -154,3 +155,25 @@ class SimplifiedOfferFactory(BaseOfferFactory):
 
     def get_values(self) -> dict:
         return super().get_values(name=self.name)
+
+
+class ArbitraryOfferFactory(BaseOfferFactory):
+
+    __cls__ = ArbitraryOffer
+
+    def __init__(
+        self,
+        model=fake.pystr(),
+        vendor=fake.pystr(),
+        type_prefix=fake.pystr(),
+        **kwargs
+    ):
+        super().__init__(vendor=vendor, **kwargs)
+        self.model = model
+        self.type_prefix = type_prefix
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
+            model=self.model,
+            type_prefix=self.type_prefix
+        )
