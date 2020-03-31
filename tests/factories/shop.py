@@ -4,6 +4,11 @@ from faker import Faker
 from .currency import CurrencyFactory
 from .category import CategoryFactory
 from .option import OptionFactory
+from .offers import (
+    SimplifiedOfferFactory,
+    ArbitraryOfferFactory,
+    BookOfferFactory
+)
 
 fake = Faker()
 
@@ -20,7 +25,8 @@ def generate_random_shop(
     categories=None,
     delivery_options=None,
     pickup_options=None,
-    enable_auto_discounts=fake.pybool()
+    enable_auto_discounts=fake.pybool(),
+    offers=None,
 ):
     if currencies is None:
         currencies = [CurrencyFactory() for _ in range(3)]
@@ -30,6 +36,12 @@ def generate_random_shop(
         delivery_options = [OptionFactory() for _ in range(3)]
     if pickup_options is None:
         pickup_options = [OptionFactory() for _ in range(3)]
+    if offers is None:
+        offers = [
+            SimplifiedOfferFactory().create(),
+            ArbitraryOfferFactory().create(),
+            BookOfferFactory().create(),
+        ]
 
     return Shop(
         name=name,
@@ -44,6 +56,7 @@ def generate_random_shop(
         delivery_options=delivery_options,
         pickup_options=pickup_options,
         enable_auto_discounts=enable_auto_discounts,
+        offers=offers,
     )
 
 

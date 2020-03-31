@@ -358,6 +358,19 @@ class BaseOffer(
 
         return offer_el
 
+    @staticmethod
+    @abstractmethod
+    def from_xml(offer_el: XMLElement) -> dict:
+        kwargs = {}
+
+        for el in offer_el:
+            if el.tag == "":
+                pass
+            else:
+                kwargs[el.tag] = el.text
+
+        return kwargs
+
 
 class SimplifiedOffer(BaseOffer):
     """
@@ -381,6 +394,11 @@ class SimplifiedOffer(BaseOffer):
         name_el.text = self.name
         offer_el.insert(0, name_el)
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement) -> "SimplifiedOffer":
+        kwargs = BaseOffer.from_xml(offer_el)
+        return SimplifiedOffer(**kwargs)
 
 
 class ArbitraryOffer(BaseOffer):
@@ -425,6 +443,11 @@ class ArbitraryOffer(BaseOffer):
             type_prefix_el.text = self.type_prefix
 
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement) -> "ArbitraryOffer":
+        kwargs = BaseOffer.from_xml(offer_el)
+        return ArbitraryOffer(**kwargs)
 
 
 class BookOffer(BaseOffer):
@@ -543,3 +566,8 @@ class BookOffer(BaseOffer):
                 el.text = v
 
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement) -> "BookOffer":
+        kwargs = BaseOffer.from_xml(offer_el)
+        return BookOffer(**kwargs)

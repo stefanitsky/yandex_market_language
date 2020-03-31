@@ -24,6 +24,7 @@ class ShopModelTestCase(ModelTestCase):
             "delivery_options",
             "pickup_options",
             "enable_auto_discounts",
+            "offers",
         ])
         self.assertEqual(keys, expected_keys)
         for k in (
@@ -55,6 +56,7 @@ class ShopModelTestCase(ModelTestCase):
             "delivery-options",
             "pickup-options",
             "enable_auto_discounts",
+            "offers",
         ])
         self.assertEqual(keys, expected_keys)
         for el in shop_el:
@@ -63,6 +65,7 @@ class ShopModelTestCase(ModelTestCase):
                 "categories",
                 "delivery-options",
                 "pickup-options",
+                "offers",
             ):
                 continue
             elif el.tag == "enable_auto_discounts":
