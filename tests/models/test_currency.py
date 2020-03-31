@@ -48,11 +48,6 @@ class CurrencyModelTestCase(ModelTestCase):
             CurrencyFactory(rate="err")
             self.assertEqual(str(e), msg)
 
-    def test_plus_validation_error(self):
-        with self.assertRaises(ValidationError) as e:
-            CurrencyFactory(plus="err")
-            self.assertEqual(str(e), "The plus parameter only can be int.")
-
     def test_from_xml(self):
         c = CurrencyFactory()
         el = c.to_xml()
