@@ -4,7 +4,8 @@ from yandex_market_language.models.offers import (
     EXPIRY_FORMAT,
     BaseOffer,
     SimplifiedOffer,
-    ArbitraryOffer
+    ArbitraryOffer,
+    BookOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -176,4 +177,56 @@ class ArbitraryOfferFactory(BaseOfferFactory):
         return super().get_values(
             model=self.model,
             type_prefix=self.type_prefix
+        )
+
+
+class BookOfferFactory(BaseOfferFactory):
+
+    __cls__ = BookOffer
+
+    def __init__(
+        self,
+        name=fake.pystr(),
+        publisher=fake.pystr(),
+        age=AgeFactory(),
+        isbn=fake.pystr(),
+        author=fake.name(),
+        series=fake.text(),
+        year=fake.year(),
+        volume=fake.pyint(),
+        part=fake.pyint(),
+        language=fake.pystr(),
+        table_of_contents=fake.text(),
+        binding=fake.pystr(),
+        page_extent=fake.pyint(),
+        **kwargs
+    ):
+        super().__init__(age=age, **kwargs)
+        self.name = name
+        self.publisher = publisher
+        self.isbn = isbn
+        self.author = author
+        self.series = series
+        self.year = year
+        self.volume = volume
+        self.part = part
+        self.language = language
+        self.table_of_contents = table_of_contents
+        self.binding = binding
+        self.page_extent = page_extent
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
+            name=self.name,
+            publisher=self.publisher,
+            isbn=self.isbn,
+            author=self.author,
+            series=self.series,
+            year=self.year,
+            volume=self.volume,
+            part=self.part,
+            language=self.language,
+            table_of_contents=self.table_of_contents,
+            binding=self.binding,
+            page_extent=self.page_extent,
         )

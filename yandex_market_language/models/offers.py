@@ -415,9 +415,9 @@ class ArbitraryOffer(BaseOffer):
         type_prefix: str = None,
         **kwargs
     ):
+        super().__init__(vendor=vendor, **kwargs)
         self.model = model
         self.type_prefix = type_prefix
-        super().__init__(vendor=vendor, **kwargs)
 
     def create_dict(self, **kwargs) -> dict:
         return super().create_dict(
@@ -436,5 +436,123 @@ class ArbitraryOffer(BaseOffer):
         if self.type_prefix:
             type_prefix_el = XMLSubElement(offer_el, "typePrefix")
             type_prefix_el.text = self.type_prefix
+
+        return offer_el
+
+
+class BookOffer(BaseOffer):
+    """
+    Special offer type for books.
+
+    Yandex.Market docs:
+    https://yandex.ru/support/partnermarket/export/books.html
+    """
+
+    __TYPE__ = "book"
+
+    def __init__(
+        self,
+        name: str,
+        publisher: str,
+        age: Age,
+        isbn: str = None,
+        author: str = None,
+        series: str = None,
+        year=None,
+        volume=None,
+        part=None,
+        language: str = None,
+        table_of_contents=None,
+        binding=None,
+        page_extent=None,
+        **kwargs
+    ):
+        super().__init__(age=age, **kwargs)
+        self.name = name
+        self.publisher = publisher
+        self.isbn = isbn
+        self.author = author
+        self.series = series
+        self.year = year
+        self.volume = volume
+        self.part = part
+        self.language = language
+        self.table_of_contents = table_of_contents
+        self.binding = binding
+        self.page_extent = page_extent
+
+    @property
+    def year(self) -> Optional[int]:
+        return int(self._year) if self._year else None
+
+    @year.setter
+    def year(self, value):
+        self._year = self._is_valid_int(value, "year", True)
+
+    @property
+    def volume(self) -> Optional[int]:
+        return int(self._volume) if self._volume else None
+
+    @volume.setter
+    def volume(self, value):
+        self._volume = self._is_valid_int(value, "volume", True)
+
+    @property
+    def part(self) -> Optional[int]:
+        return int(self._part) if self._part else None
+
+    @part.setter
+    def part(self, value):
+        self._part = self._is_valid_int(value, "part", True)
+
+    @property
+    def page_extent(self) -> Optional[int]:
+        return int(self._page_extent) if self._page_extent else None
+
+    @page_extent.setter
+    def page_extent(self, value):
+        value = self._is_valid_int(value, "page_extent", True, False)
+        if value <= 0:
+            raise ValidationError("page_extent must be positive int")
+        self._page_extent = str(value)
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            name=self.name,
+            publisher=self.publisher,
+            isbn=self.isbn,
+            author=self.author,
+            series=self.series,
+            year=self.year,
+            volume=self.volume,
+            part=self.part,
+            language=self.language,
+            table_of_contents=self.table_of_contents,
+            binding=self.binding,
+            page_extent=self.page_extent,
+            **kwargs
+        )
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        offer_el = super().create_xml(**kwargs)
+
+        for tag, attr in (
+            ("name", "name"),
+            ("publisher", "publisher"),
+            ("ISBN", "isbn"),
+            ("author", "author"),
+            ("series", "series"),
+            ("year", "_year"),
+            ("volume", "_volume"),
+            ("part", "_part"),
+            ("language", "language"),
+            ("table_of_contents", "table_of_contents"),
+            ("binding", "binding"),
+            ("page_extent", "_page_extent"),
+        ):
+            v = getattr(self, attr)
+            if v:
+                el = XMLSubElement(offer_el, tag)
+                el.text = v
 
         return offer_el

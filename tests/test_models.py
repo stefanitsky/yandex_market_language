@@ -7,7 +7,8 @@ from xml.etree import ElementTree as ET
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models import ArbitraryOffer
-from yandex_market_language.models.offers import BaseOffer, SimplifiedOffer
+from yandex_market_language.models.offers import BaseOffer, SimplifiedOffer, \
+    BookOffer
 
 from .factories import (
     ShopFactory,
@@ -18,6 +19,7 @@ from .factories import (
     BaseOfferFactory,
     SimplifiedOfferFactory,
     ArbitraryOfferFactory,
+    BookOfferFactory,
     ParameterFactory,
     ConditionFactory,
     DimensionsFactory,
@@ -48,6 +50,25 @@ class BaseModelTestCase(TestCase):
         cd = base.to_dict(clean=True)
         self.assertEqual(p.call_count, 1)
         self.assertEqual(cd, {"a": 1, "b": 2})
+
+    def test_is_valid_int_returns_converted_int(self):
+        v = fake.pyint()
+        r = models.BaseModel._is_valid_int(v, "test")
+        self.assertEqual(r, str(v))
+
+    def test_is_valid_int_returns_none(self):
+        r = models.BaseModel._is_valid_int(None, "test", True)
+        self.assertEqual(r, None)
+
+    def test_is_valid_int_returns_not_converted_int(self):
+        v = fake.pyint()
+        r = models.BaseModel._is_valid_int(v, "test", convert_to_str=False)
+        self.assertEqual(v, r)
+
+    def test_is_valid_int_raises_validation_error(self):
+        with self.assertRaises(ValidationError) as e:
+            models.BaseModel._is_valid_int(None, "test")
+            self.assertEqual(str(e), "test must be a valid int")
 
 
 class FeedModelTestCase(TestCase):
@@ -255,6 +276,17 @@ class BaseOfferModelTestCase(TestCase):
         o.__TYPE__ = "test"
         el = o.to_xml()
         self.assertEqual(el.attrib["type"], "test")
+
+    def test_to_xml_available_attr(self):
+        o = BaseOfferFactory(available=False).create()
+        el = o.create_xml()
+        self.assertEqual(el.attrib["available"], "false")
+        o.available = True
+        el = o.create_xml()
+        self.assertEqual(el.attrib["available"], "true")
+        o.available = None
+        el = o.create_xml()
+        self.assertEqual(el.attrib.get("available"), None)
 
     def test_to_dict(self):
         o = BaseOfferFactory().create()
@@ -640,3 +672,73 @@ class ArbitraryOfferTestCase(TestCase):
         type_prefix_el.text = type_prefix
 
         self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+
+class BookOfferTestCase(TestCase):
+
+    KEYS = [
+        "name",
+        "publisher",
+        "isbn",
+        "author",
+        "series",
+        "year",
+        "volume",
+        "part",
+        "language",
+        "table_of_contents",
+        "binding",
+        "page_extent",
+    ]
+
+    def test_cls_type(self):
+        self.assertEqual(BookOffer.__TYPE__, "book")
+
+    def test_to_dict(self):
+        o = BookOfferFactory().create()
+        d = o.to_dict()
+        keys = d.keys()
+        self.assertTrue(all(k in keys for k in self.KEYS))
+        self.assertEqual(d["type"], o.__TYPE__)
+        for k in self.KEYS:
+            self.assertEqual(d[k], getattr(o, k))
+
+    def test_to_xml(self):
+        f = BookOfferFactory()
+        o = f.create()
+        el = o.to_xml()
+
+        # Get arbitrary offer values
+        values = f.get_values()
+        book_offer_values = {}
+        for k in self.KEYS:
+            book_offer_values[k] = values.pop(k)
+
+        # Change offer type for BaseOffer cls and create base element
+        BaseOfferFactory.__cls__.__TYPE__ = BookOffer.__TYPE__
+        expected_el = BaseOfferFactory(**values).create().to_xml()
+
+        for tag, attr in (
+            ("name", "name"),
+            ("publisher", "publisher"),
+            ("ISBN", "isbn"),
+            ("author", "author"),
+            ("series", "series"),
+            ("year", "year"),
+            ("volume", "volume"),
+            ("part", "part"),
+            ("language", "language"),
+            ("table_of_contents", "table_of_contents"),
+            ("binding", "binding"),
+            ("page_extent", "page_extent"),
+        ):
+            el_ = ET.SubElement(expected_el, tag)
+            el_.text = str(book_offer_values[attr])
+
+        self.assertEqual(ET.tostring(el), ET.tostring(expected_el))
+
+    def test_page_extent_raises_error(self):
+        with self.assertRaises(ValidationError) as e:
+            v = fake.pyint(min_value=-100, max_value=-1)
+            BookOfferFactory(page_extent=v).create()
+            self.assertEqual(str(e), "page_extent must be positive int")
