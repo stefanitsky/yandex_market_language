@@ -362,12 +362,43 @@ class BaseOffer(
     @abstractmethod
     def from_xml(offer_el: XMLElement) -> dict:
         kwargs = {}
+        mapping = {
+            "vendorCode": "vendor_code",
+            "oldprice": "old_price",
+            "currencyId": "currency",
+            "categoryId": "category_id",
+            "min-quantity": "min_quantity",
+        }
+
+        pictures = []
+        barcodes = []
+        parameters = []
 
         for el in offer_el:
-            if el.tag == "":
+            if el.tag == "picture":
+                pictures.append(el.text)
+            elif el.tag == "delivery-options":
                 pass
+            elif el.tag == "pickup-options":
+                pass
+            elif el.tag == "barcode":
+                barcodes.append(el.text)
+            elif el.tag == "param":
+                pass
+            elif el.tag == "credit-template":
+                kwargs["credit_template_id"] = el.attrib["id"]
             else:
-                kwargs[el.tag] = el.text
+                k = mapping.get(el.tag, el.tag)
+                kwargs[k] = el.text
+
+        if pictures:
+            kwargs["pictures"] = pictures
+        if barcodes:
+            kwargs["barcodes"] = barcodes
+        if parameters:
+            kwargs["parameters"] = parameters
+
+        kwargs["offer_id"] = offer_el.attrib["id"]
 
         return kwargs
 

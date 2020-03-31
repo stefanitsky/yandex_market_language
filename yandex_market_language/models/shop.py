@@ -159,6 +159,10 @@ class Shop(
                     if offer_type is None:
                         offers.append(SimplifiedOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
+            elif el.tag == "gifts":
+                pass
+            elif el.tag == "promos":
+                pass
             else:
                 kwargs[el.tag] = el.text
 
