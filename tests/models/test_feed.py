@@ -1,4 +1,4 @@
-from tests.cases import ModelTestCase, ET
+from tests.cases import ModelTestCase
 from tests.factories import ShopFactory
 from yandex_market_language import models
 

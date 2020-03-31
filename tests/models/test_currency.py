@@ -51,4 +51,3 @@ class CurrencyModelTestCase(ModelTestCase):
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(plus="err")
             self.assertEqual(str(e), "The plus parameter only can be int.")
-
