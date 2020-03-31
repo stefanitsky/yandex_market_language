@@ -88,3 +88,7 @@ class BaseModel(ABC):
 
     def to_dict(self, clean: bool = False) -> dict:
         return self.clean_dict if clean else self.create_dict()
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "BaseModel":
+        raise NotImplementedError

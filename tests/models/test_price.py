@@ -1,6 +1,7 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import PriceFactory
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Price
 
 
 class PriceModelTestCase(ModelTestCase):
@@ -17,6 +18,11 @@ class PriceModelTestCase(ModelTestCase):
         expected_el = ET.Element("price", {"from": "true"})
         expected_el.text = p.value
         self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        p = PriceFactory()
+        el = p.to_xml()
+        self.assertEqual(p.to_dict(), Price.from_xml(el).to_dict())
 
     def test_value_property_error(self):
         with self.assertRaises(ValidationError) as e:

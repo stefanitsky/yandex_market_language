@@ -39,3 +39,7 @@ class Price(BaseModel):
             el.attrib["from"] = "true"
         el.text = self.value
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "BaseModel":
+        return Price(el.text, el.attrib.get("from", False))
