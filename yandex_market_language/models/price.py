@@ -1,12 +1,22 @@
+from typing import Optional
+
 from .base import BaseModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
 
 class Price(BaseModel):
-    def __init__(self, value, is_starting: bool = False):
+    def __init__(self, value, is_starting=False):
         self.value = value
         self.is_starting = is_starting
+
+    @property
+    def is_starting(self) -> Optional[bool]:
+        return self._str_to_bool(self._is_starting)
+
+    @is_starting.setter
+    def is_starting(self, value):
+        self._is_starting = self._is_valid_bool(value, "is_starting", True)
 
     @property
     def value(self):
