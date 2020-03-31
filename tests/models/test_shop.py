@@ -1,6 +1,9 @@
+from unittest import mock
+
 from tests.cases import ModelTestCase, fake
 from tests.factories import ShopFactory
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Shop
 
 
 class ShopModelTestCase(ModelTestCase):
@@ -73,3 +76,19 @@ class ShopModelTestCase(ModelTestCase):
             self.assertEqual(
                 str(e), "The maximum url length is 512 characters."
             )
+
+    @mock.patch("yandex_market_language.models.Option.from_xml")
+    @mock.patch("yandex_market_language.models.Category.from_xml")
+    @mock.patch("yandex_market_language.models.Currency.from_xml")
+    def test_from_xml(self, currency_p, category_p, option_p):
+        shop = ShopFactory()
+        shop_el = shop.to_xml()
+        options = shop.delivery_options + shop.pickup_options
+        currency_p.side_effect = shop.currencies
+        category_p.side_effect = shop.categories
+        option_p.side_effect = options
+        parsed_shop = Shop.from_xml(shop_el)
+        self.assertEqual(shop.to_dict(), parsed_shop.to_dict())
+        self.assertEqual(currency_p.call_count, len(shop.currencies))
+        self.assertEqual(category_p.call_count, len(shop.categories))
+        self.assertEqual(option_p.call_count, len(options))

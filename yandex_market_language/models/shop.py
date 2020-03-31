@@ -119,10 +119,31 @@ class Shop(
         return shop_el
 
     @staticmethod
-    def from_xml(el: XMLElement) -> "Shop":
-        name = ""
-        company = ""
-        url = ""
-        currencies = []
-        categories = []
-        return Shop(name, company, url, currencies, categories)
+    def from_xml(shop_el: XMLElement) -> "Shop":
+        kwargs = {}
+
+        for el in shop_el:
+            if el.tag == "currencies":
+                currencies = []
+                for currency_el in el:
+                    currencies.append(Currency.from_xml(currency_el))
+                kwargs["currencies"] = currencies
+            elif el.tag == "categories":
+                categories = []
+                for category_el in el:
+                    categories.append(Category.from_xml(category_el))
+                kwargs["categories"] = categories
+            elif el.tag == "delivery-options":
+                delivery_options = []
+                for option_el in el:
+                    delivery_options.append(Option.from_xml(option_el))
+                kwargs["delivery_options"] = delivery_options
+            elif el.tag == "pickup-options":
+                pickup_options = []
+                for option_el in el:
+                    pickup_options.append(Option.from_xml(option_el))
+                kwargs["pickup_options"] = pickup_options
+            else:
+                kwargs[el.tag] = el.text
+
+        return Shop(**kwargs)

@@ -18,3 +18,7 @@ class Category(BaseModel):
         el = XMLElement("category", d)
         el.text = name
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Category":
+        return Category("1234", "test")

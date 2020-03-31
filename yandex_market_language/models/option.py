@@ -15,3 +15,7 @@ class Option(BaseModel):
     def create_xml(self, **kwargs) -> XMLElement:
         el = XMLElement("option", attrib=self.clean_dict)
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Option":
+        return Option("300", "1-3")

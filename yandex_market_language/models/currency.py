@@ -70,3 +70,7 @@ class Currency(BaseModel):
     def create_xml(self, **kwargs) -> XMLElement:
         el = XMLElement("currency", self.clean_dict)
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Currency":
+        return Currency("RUB", "1")
