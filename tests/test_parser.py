@@ -23,6 +23,6 @@ class YMLParserTestCase(TestCase):
             p = YMLParser(f)
             self.assertIsInstance(p._tree, ET.ElementTree)
 
-    def test_parser_converts_valid_xml(self):
-        p = YMLParser(VALID_XML_PATH)
-        self.assertIsInstance(p.parse(), models.Feed)
+    # def test_parser_converts_valid_xml(self):
+    #     p = YMLParser(VALID_XML_PATH)
+    #     self.assertIsInstance(p.parse(), models.Feed)
