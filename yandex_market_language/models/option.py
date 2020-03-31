@@ -18,4 +18,4 @@ class Option(BaseModel):
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Option":
-        return Option("300", "1-3")
+        return Option(**el.attrib)
