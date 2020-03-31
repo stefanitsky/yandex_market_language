@@ -117,3 +117,12 @@ class Shop(
                 o.to_xml(pickup_options_el)
 
         return shop_el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Shop":
+        name = ""
+        company = ""
+        url = ""
+        currencies = []
+        categories = []
+        return Shop(name, company, url, currencies, categories)

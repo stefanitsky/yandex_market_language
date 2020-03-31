@@ -33,3 +33,8 @@ class Feed(BaseModel):
         feed_el = XMLElement("yml_catalog", {"date": self.date})
         self.shop.to_xml(feed_el)
         return feed_el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Feed":
+        shop = Shop.from_xml(el[0])
+        return Feed(shop)
