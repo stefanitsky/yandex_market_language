@@ -86,6 +86,12 @@ class BaseModelTestCase(TestCase):
             )
             self.assertEqual(str(e), expected_msg)
 
+    def test_str_to_bool(self):
+        m = models.BaseModel._str_to_bool
+        self.assertEqual(m("true"), True)
+        self.assertEqual(m("false"), False)
+        self.assertEqual(m("none"), None)
+
 
 class FeedModelTestCase(TestCase):
     def test_to_dict(self):
@@ -431,12 +437,6 @@ class BaseOfferModelTestCase(TestCase):
         o = BaseOfferFactory().create()
         o.min_quantity = None
         self.assertEqual(o._min_quantity, "1")
-
-    def test_min_quantity_property_raises_validation_error(self):
-        o = BaseOfferFactory().create()
-        with self.assertRaises(ValidationError) as e:
-            o.min_quantity = "err"
-            self.assertEqual(str(e), "min_quantity must be a number")
 
     def test_expiry_property_dost_not_match_format_error(self):
         with self.assertRaises(ValidationError) as e:

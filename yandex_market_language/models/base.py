@@ -56,6 +56,15 @@ class BaseModel(ABC):
                 "Got {t} instead.".format(attr=attr, t=type(value))
             )
 
+    @staticmethod
+    def _str_to_bool(value) -> Optional[bool]:
+        if value == "true":
+            return True
+        elif value == "false":
+            return False
+        else:
+            return None
+
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         el = self.create_xml()
         if root_el is not None:

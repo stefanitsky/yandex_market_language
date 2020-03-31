@@ -119,12 +119,7 @@ class BaseOffer(
 
     @property
     def store(self) -> Optional[bool]:
-        if self._store == "true":
-            return True
-        elif self._store == "false":
-            return False
-        else:
-            return None
+        return self._str_to_bool(self._store)
 
     @store.setter
     def store(self, value):
@@ -139,17 +134,11 @@ class BaseOffer(
         if value is None:
             self._min_quantity = "1"
         else:
-            try:
-                int(value)
-                self._min_quantity = str(value)
-            except (TypeError, ValueError):
-                raise ValidationError("min_quantity must be a number")
+            self._min_quantity = self._is_valid_int(value, "min_quantity")
 
     @property
     def manufacturer_warranty(self) -> Optional[bool]:
-        return {"true": True, "false": False}.get(
-            self._manufacturer_warranty, None
-        )
+        return self._str_to_bool(self._manufacturer_warranty)
 
     @manufacturer_warranty.setter
     def manufacturer_warranty(self, value):
@@ -159,7 +148,7 @@ class BaseOffer(
 
     @property
     def adult(self) -> Optional[bool]:
-        return {"true": True, "false": False}.get(self._adult, None)
+        return self._str_to_bool(self._adult)
 
     @adult.setter
     def adult(self, value):
