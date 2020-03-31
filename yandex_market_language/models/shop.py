@@ -3,6 +3,7 @@ from typing import List
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
+from .offers import BaseOffer, SimplifiedOffer
 from .option import Option
 from . import fields
 
@@ -22,6 +23,7 @@ class Shop(
         url: str,
         currencies: List[Currency],
         categories: List[Category],
+        offers: List[BaseOffer],
         platform: str = None,
         version: str = None,
         agency: str = None,
@@ -42,6 +44,7 @@ class Shop(
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
         self.enable_auto_discounts = enable_auto_discounts
+        self.offers = offers
 
     @property
     def url(self):
@@ -67,6 +70,7 @@ class Shop(
             delivery_options=[o.to_dict() for o in self.delivery_options],
             pickup_options=[o.to_dict() for o in self.pickup_options],
             enable_auto_discounts=self.enable_auto_discounts,
+            offers=[o.to_dict() for o in self.offers],
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
@@ -116,6 +120,11 @@ class Shop(
             for o in self.pickup_options:
                 o.to_xml(pickup_options_el)
 
+        # Add offers
+        offers_el = XMLSubElement(shop_el, "offers")
+        for o in self.offers:
+            o.to_xml(offers_el)
+
         return shop_el
 
     @staticmethod
@@ -143,6 +152,13 @@ class Shop(
                 for option_el in el:
                     pickup_options.append(Option.from_xml(option_el))
                 kwargs["pickup_options"] = pickup_options
+            elif el.tag == "offers":
+                offers = []
+                for offer_el in el:
+                    offer_type = offer_el.attrib.get("type")
+                    if offer_type is None:
+                        offers.append(SimplifiedOffer.from_xml(offer_el))
+                kwargs["offers"] = offers
             else:
                 kwargs[el.tag] = el.text
 
