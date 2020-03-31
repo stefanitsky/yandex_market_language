@@ -185,16 +185,12 @@ class BaseOffer(
             raise ValidationError("expiry must be a valid datetime")
 
     @property
-    def weight(self) -> float:
+    def weight(self) -> Optional[float]:
         return float(self._weight)
 
     @weight.setter
     def weight(self, value):
-        try:
-            float(value)
-            self._weight = str(value)
-        except (TypeError, ValueError):
-            raise ValidationError("weight must be a valid float of int")
+        self._weight = self._is_valid_float(value, "weight", True)
 
     @property
     def downloadable(self) -> Optional[bool]:
