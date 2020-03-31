@@ -48,3 +48,7 @@ class Dimensions(BaseModel):
         el = XMLElement("dimensions")
         el.text = "/".join([self._length, self._width, self._height])
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Dimensions":
+        return Dimensions(*el.text.split("/"))
