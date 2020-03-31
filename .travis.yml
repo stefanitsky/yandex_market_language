@@ -4,7 +4,7 @@ python:
 - 3.7
 - 3.6
 - 3.5
-install: pip install -U tox-travis coverage codecov
+install: pip install -U tox-travis coverage codecov faker
 script:
     - tox
     - coverage run --source yandex_market_language -m pytest
