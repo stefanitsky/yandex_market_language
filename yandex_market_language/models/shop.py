@@ -1,5 +1,4 @@
 from typing import List
-from xml.etree import ElementTree
 
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency

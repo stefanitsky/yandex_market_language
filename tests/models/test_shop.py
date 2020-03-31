@@ -1,8 +1,12 @@
 from unittest import mock
 
-from tests.cases import ModelTestCase, fake, ET
-from tests.factories import ShopFactory, SimplifiedOfferFactory, \
-    ArbitraryOfferFactory, BookOfferFactory
+from tests.cases import ModelTestCase, fake
+from tests.factories import (
+    ShopFactory,
+    SimplifiedOfferFactory,
+    ArbitraryOfferFactory,
+    BookOfferFactory
+)
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models import Shop
 

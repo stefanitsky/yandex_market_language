@@ -4,7 +4,6 @@ from xml.etree import ElementTree as ET
 from unittest import TestCase
 
 from yandex_market_language.parser import YMLParser
-from yandex_market_language import models
 
 
 VALID_XML_PATH = os.path.join(

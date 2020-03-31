@@ -379,9 +379,9 @@ class BaseOffer(
             if el.tag == "picture":
                 pictures.append(el.text)
             elif el.tag == "delivery-options":
-                pass
+                kwargs["delivery_options"] = Option.from_xml(el)
             elif el.tag == "pickup-options":
-                pass
+                kwargs["pickup_options"] = Option.from_xml(el)
             elif el.tag == "barcode":
                 barcodes.append(el.text)
             elif el.tag == "param":
