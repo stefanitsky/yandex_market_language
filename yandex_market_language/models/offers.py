@@ -232,7 +232,7 @@ class BaseOffer(
             offer_id=self.offer_id,
             bid=self.bid,
             url=self.url,
-            price=self.price,
+            price=self.price.to_dict(),
             old_price=self.old_price,
             enable_auto_discounts=self.enable_auto_discounts,
             currency=self.currency,
@@ -390,6 +390,8 @@ class BaseOffer(
                 kwargs["credit_template_id"] = el.attrib["id"]
             elif el.tag == "dimensions":
                 kwargs["dimensions"] = Dimensions.from_xml(el)
+            elif el.tag == "price":
+                kwargs["price"] = Price.from_xml(el)
             else:
                 k = mapping.get(el.tag, el.tag)
                 kwargs[k] = el.text
@@ -402,6 +404,7 @@ class BaseOffer(
             kwargs["parameters"] = parameters
 
         kwargs["offer_id"] = offer_el.attrib["id"]
+        kwargs["bid"] = offer_el.attrib.get("bid")
 
         return kwargs
 
