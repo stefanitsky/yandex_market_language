@@ -1,9 +1,10 @@
 from typing import List
+from xml.etree import ElementTree
 
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
-from .offers import BaseOffer, SimplifiedOffer
+from .offers import BaseOffer, SimplifiedOffer, ArbitraryOffer, BookOffer
 from .option import Option
 from . import fields
 
@@ -158,6 +159,10 @@ class Shop(
                     offer_type = offer_el.attrib.get("type")
                     if offer_type is None:
                         offers.append(SimplifiedOffer.from_xml(offer_el))
+                    elif offer_type == "vendor.model":
+                        offers.append(ArbitraryOffer.from_xml(offer_el))
+                    elif offer_type == "book":
+                        offers.append(BookOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
             elif el.tag == "gifts":
                 pass

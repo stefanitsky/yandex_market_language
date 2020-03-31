@@ -1,7 +1,8 @@
 from unittest import mock
 
-from tests.cases import ModelTestCase, fake
-from tests.factories import ShopFactory
+from tests.cases import ModelTestCase, fake, ET
+from tests.factories import ShopFactory, SimplifiedOfferFactory, \
+    ArbitraryOfferFactory, BookOfferFactory
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models import Shop
 
@@ -80,10 +81,17 @@ class ShopModelTestCase(ModelTestCase):
                 str(e), "The maximum url length is 512 characters."
             )
 
+    # @mock.patch("yandex_market_language.models.offers.BaseOffer.from_xml")
     @mock.patch("yandex_market_language.models.Option.from_xml")
     @mock.patch("yandex_market_language.models.Category.from_xml")
     @mock.patch("yandex_market_language.models.Currency.from_xml")
-    def test_from_xml(self, currency_p, category_p, option_p):
+    def test_from_xml(
+        self,
+        currency_p,
+        category_p,
+        option_p,
+        # from_xml_p,
+    ):
         shop = ShopFactory()
         shop_el = shop.to_xml()
         options = shop.delivery_options + shop.pickup_options

@@ -29,7 +29,7 @@ class BaseModel(ABC):
         convert_to_str: bool = True
     ) -> Optional[Union[int, str]]:
         try:
-            int(value)
+            value = int(value)
             return str(value) if convert_to_str else value
         except (TypeError, ValueError):
             if value is None and allow_none:

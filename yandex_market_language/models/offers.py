@@ -360,7 +360,7 @@ class BaseOffer(
 
     @staticmethod
     @abstractmethod
-    def from_xml(offer_el: XMLElement) -> dict:
+    def from_xml(offer_el: XMLElement, **mapping) -> dict:
         kwargs = {}
         mapping = {
             "vendorCode": "vendor_code",
@@ -368,6 +368,7 @@ class BaseOffer(
             "currencyId": "currency",
             "categoryId": "category_id",
             "min-quantity": "min_quantity",
+            **mapping
         }
 
         pictures = []
@@ -387,6 +388,8 @@ class BaseOffer(
                 pass
             elif el.tag == "credit-template":
                 kwargs["credit_template_id"] = el.attrib["id"]
+            elif el.tag == "dimensions":
+                kwargs["dimensions"] = Dimensions.from_xml(el)
             else:
                 k = mapping.get(el.tag, el.tag)
                 kwargs[k] = el.text
@@ -412,6 +415,9 @@ class SimplifiedOffer(BaseOffer):
     Yandex.Market docs:
     https://yandex.ru/support/partnermarket/offers.html
     """
+
+    __TYPE__ = None
+
     def __init__(self, name, **kwargs):
         super().__init__(**kwargs)
         self.name = name
@@ -427,8 +433,8 @@ class SimplifiedOffer(BaseOffer):
         return offer_el
 
     @staticmethod
-    def from_xml(offer_el: XMLElement) -> "SimplifiedOffer":
-        kwargs = BaseOffer.from_xml(offer_el)
+    def from_xml(offer_el: XMLElement, **mapping) -> "SimplifiedOffer":
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
         return SimplifiedOffer(**kwargs)
 
 
@@ -476,8 +482,11 @@ class ArbitraryOffer(BaseOffer):
         return offer_el
 
     @staticmethod
-    def from_xml(offer_el: XMLElement) -> "ArbitraryOffer":
-        kwargs = BaseOffer.from_xml(offer_el)
+    def from_xml(offer_el: XMLElement, **mapping) -> "ArbitraryOffer":
+        mapping.update({
+            "typePrefix": "type_prefix",
+        })
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
         return ArbitraryOffer(**kwargs)
 
 
@@ -599,6 +608,10 @@ class BookOffer(BaseOffer):
         return offer_el
 
     @staticmethod
-    def from_xml(offer_el: XMLElement) -> "BookOffer":
-        kwargs = BaseOffer.from_xml(offer_el)
+    def from_xml(offer_el: XMLElement, **mapping) -> "BookOffer":
+        mapping.update({
+            "publisher": "publisher",
+            "ISBN": "isbn",
+        })
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
         return BookOffer(**kwargs)
