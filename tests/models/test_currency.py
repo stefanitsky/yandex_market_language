@@ -2,6 +2,7 @@ from tests.cases import ModelTestCase, ET
 from tests.factories import CurrencyFactory
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Currency
 
 
 class CurrencyModelTestCase(ModelTestCase):
@@ -51,3 +52,9 @@ class CurrencyModelTestCase(ModelTestCase):
         with self.assertRaises(ValidationError) as e:
             CurrencyFactory(plus="err")
             self.assertEqual(str(e), "The plus parameter only can be int.")
+
+    def test_from_xml(self):
+        c = CurrencyFactory()
+        el = c.to_xml()
+        parsed_c = Currency.from_xml(el)
+        self.assertEqual(c.to_dict(), parsed_c.to_dict())

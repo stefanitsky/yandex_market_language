@@ -73,4 +73,5 @@ class Currency(BaseModel):
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Currency":
-        return Currency("RUB", "1")
+        el.attrib["currency"] = el.attrib.pop("id")
+        return Currency(**el.attrib)
