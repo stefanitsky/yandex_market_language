@@ -13,13 +13,15 @@ class Category(BaseModel):
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
-        d = self.clean_dict
-        name = d.pop("name")
-        el = XMLElement("category", d)
-        el.text = name
+        attribs = {"id": self.category_id}
+        if self.parent_id:
+            attribs["parentId"] = self.parent_id
+        el = XMLElement("category", attribs)
+        el.text = self.name
         return el
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Category":
         el.attrib["category_id"] = el.attrib.pop("id")
+        el.attrib["parent_id"] = el.attrib.pop("parentId", None)
         return Category(name=el.text, **el.attrib)
