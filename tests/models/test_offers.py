@@ -55,6 +55,7 @@ class BaseOfferModelTestCase(ModelTestCase):
             "currency",
             "category_id",
             "pictures",
+            "supplier",
             "delivery",
             "pickup",
             "delivery_options",
@@ -124,6 +125,8 @@ class BaseOfferModelTestCase(ModelTestCase):
         for url in o.pictures:
             el_ = ET.SubElement(expected_el, "picture")
             el_.text = url
+
+        ET.SubElement(expected_el, "supplier", {"ogrn": o.supplier})
 
         # Add delivery options
         delivery_options_el = ET.SubElement(expected_el, "delivery-options")

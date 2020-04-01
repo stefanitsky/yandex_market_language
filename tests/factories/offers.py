@@ -33,6 +33,7 @@ class BaseOfferFactory:
         bid=str(fake.pyint()),
         url=fake.url(),
         price=PriceFactory(),
+        supplier=str(fake.pyint()),
         old_price=str(fake.pyint()),
         enable_auto_discounts=fake.pybool(),
         currency=fake.random_element(CURRENCY_CHOICES),
@@ -83,6 +84,7 @@ class BaseOfferFactory:
         self.currency = currency
         self.category_id = category_id
         self.pictures = pictures
+        self.supplier = supplier
         self.delivery = delivery
         self.pickup = pickup
         self.delivery_options = delivery_options
@@ -119,6 +121,7 @@ class BaseOfferFactory:
             currency=self.currency,
             category_id=self.category_id,
             pictures=self.pictures,
+            supplier=self.supplier,
             delivery=self.delivery,
             pickup=self.pickup,
             delivery_options=self.delivery_options,
