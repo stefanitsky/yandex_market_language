@@ -261,6 +261,12 @@ class SimplifiedOfferModelTestCase(ModelTestCase):
 
         self.assertElementsEquals(el, expected_el)
 
+    def from_xml(self):
+        o = SimplifiedOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = SimplifiedOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
+
 
 class ArbitraryOfferTestCase(ModelTestCase):
     def test_cls_type(self):
@@ -300,6 +306,12 @@ class ArbitraryOfferTestCase(ModelTestCase):
         type_prefix_el.text = type_prefix
 
         self.assertElementsEquals(el, expected_el)
+
+    def from_xml(self):
+        o = ArbitraryOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = ArbitraryOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
 
 
 class BookOfferTestCase(ModelTestCase):
@@ -370,3 +382,9 @@ class BookOfferTestCase(ModelTestCase):
             v = fake.pyint(min_value=-100, max_value=-1)
             BookOfferFactory(page_extent=v).create()
             self.assertEqual(str(e), "page_extent must be positive int")
+
+    def from_xml(self):
+        o = BookOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = BookOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
