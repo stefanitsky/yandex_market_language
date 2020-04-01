@@ -14,15 +14,10 @@ VALID_XML_PATH = os.path.join(
 
 
 class YMLParserTestCase(TestCase):
-    def test_parser_init_with_path(self):
-        p = YMLParser(VALID_XML_PATH)
-        self.assertIsInstance(p._tree, ET.ElementTree)
-
-    def test_parser_init_with_file(self):
-        with open(VALID_XML_PATH) as f:
-            p = YMLParser(f)
-            self.assertIsInstance(p._tree, ET.ElementTree)
-
     def test_parser_converts_valid_xml(self):
         p = YMLParser(VALID_XML_PATH)
-        self.assertIsInstance(p.parse(), models.Feed)
+        feed = p.parse()
+        xml_feed = ET.tostring(ET.parse(VALID_XML_PATH).getroot())
+        expected_xml_feed = ET.tostring(feed.to_xml())
+        self.assertIsInstance(feed, models.Feed)
+        self.assertEqual(xml_feed, expected_xml_feed)
