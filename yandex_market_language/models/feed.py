@@ -1,7 +1,5 @@
 from datetime import datetime
-from typing import Optional
 
-from yandex_market_language.exceptions import ValidationError
 from .base import BaseModel, XMLElement
 from .shop import Shop
 
