@@ -1,6 +1,7 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import ParameterFactory
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Parameter
 
 
 class ParameterModelTestCase(ModelTestCase):
@@ -31,3 +32,9 @@ class ParameterModelTestCase(ModelTestCase):
             p.value = Err()
 
             self.assertEqual(str(e), "value must be a string")
+
+    def test_from_xml(self):
+        p = ParameterFactory()
+        el = p.to_xml()
+        parsed_p = Parameter.from_xml(el)
+        self.assertEqual(p.to_dict(), parsed_p.to_dict())
