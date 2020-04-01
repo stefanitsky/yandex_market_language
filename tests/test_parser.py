@@ -3,6 +3,7 @@ import os
 from xml.etree import ElementTree as ET
 from unittest import TestCase
 
+from yandex_market_language import models
 from yandex_market_language.parser import YMLParser
 
 
@@ -22,6 +23,6 @@ class YMLParserTestCase(TestCase):
             p = YMLParser(f)
             self.assertIsInstance(p._tree, ET.ElementTree)
 
-    # def test_parser_converts_valid_xml(self):
-    #     p = YMLParser(VALID_XML_PATH)
-    #     self.assertIsInstance(p.parse(), models.Feed)
+    def test_parser_converts_valid_xml(self):
+        p = YMLParser(VALID_XML_PATH)
+        self.assertIsInstance(p.parse(), models.Feed)
