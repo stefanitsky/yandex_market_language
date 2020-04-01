@@ -91,13 +91,6 @@ class Shop(
                 el = XMLSubElement(shop_el, tag)
                 el.text = value
 
-        # Add enable_auto_discounts
-        if self._enable_auto_discounts:
-            enable_auto_discounts_el = XMLSubElement(
-                shop_el, "enable_auto_discounts"
-            )
-            enable_auto_discounts_el.text = self._enable_auto_discounts
-
         # Add currencies
         currencies_el = XMLSubElement(shop_el, "currencies")
         for c in self.currencies:
@@ -119,6 +112,13 @@ class Shop(
             pickup_options_el = XMLSubElement(shop_el, "pickup-options")
             for o in self.pickup_options:
                 o.to_xml(pickup_options_el)
+
+        # Add enable_auto_discounts
+        if self._enable_auto_discounts:
+            enable_auto_discounts_el = XMLSubElement(
+                shop_el, "enable_auto_discounts"
+            )
+            enable_auto_discounts_el.text = self._enable_auto_discounts
 
         # Add offers
         offers_el = XMLSubElement(shop_el, "offers")
