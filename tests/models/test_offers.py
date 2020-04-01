@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest import mock
 
 from tests.cases import ModelTestCase, ET, fake
 from tests.factories import (
@@ -197,6 +198,13 @@ class BaseOfferModelTestCase(ModelTestCase):
             self.assertEqual(
                 str(e), "group_id must be an integer, maximum 9 characters."
             )
+
+    @mock.patch.multiple(BaseOffer, __abstractmethods__=set())
+    def test_from_xml(self):
+        o = BaseOfferFactory().create()
+        el = o.to_xml()
+        kwargs = BaseOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), BaseOffer(**kwargs).to_dict())
 
 
 class SimplifiedOfferModelTestCase(ModelTestCase):

@@ -258,7 +258,7 @@ class BaseOffer(
             dimensions=self.dimensions.to_dict() if self.dimensions else None,
             downloadable=self.downloadable,
             available=self.available,
-            age=self.age,
+            age=self.age.to_dict() if self.age else None,
             group_id=self.group_id,
             **kwargs
         )
@@ -379,19 +379,29 @@ class BaseOffer(
             if el.tag == "picture":
                 pictures.append(el.text)
             elif el.tag == "delivery-options":
-                kwargs["delivery_options"] = Option.from_xml(el)
+                delivery_options = []
+                for option_el in el:
+                    delivery_options.append(Option.from_xml(option_el))
+                kwargs["delivery_options"] = delivery_options
             elif el.tag == "pickup-options":
-                kwargs["pickup_options"] = Option.from_xml(el)
+                pickup_options = []
+                for option_el in el:
+                    pickup_options.append(Option.from_xml(option_el))
+                kwargs["pickup_options"] = pickup_options
             elif el.tag == "barcode":
                 barcodes.append(el.text)
             elif el.tag == "param":
-                pass
+                parameters.append(Parameter.from_xml(el))
             elif el.tag == "credit-template":
                 kwargs["credit_template_id"] = el.attrib["id"]
             elif el.tag == "dimensions":
                 kwargs["dimensions"] = Dimensions.from_xml(el)
             elif el.tag == "price":
                 kwargs["price"] = Price.from_xml(el)
+            elif el.tag == "condition":
+                kwargs["condition"] = Condition.from_xml(el)
+            elif el.tag == "age":
+                kwargs["age"] = Age.from_xml(el)
             else:
                 k = mapping.get(el.tag, el.tag)
                 kwargs[k] = el.text
@@ -405,6 +415,7 @@ class BaseOffer(
 
         kwargs["offer_id"] = offer_el.attrib["id"]
         kwargs["bid"] = offer_el.attrib.get("bid")
+        kwargs["available"] = offer_el.attrib.get("available")
 
         return kwargs
 
