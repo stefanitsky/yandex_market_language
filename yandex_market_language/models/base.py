@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Optional, Union
 from xml.etree import ElementTree as ET
 
@@ -29,7 +30,7 @@ class BaseModel(ABC):
         convert_to_str: bool = True
     ) -> Optional[Union[int, str]]:
         try:
-            int(value)
+            value = int(value)
             return str(value) if convert_to_str else value
         except (TypeError, ValueError):
             if value is None and allow_none:
@@ -80,6 +81,28 @@ class BaseModel(ABC):
         else:
             return None
 
+    @staticmethod
+    def _is_valid_datetime(
+        dt,
+        dt_format,
+        attr: str,
+        allow_none: bool = False,
+    ) -> Optional[Union[datetime, str]]:
+        if isinstance(dt, datetime):
+            return dt.strftime(dt_format)
+        elif isinstance(dt, str):
+            try:
+                datetime.strptime(dt, dt_format)
+            except ValueError as e:
+                raise ValidationError(e)
+            return dt
+        elif dt is None and allow_none:
+            return None
+        else:
+            raise ValidationError(
+                "{a} must be a valid datetime".format(a=attr)
+            )
+
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         el = self.create_xml()
         if root_el is not None:
@@ -88,3 +111,7 @@ class BaseModel(ABC):
 
     def to_dict(self, clean: bool = False) -> dict:
         return self.clean_dict if clean else self.create_dict()
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "BaseModel":
+        raise NotImplementedError

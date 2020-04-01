@@ -58,3 +58,7 @@ class Age(BaseModel):
         el = XMLElement("age", {"unit": self.unit})
         el.text = self._value
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Age":
+        return Age(unit=el.attrib.get("unit"), value=el.text)

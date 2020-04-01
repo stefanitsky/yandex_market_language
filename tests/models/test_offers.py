@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest import mock
 
 from tests.cases import ModelTestCase, ET, fake
 from tests.factories import (
@@ -54,6 +55,7 @@ class BaseOfferModelTestCase(ModelTestCase):
             "currency",
             "category_id",
             "pictures",
+            "supplier",
             "delivery",
             "pickup",
             "delivery_options",
@@ -123,6 +125,8 @@ class BaseOfferModelTestCase(ModelTestCase):
         for url in o.pictures:
             el_ = ET.SubElement(expected_el, "picture")
             el_.text = url
+
+        ET.SubElement(expected_el, "supplier", {"ogrn": o.supplier})
 
         # Add delivery options
         delivery_options_el = ET.SubElement(expected_el, "delivery-options")
@@ -198,6 +202,40 @@ class BaseOfferModelTestCase(ModelTestCase):
                 str(e), "group_id must be an integer, maximum 9 characters."
             )
 
+    @mock.patch("yandex_market_language.models.Age.from_xml")
+    @mock.patch("yandex_market_language.models.Condition.from_xml")
+    @mock.patch("yandex_market_language.models.Price.from_xml")
+    @mock.patch("yandex_market_language.models.Dimensions.from_xml")
+    @mock.patch("yandex_market_language.models.Parameter.from_xml")
+    @mock.patch("yandex_market_language.models.Option.from_xml")
+    @mock.patch.multiple(BaseOffer, __abstractmethods__=set())
+    def test_from_xml(
+        self,
+        option_p,
+        parameter_p,
+        dimensions_p,
+        price_p,
+        condition_p,
+        age_p,
+    ):
+        o = BaseOfferFactory().create()
+        el = o.to_xml()
+        options = o.delivery_options + o.pickup_options
+        option_p.side_effect = options
+        parameter_p.side_effect = o.parameters
+        dimensions_p.return_value = o.dimensions
+        price_p.return_value = o.price
+        condition_p.return_value = o.condition
+        age_p.return_value = o.age
+        kwargs = BaseOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), BaseOffer(**kwargs).to_dict())
+        self.assertEqual(option_p.call_count, len(options))
+        self.assertEqual(parameter_p.call_count, len(o.parameters))
+        self.assertEqual(dimensions_p.call_count, 1)
+        self.assertEqual(price_p.call_count, 1)
+        self.assertEqual(condition_p.call_count, 1)
+        self.assertEqual(age_p.call_count, 1)
+
 
 class SimplifiedOfferModelTestCase(ModelTestCase):
     def test_cls_type(self):
@@ -225,6 +263,12 @@ class SimplifiedOfferModelTestCase(ModelTestCase):
         expected_el.insert(0, name_el)
 
         self.assertElementsEquals(el, expected_el)
+
+    def from_xml(self):
+        o = SimplifiedOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = SimplifiedOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
 
 
 class ArbitraryOfferTestCase(ModelTestCase):
@@ -265,6 +309,12 @@ class ArbitraryOfferTestCase(ModelTestCase):
         type_prefix_el.text = type_prefix
 
         self.assertElementsEquals(el, expected_el)
+
+    def from_xml(self):
+        o = ArbitraryOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = ArbitraryOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
 
 
 class BookOfferTestCase(ModelTestCase):
@@ -335,3 +385,9 @@ class BookOfferTestCase(ModelTestCase):
             v = fake.pyint(min_value=-100, max_value=-1)
             BookOfferFactory(page_extent=v).create()
             self.assertEqual(str(e), "page_extent must be positive int")
+
+    def from_xml(self):
+        o = BookOfferFactory().create()
+        el = o.to_xml()
+        parsed_o = BookOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())

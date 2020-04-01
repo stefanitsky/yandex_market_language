@@ -40,6 +40,7 @@ class BaseOffer(
         old_price=None,
         enable_auto_discounts=None,
         pictures: List[str] = None,
+        supplier=None,
         delivery=True,
         pickup=True,
         delivery_options: List[Option] = None,
@@ -74,6 +75,7 @@ class BaseOffer(
         self.currency = currency
         self.category_id = category_id
         self.pictures = pictures
+        self.supplier = supplier
         self.delivery = delivery
         self.pickup = pickup
         self.delivery_options = delivery_options
@@ -171,22 +173,13 @@ class BaseOffer(
 
     @expiry.setter
     def expiry(self, dt):
-        if isinstance(dt, datetime):
-            self._expiry = dt.strftime(EXPIRY_FORMAT)
-        elif isinstance(dt, str):
-            try:
-                datetime.strptime(dt, EXPIRY_FORMAT)
-            except ValueError as e:
-                raise ValidationError(e)
-            self._expiry = dt
-        elif dt is None:
-            self._expiry = None
-        else:
-            raise ValidationError("expiry must be a valid datetime")
+        self._expiry = self._is_valid_datetime(
+            dt, EXPIRY_FORMAT, "expiry", True
+        )
 
     @property
     def weight(self) -> Optional[float]:
-        return float(self._weight)
+        return float(self._weight) if self._weight else None
 
     @weight.setter
     def weight(self, value):
@@ -221,7 +214,7 @@ class BaseOffer(
                 "group_id must be an integer, maximum 9 characters."
             )
         else:
-            self._group_id = str(value)
+            self._group_id = str(value) if value else None
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -232,12 +225,13 @@ class BaseOffer(
             offer_id=self.offer_id,
             bid=self.bid,
             url=self.url,
-            price=self.price,
+            price=self.price.to_dict(),
             old_price=self.old_price,
             enable_auto_discounts=self.enable_auto_discounts,
             currency=self.currency,
             category_id=self.category_id,
             pictures=self.pictures,
+            supplier=self.supplier,
             delivery=self.delivery,
             pickup=self.pickup,
             delivery_options=[o.to_dict() for o in self.delivery_options],
@@ -258,7 +252,7 @@ class BaseOffer(
             dimensions=self.dimensions.to_dict() if self.dimensions else None,
             downloadable=self.downloadable,
             available=self.available,
-            age=self.age,
+            age=self.age.to_dict() if self.age else None,
             group_id=self.group_id,
             **kwargs
         )
@@ -316,6 +310,10 @@ class BaseOffer(
                 picture_el = XMLSubElement(offer_el, "picture")
                 picture_el.text = url
 
+        # Add supplier
+        if self.supplier:
+            XMLSubElement(offer_el, "supplier", {"ogrn": self.supplier})
+
         # Add delivery options
         if self.delivery_options:
             delivery_options_el = XMLSubElement(offer_el, "delivery-options")
@@ -358,6 +356,69 @@ class BaseOffer(
 
         return offer_el
 
+    @staticmethod
+    @abstractmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> dict:
+        kwargs = {}
+        mapping = {
+            "vendorCode": "vendor_code",
+            "oldprice": "old_price",
+            "currencyId": "currency",
+            "categoryId": "category_id",
+            "min-quantity": "min_quantity",
+            **mapping
+        }
+
+        pictures = []
+        barcodes = []
+        parameters = []
+
+        for el in offer_el:
+            if el.tag == "picture":
+                pictures.append(el.text)
+            elif el.tag == "delivery-options":
+                delivery_options = []
+                for option_el in el:
+                    delivery_options.append(Option.from_xml(option_el))
+                kwargs["delivery_options"] = delivery_options
+            elif el.tag == "pickup-options":
+                pickup_options = []
+                for option_el in el:
+                    pickup_options.append(Option.from_xml(option_el))
+                kwargs["pickup_options"] = pickup_options
+            elif el.tag == "barcode":
+                barcodes.append(el.text)
+            elif el.tag == "param":
+                parameters.append(Parameter.from_xml(el))
+            elif el.tag == "credit-template":
+                kwargs["credit_template_id"] = el.attrib["id"]
+            elif el.tag == "dimensions":
+                kwargs["dimensions"] = Dimensions.from_xml(el)
+            elif el.tag == "price":
+                kwargs["price"] = Price.from_xml(el)
+            elif el.tag == "condition":
+                kwargs["condition"] = Condition.from_xml(el)
+            elif el.tag == "age":
+                kwargs["age"] = Age.from_xml(el)
+            elif el.tag == "supplier":
+                kwargs["supplier"] = el.attrib["ogrn"]
+            else:
+                k = mapping.get(el.tag, el.tag)
+                kwargs[k] = el.text
+
+        if pictures:
+            kwargs["pictures"] = pictures
+        if barcodes:
+            kwargs["barcodes"] = barcodes
+        if parameters:
+            kwargs["parameters"] = parameters
+
+        kwargs["offer_id"] = offer_el.attrib["id"]
+        kwargs["bid"] = offer_el.attrib.get("bid")
+        kwargs["available"] = offer_el.attrib.get("available")
+
+        return kwargs
+
 
 class SimplifiedOffer(BaseOffer):
     """
@@ -368,6 +429,9 @@ class SimplifiedOffer(BaseOffer):
     Yandex.Market docs:
     https://yandex.ru/support/partnermarket/offers.html
     """
+
+    __TYPE__ = None
+
     def __init__(self, name, **kwargs):
         super().__init__(**kwargs)
         self.name = name
@@ -381,6 +445,11 @@ class SimplifiedOffer(BaseOffer):
         name_el.text = self.name
         offer_el.insert(0, name_el)
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "SimplifiedOffer":
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        return SimplifiedOffer(**kwargs)
 
 
 class ArbitraryOffer(BaseOffer):
@@ -425,6 +494,14 @@ class ArbitraryOffer(BaseOffer):
             type_prefix_el.text = self.type_prefix
 
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "ArbitraryOffer":
+        mapping.update({
+            "typePrefix": "type_prefix",
+        })
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        return ArbitraryOffer(**kwargs)
 
 
 class BookOffer(BaseOffer):
@@ -543,3 +620,12 @@ class BookOffer(BaseOffer):
                 el.text = v
 
         return offer_el
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "BookOffer":
+        mapping.update({
+            "publisher": "publisher",
+            "ISBN": "isbn",
+        })
+        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        return BookOffer(**kwargs)

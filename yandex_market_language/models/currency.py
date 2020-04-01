@@ -56,13 +56,7 @@ class Currency(BaseModel):
 
     @plus.setter
     def plus(self, value):
-        try:
-            if value:
-                int(value)
-                value = str(value)
-            self._plus = value
-        except (TypeError, ValueError):
-            raise ValidationError("The plus parameter only can be int.")
+        self._plus = self._is_valid_int(value, "plus", True)
 
     def create_dict(self, **kwargs) -> dict:
         return dict(id=self.currency, rate=self.rate, plus=self.plus)
@@ -70,3 +64,8 @@ class Currency(BaseModel):
     def create_xml(self, **kwargs) -> XMLElement:
         el = XMLElement("currency", self.clean_dict)
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Currency":
+        el.attrib["currency"] = el.attrib.pop("id")
+        return Currency(**el.attrib)

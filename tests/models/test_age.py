@@ -2,6 +2,7 @@ from tests.cases import ModelTestCase, ET
 from tests.factories import AgeFactory
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Age
 
 
 class AgeModelTestCase(ModelTestCase):
@@ -51,3 +52,9 @@ class AgeModelTestCase(ModelTestCase):
         with self.assertRaises(ValidationError) as e:
             AgeFactory(unit="month", value=13)
             self.assertEqual(str(e), expected_error)
+
+    def test_from_xml(self):
+        a = AgeFactory()
+        el = a.to_xml()
+        parsed_a = Age.from_xml(el)
+        self.assertEqual(a.to_dict(), parsed_a.to_dict())

@@ -2,6 +2,7 @@ from tests.cases import ModelTestCase, ET
 from tests.factories import ConditionFactory
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Condition
 
 
 class ConditionModelTestCase(ModelTestCase):
@@ -31,3 +32,9 @@ class ConditionModelTestCase(ModelTestCase):
         with self.assertRaises(ValidationError) as e:
             ConditionFactory(condition_type="err")
             self.assertEqual(str(e), expected_message)
+
+    def test_from_xml(self):
+        c = ConditionFactory()
+        el = c.to_xml()
+        parsed_c = Condition.from_xml(el)
+        self.assertEqual(c.to_dict(), parsed_c.to_dict())

@@ -1,5 +1,6 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import CategoryFactory
+from yandex_market_language.models import Category
 
 
 class CategoryModelTestCase(ModelTestCase):
@@ -17,3 +18,9 @@ class CategoryModelTestCase(ModelTestCase):
         expected_el = ET.Element("category", {"id": c.category_id})
         expected_el.text = c.name
         self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        c = CategoryFactory()
+        el = c.to_xml()
+        parsed_c = Category.from_xml(el)
+        self.assertEqual(c.to_dict(), parsed_c.to_dict())

@@ -1,6 +1,7 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import DimensionsFactory
 from yandex_market_language.exceptions import ValidationError
+from yandex_market_language.models import Dimensions
 
 
 class DimensionsModelTestCase(ModelTestCase):
@@ -25,3 +26,9 @@ class DimensionsModelTestCase(ModelTestCase):
         with self.assertRaises(ValidationError) as e:
             DimensionsFactory(length="err")
             self.assertEqual(str(e), "length must be a valid float")
+
+    def test_from_xml(self):
+        d = DimensionsFactory()
+        el = d.to_xml()
+        parsed_d = Dimensions.from_xml(el)
+        self.assertEqual(d.to_dict(), parsed_d.to_dict())

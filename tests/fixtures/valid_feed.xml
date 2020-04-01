@@ -78,6 +78,38 @@
                 <weight>3.6</weight>
                 <dimensions>20.1/20.551/22.5</dimensions>
             </offer>
+            <offer id="A1VV" type="vendor.model" bid="30">
+                <typePrefix>Сэндвичница</typePrefix>
+                <vendor>Brand</vendor>
+                <model>K220Y9</model>
+                <vendorCode>A1234567B</vendorCode>
+                <url>http://best.seller.ru/product_page.asp?pid=12345</url>
+                <price>1099</price>
+                <oldprice>1399</oldprice>
+                <enable_auto_discounts>false</enable_auto_discounts>
+                <currencyId>RUR</currencyId>
+                <categoryId>101</categoryId>
+                <picture>http://best.seller.ru/img/device56789.jpg</picture>
+                <supplier ogrn="5634567890123"/>
+                <delivery>true</delivery>
+                <pickup>true</pickup>
+                <delivery-options>
+                    <option cost="300" days="1-3"/>
+                </delivery-options>
+                <pickup-options>
+                    <option cost="350" days="1" order-before="12"/>
+                </pickup-options>
+                <param name="Мощность">750 Вт</param>
+                <description>Сэндвичница 2 в 1: можно приготовить как сэндвичи, так и вафли.</description>
+                <sales_notes>Наличные, Visa/Mastercard, б/н расчет</sales_notes>
+                <store>false</store>
+                <manufacturer_warranty>true</manufacturer_warranty>
+                <min-quantity>1</min-quantity>
+                <country_of_origin>Россия</country_of_origin>
+                <barcode>9876543210</barcode>
+                <weight>1.03</weight>
+                <dimensions>20.800/23.500/9.000</dimensions>
+            </offer>
             <offer id="755B" type="book" bid="60">
                 <url>https://example.shop/product_page.asp?pid=2</url>
                 <price>80</price>
@@ -97,6 +129,7 @@
                 <name>Все не так. В 2 томах. Том 1</name>
                 <publisher>Эксмо</publisher>
                 <series>А. Маринина — королева детектива</series>
+                <min-quantity>1</min-quantity>
                 <year>2007</year>
                 <ISBN>978-5-699-23647-3</ISBN>
                 <volume>2</volume>
@@ -200,25 +233,25 @@
               <age>6</age>
             </offer>
         </offers>
-        <gifts>
-            <gift id="33">
-                <name>Кружка 300 мл Brand 16</name>
-                <picture>https://example.shop/promos/33.jpg</picture>
-            </gift>
-        </gifts>
-        <promos>
-            <promo id="PromoGift" type="gift with purchase">
-                <start-date>2020-02-01 09:00:00</start-date>
-                <end-date>2020-03-01 22:00:00</end-date>
-                <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>
-                <url>http://example.com/promos/gift</url>
-                <purchase>
-                    <product offer-id="1511AB"/>
-                </purchase>
-                <promo-gifts>
-                    <promo-gift gift-id="33"/>
-                </promo-gifts>
-            </promo>
-        </promos>
+<!--        <gifts>-->
+<!--            <gift id="33">-->
+<!--                <name>Кружка 300 мл Brand 16</name>-->
+<!--                <picture>https://example.shop/promos/33.jpg</picture>-->
+<!--            </gift>-->
+<!--        </gifts>-->
+<!--        <promos>-->
+<!--            <promo id="PromoGift" type="gift with purchase">-->
+<!--                <start-date>2020-02-01 09:00:00</start-date>-->
+<!--                <end-date>2020-03-01 22:00:00</end-date>-->
+<!--                <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>-->
+<!--                <url>http://example.com/promos/gift</url>-->
+<!--                <purchase>-->
+<!--                    <product offer-id="1511AB"/>-->
+<!--                </purchase>-->
+<!--                <promo-gifts>-->
+<!--                    <promo-gift gift-id="33"/>-->
+<!--                </promo-gifts>-->
+<!--            </promo>-->
+<!--        </promos>-->
     </shop>
 </yml_catalog>

@@ -1,5 +1,6 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import OptionFactory
+from yandex_market_language.models import Option
 
 
 class OptionModelTestCase(ModelTestCase):
@@ -18,3 +19,9 @@ class OptionModelTestCase(ModelTestCase):
         el = o.to_xml()
         expected_el = ET.Element("option", {"cost": o.cost, "days": o.days})
         self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        o = OptionFactory()
+        el = o.to_xml()
+        parsed_o = Option.from_xml(el)
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())

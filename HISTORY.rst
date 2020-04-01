@@ -2,6 +2,12 @@
 History
 =======
 
+0.4.0 (2020-04-01)
+------------------
+* Added xml parsing for all models, except: Gitfts, Promos and another types of offers like audiobooks, medicine etc.
+* Fixed fields parsing for datetime fields & fields that can be None.
+* Added new field for offer: supplier.
+
 0.3.0 (2020-03-30)
 ------------------
 

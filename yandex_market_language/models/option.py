@@ -13,5 +13,13 @@ class Option(BaseModel):
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
-        el = XMLElement("option", attrib=self.clean_dict)
+        attribs = {"cost": self.cost, "days": self.days}
+        if self.order_before:
+            attribs["order-before"] = self.order_before
+        el = XMLElement("option", attrib=attribs)
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Option":
+        el.attrib["order_before"] = el.attrib.pop("order-before", None)
+        return Option(**el.attrib)

@@ -3,6 +3,7 @@ from typing import List
 from .base import BaseModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
+from .offers import BaseOffer, SimplifiedOffer, ArbitraryOffer, BookOffer
 from .option import Option
 from . import fields
 
@@ -22,6 +23,7 @@ class Shop(
         url: str,
         currencies: List[Currency],
         categories: List[Category],
+        offers: List[BaseOffer],
         platform: str = None,
         version: str = None,
         agency: str = None,
@@ -42,6 +44,7 @@ class Shop(
         self.delivery_options = delivery_options
         self.pickup_options = pickup_options
         self.enable_auto_discounts = enable_auto_discounts
+        self.offers = offers
 
     @property
     def url(self):
@@ -67,6 +70,7 @@ class Shop(
             delivery_options=[o.to_dict() for o in self.delivery_options],
             pickup_options=[o.to_dict() for o in self.pickup_options],
             enable_auto_discounts=self.enable_auto_discounts,
+            offers=[o.to_dict() for o in self.offers],
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
@@ -86,13 +90,6 @@ class Shop(
             if value:
                 el = XMLSubElement(shop_el, tag)
                 el.text = value
-
-        # Add enable_auto_discounts
-        if self._enable_auto_discounts:
-            enable_auto_discounts_el = XMLSubElement(
-                shop_el, "enable_auto_discounts"
-            )
-            enable_auto_discounts_el.text = self._enable_auto_discounts
 
         # Add currencies
         currencies_el = XMLSubElement(shop_el, "currencies")
@@ -116,4 +113,61 @@ class Shop(
             for o in self.pickup_options:
                 o.to_xml(pickup_options_el)
 
+        # Add enable_auto_discounts
+        if self._enable_auto_discounts:
+            enable_auto_discounts_el = XMLSubElement(
+                shop_el, "enable_auto_discounts"
+            )
+            enable_auto_discounts_el.text = self._enable_auto_discounts
+
+        # Add offers
+        offers_el = XMLSubElement(shop_el, "offers")
+        for o in self.offers:
+            o.to_xml(offers_el)
+
         return shop_el
+
+    @staticmethod
+    def from_xml(shop_el: XMLElement) -> "Shop":
+        kwargs = {}
+
+        for el in shop_el:
+            if el.tag == "currencies":
+                currencies = []
+                for currency_el in el:
+                    currencies.append(Currency.from_xml(currency_el))
+                kwargs["currencies"] = currencies
+            elif el.tag == "categories":
+                categories = []
+                for category_el in el:
+                    categories.append(Category.from_xml(category_el))
+                kwargs["categories"] = categories
+            elif el.tag == "delivery-options":
+                delivery_options = []
+                for option_el in el:
+                    delivery_options.append(Option.from_xml(option_el))
+                kwargs["delivery_options"] = delivery_options
+            elif el.tag == "pickup-options":
+                pickup_options = []
+                for option_el in el:
+                    pickup_options.append(Option.from_xml(option_el))
+                kwargs["pickup_options"] = pickup_options
+            elif el.tag == "offers":
+                offers = []
+                for offer_el in el:
+                    offer_type = offer_el.attrib.get("type")
+                    if offer_type is None:
+                        offers.append(SimplifiedOffer.from_xml(offer_el))
+                    elif offer_type == "vendor.model":
+                        offers.append(ArbitraryOffer.from_xml(offer_el))
+                    elif offer_type == "book":
+                        offers.append(BookOffer.from_xml(offer_el))
+                kwargs["offers"] = offers
+            # elif el.tag == "gifts":
+            #     pass
+            # elif el.tag == "promos":
+            #     pass
+            else:
+                kwargs[el.tag] = el.text
+
+        return Shop(**kwargs)
