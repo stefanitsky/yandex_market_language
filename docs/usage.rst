@@ -29,3 +29,16 @@ Or XML element::
     >>> from xml.etree import ElementTree as ET
     >>> ET.tostring(el)
     b'<category id="1">Shoes</category>'
+
+
+Parser
+--------
+
+You can parse XML files into ready-to-use Feed model instance with parser::
+
+    >>> from yandex_market_language import parser
+    >>> p = parser.YMLParser("./tests/fixtures/valid_feed.xml")
+    >>> feed = p.parse()
+    >>> feed
+    <yandex_market_language.models.feed.Feed object at 0x107724370>
+    >>> feed.to_dict()
