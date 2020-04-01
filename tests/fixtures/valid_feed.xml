@@ -104,6 +104,7 @@
                 <sales_notes>Наличные, Visa/Mastercard, б/н расчет</sales_notes>
                 <store>false</store>
                 <manufacturer_warranty>true</manufacturer_warranty>
+                <min-quantity>1</min-quantity>
                 <country_of_origin>Россия</country_of_origin>
                 <barcode>9876543210</barcode>
                 <weight>1.03</weight>
@@ -128,6 +129,7 @@
                 <name>Все не так. В 2 томах. Том 1</name>
                 <publisher>Эксмо</publisher>
                 <series>А. Маринина — королева детектива</series>
+                <min-quantity>1</min-quantity>
                 <year>2007</year>
                 <ISBN>978-5-699-23647-3</ISBN>
                 <volume>2</volume>
@@ -231,25 +233,25 @@
               <age>6</age>
             </offer>
         </offers>
-        <gifts>
-            <gift id="33">
-                <name>Кружка 300 мл Brand 16</name>
-                <picture>https://example.shop/promos/33.jpg</picture>
-            </gift>
-        </gifts>
-        <promos>
-            <promo id="PromoGift" type="gift with purchase">
-                <start-date>2020-02-01 09:00:00</start-date>
-                <end-date>2020-03-01 22:00:00</end-date>
-                <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>
-                <url>http://example.com/promos/gift</url>
-                <purchase>
-                    <product offer-id="1511AB"/>
-                </purchase>
-                <promo-gifts>
-                    <promo-gift gift-id="33"/>
-                </promo-gifts>
-            </promo>
-        </promos>
+<!--        <gifts>-->
+<!--            <gift id="33">-->
+<!--                <name>Кружка 300 мл Brand 16</name>-->
+<!--                <picture>https://example.shop/promos/33.jpg</picture>-->
+<!--            </gift>-->
+<!--        </gifts>-->
+<!--        <promos>-->
+<!--            <promo id="PromoGift" type="gift with purchase">-->
+<!--                <start-date>2020-02-01 09:00:00</start-date>-->
+<!--                <end-date>2020-03-01 22:00:00</end-date>-->
+<!--                <description>Купите телефон марки Xiaomi и получите кружку в подарок.</description>-->
+<!--                <url>http://example.com/promos/gift</url>-->
+<!--                <purchase>-->
+<!--                    <product offer-id="1511AB"/>-->
+<!--                </purchase>-->
+<!--                <promo-gifts>-->
+<!--                    <promo-gift gift-id="33"/>-->
+<!--                </promo-gifts>-->
+<!--            </promo>-->
+<!--        </promos>-->
     </shop>
 </yml_catalog>
