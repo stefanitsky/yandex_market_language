@@ -214,7 +214,7 @@ class BaseOffer(
                 "group_id must be an integer, maximum 9 characters."
             )
         else:
-            self._group_id = str(value)
+            self._group_id = str(value) if value else None
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:

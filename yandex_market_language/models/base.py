@@ -103,7 +103,6 @@ class BaseModel(ABC):
                 "{a} must be a valid datetime".format(a=attr)
             )
 
-
     def to_xml(self, root_el: XMLElement = None) -> XMLElement:
         el = self.create_xml()
         if root_el is not None:
