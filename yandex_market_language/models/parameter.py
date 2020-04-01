@@ -30,3 +30,7 @@ class Parameter(BaseModel):
         el = XMLElement("param", attribs)
         el.text = self.value
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Parameter":
+        return Parameter(value=el.text, **el.attrib)

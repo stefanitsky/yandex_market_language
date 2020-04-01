@@ -33,3 +33,7 @@ class Condition(BaseModel):
         reason_el.text = self.reason
         el.append(reason_el)
         return el
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "Condition":
+        return Condition(condition_type=el.attrib["type"], reason=el[0].text)
