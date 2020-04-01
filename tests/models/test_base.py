@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest import mock
 from tests.cases import ModelTestCase, ET, fake
 from yandex_market_language import models
@@ -84,3 +85,15 @@ class BaseModelTestCase(ModelTestCase):
         self.assertEqual(m("true"), True)
         self.assertEqual(m("false"), False)
         self.assertEqual(m("none"), None)
+
+    def test_is_valid_datetime(self):
+        dt_format = "%Y-%m-%d %H:%M"
+        m = models.BaseModel._is_valid_datetime
+        dt = datetime.now()
+        str_dt = dt.strftime(dt_format)
+        self.assertEqual(m(dt, dt_format, "test"), dt.strftime(dt_format))
+        self.assertEqual(m(str_dt, dt_format, "test"), str_dt)
+        self.assertEqual(m(None, dt_format, "test", allow_none=True), None)
+        with self.assertRaises(ValidationError) as e:
+            m(None, dt_format, "test")
+            self.assertEqual(str(e), "test must be a valid datetime")

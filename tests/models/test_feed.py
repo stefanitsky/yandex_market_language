@@ -21,7 +21,7 @@ class FeedModelTestCase(ModelTestCase):
         self.assertEqual(list(el.tag for el in feed_el), ["shop"])
         self.assertElementsEquals(feed_el[0], shop.to_xml())
         self.assertEqual(feed_el.tag, "yml_catalog")
-        self.assertEqual(feed_el.get("date"), feed.date)
+        self.assertEqual(feed_el.get("date"), feed._date)
 
     @mock.patch("yandex_market_language.models.Shop.from_xml")
     def test_from_xml(self, p):
