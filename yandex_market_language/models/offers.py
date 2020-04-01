@@ -40,6 +40,7 @@ class BaseOffer(
         old_price=None,
         enable_auto_discounts=None,
         pictures: List[str] = None,
+        supplier=None,
         delivery=True,
         pickup=True,
         delivery_options: List[Option] = None,
@@ -74,6 +75,7 @@ class BaseOffer(
         self.currency = currency
         self.category_id = category_id
         self.pictures = pictures
+        self.supplier = supplier
         self.delivery = delivery
         self.pickup = pickup
         self.delivery_options = delivery_options
@@ -238,6 +240,7 @@ class BaseOffer(
             currency=self.currency,
             category_id=self.category_id,
             pictures=self.pictures,
+            supplier=self.supplier,
             delivery=self.delivery,
             pickup=self.pickup,
             delivery_options=[o.to_dict() for o in self.delivery_options],
@@ -315,6 +318,10 @@ class BaseOffer(
             for url in self.pictures:
                 picture_el = XMLSubElement(offer_el, "picture")
                 picture_el.text = url
+
+        # Add supplier
+        if self.supplier:
+            XMLSubElement(offer_el, "supplier", {"ogrn": self.supplier})
 
         # Add delivery options
         if self.delivery_options:
@@ -402,6 +409,8 @@ class BaseOffer(
                 kwargs["condition"] = Condition.from_xml(el)
             elif el.tag == "age":
                 kwargs["age"] = Age.from_xml(el)
+            elif el.tag == "supplier":
+                kwargs["supplier"] = el.attrib["ogrn"]
             else:
                 k = mapping.get(el.tag, el.tag)
                 kwargs[k] = el.text
