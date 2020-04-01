@@ -163,10 +163,10 @@ class Shop(
                     elif offer_type == "book":
                         offers.append(BookOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
-            elif el.tag == "gifts":
-                pass
-            elif el.tag == "promos":
-                pass
+            # elif el.tag == "gifts":
+            #     pass
+            # elif el.tag == "promos":
+            #     pass
             else:
                 kwargs[el.tag] = el.text
 
