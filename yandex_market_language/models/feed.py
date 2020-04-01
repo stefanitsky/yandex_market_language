@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import Optional
 
+from yandex_market_language.exceptions import ValidationError
 from .base import BaseModel, XMLElement
 from .shop import Shop
 
-DATE_FORMAT = "YYYY-MM-DD hh:mm"
+DATE_FORMAT = "%Y-%m-%d %H:%M"
 
 
 class Feed(BaseModel):
@@ -14,14 +16,18 @@ class Feed(BaseModel):
     """
     def __init__(self, shop: Shop, date: datetime.date = None):
         self.shop = shop
-        self._date = date
+        self.date = date
 
-        # Set default date if not specified
-        if self._date is None:
-            self._date = datetime.now()
+    @property
+    def date(self) -> datetime:
+        return datetime.strptime(self._date, DATE_FORMAT)
 
-        # Format date by YML required format
-        self.date = self._date.strftime(DATE_FORMAT)
+    @date.setter
+    def date(self, dt):
+        dt = self._is_valid_datetime(dt, DATE_FORMAT, "date", True)
+        if dt is None:
+            dt = datetime.now().strftime(DATE_FORMAT)
+        self._date = dt
 
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -30,11 +36,12 @@ class Feed(BaseModel):
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
-        feed_el = XMLElement("yml_catalog", {"date": self.date})
+        feed_el = XMLElement("yml_catalog", {"date": self._date})
         self.shop.to_xml(feed_el)
         return feed_el
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Feed":
         shop = Shop.from_xml(el[0])
-        return Feed(shop)
+        date = el.attrib.get("date")
+        return Feed(shop, date=date)
