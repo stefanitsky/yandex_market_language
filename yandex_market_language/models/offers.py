@@ -179,7 +179,7 @@ class BaseOffer(
 
     @property
     def weight(self) -> Optional[float]:
-        return float(self._weight)
+        return float(self._weight) if self._weight else None
 
     @weight.setter
     def weight(self, value):
