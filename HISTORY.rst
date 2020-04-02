@@ -2,6 +2,11 @@
 History
 =======
 
+0.5.0 (2020-04-02)
+------------------
+* Added missed offers of types: audiobook, artist.title, medicine, event-ticket & alco.
+* Some fixes for fields.
+
 0.4.0 (2020-04-01)
 ------------------
 * Added xml parsing for all models, except: Gitfts, Promos and another types of offers like audiobooks, medicine etc.
