@@ -432,13 +432,13 @@ class BookOfferTestCase(ModelTestCase):
 
 
 class AudioBookOfferTestCase(ModelTestCase):
-    KEYS = (
-        "performed_by",
-        "performance_type",
-        "storage",
-        "audio_format",
-        "recording_length",
-    )
+    MAPPING = {
+        "performed_by": "performed_by",
+        "performance_type": "performance_type",
+        "storage": "storage",
+        "audio_format": "format",
+        "recording_length": "recording_length",
+    }
 
     def test_type(self):
         self.assertEqual(AudioBookOffer.__TYPE__, "audiobook")
@@ -447,8 +447,9 @@ class AudioBookOfferTestCase(ModelTestCase):
         o = AudioBookOfferFactory().create()
         d = o.to_dict()
 
-        self.assertTrue(all(k in d for k in self.KEYS))
-        for k in self.KEYS:
+        keys = self.MAPPING.keys()
+        self.assertTrue(all(k in d for k in keys))
+        for k in keys:
             self.assertEqual(d[k], getattr(o, k))
 
     def test_to_xml(self):
@@ -458,14 +459,14 @@ class AudioBookOfferTestCase(ModelTestCase):
 
         values = f.get_values()
         audio_book_values = {}
-        for k in self.KEYS:
+        for k in self.MAPPING.keys():
             audio_book_values[k] = values.pop(k)
 
         AbstractBookOfferFactory.__cls__.__TYPE__ = AudioBookOffer.__TYPE__
         expected_el = AbstractBookOfferFactory(**values).create().to_xml()
 
-        for k in self.KEYS:
-            el_ = ET.SubElement(expected_el, k)
+        for k, tag in self.MAPPING.items():
+            el_ = ET.SubElement(expected_el, tag)
             el_.text = audio_book_values[k]
 
         self.assertElementsEquals(el, expected_el)

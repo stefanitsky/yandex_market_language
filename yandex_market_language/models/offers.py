@@ -697,7 +697,7 @@ class AudioBookOffer(AbstractBookOffer):
             performed_by="performed_by",
             performance_type="performance_type",
             storage="storage",
-            audio_format="audio_format",
+            format="audio_format",
             recording_length="recording_length"
         )
 
