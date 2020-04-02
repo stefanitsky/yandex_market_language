@@ -3,7 +3,13 @@ from typing import List
 from .abstract import AbstractModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
-from .offers import AbstractOffer, SimplifiedOffer, ArbitraryOffer, BookOffer
+from .offers import (
+    AbstractOffer,
+    SimplifiedOffer,
+    ArbitraryOffer,
+    BookOffer,
+    AudioBookOffer,
+)
 from .option import Option
 from . import fields
 
@@ -168,6 +174,8 @@ class Shop(
                         offers.append(ArbitraryOffer.from_xml(offer_el))
                     elif offer_type == "book":
                         offers.append(BookOffer.from_xml(offer_el))
+                    elif offer_type == "audiobook":
+                        offers.append(AudioBookOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
             # elif el.tag == "gifts":
             #     pass
