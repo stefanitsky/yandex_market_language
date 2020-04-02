@@ -1,6 +1,5 @@
 from tests.cases import ModelTestCase, ET
 from tests.factories import PriceFactory
-from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models import Price
 
 
