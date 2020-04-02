@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from yandex_market_language.exceptions import ValidationError
 
-from .base import BaseModel, XMLElement, XMLSubElement
+from .abstract import AbstractModel, XMLElement, XMLSubElement
 from .price import Price
 from .option import Option
 from .parameter import Parameter
@@ -17,11 +17,11 @@ from . import fields
 EXPIRY_FORMAT = "YYYY-MM-DDThh:mm"
 
 
-class BaseOffer(
+class AbstractOffer(
     fields.EnableAutoDiscountField,
     fields.DeliveryOptionsField,
     fields.PickupOptionsField,
-    BaseModel,
+    AbstractModel,
     ABC
 ):
 
@@ -420,7 +420,7 @@ class BaseOffer(
         return kwargs
 
 
-class SimplifiedOffer(BaseOffer):
+class SimplifiedOffer(AbstractOffer):
     """
     Simplified offer.
     In a simplified type, the manufacturer, type and name of the goods
@@ -448,11 +448,11 @@ class SimplifiedOffer(BaseOffer):
 
     @staticmethod
     def from_xml(offer_el: XMLElement, **mapping) -> "SimplifiedOffer":
-        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        kwargs = AbstractOffer.from_xml(offer_el, **mapping)
         return SimplifiedOffer(**kwargs)
 
 
-class ArbitraryOffer(BaseOffer):
+class ArbitraryOffer(AbstractOffer):
     """
     Arbitrary offer.
     In an arbitrary type, the manufacturer, type and name of the product
@@ -500,11 +500,11 @@ class ArbitraryOffer(BaseOffer):
         mapping.update({
             "typePrefix": "type_prefix",
         })
-        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        kwargs = AbstractOffer.from_xml(offer_el, **mapping)
         return ArbitraryOffer(**kwargs)
 
 
-class BookOffer(BaseOffer):
+class BookOffer(AbstractOffer):
     """
     Special offer type for books.
 
@@ -627,5 +627,5 @@ class BookOffer(BaseOffer):
             "publisher": "publisher",
             "ISBN": "isbn",
         })
-        kwargs = BaseOffer.from_xml(offer_el, **mapping)
+        kwargs = AbstractOffer.from_xml(offer_el, **mapping)
         return BookOffer(**kwargs)

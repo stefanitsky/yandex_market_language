@@ -2,7 +2,7 @@ from unittest import mock
 
 from yandex_market_language.models.offers import (
     EXPIRY_FORMAT,
-    BaseOffer,
+    AbstractOffer,
     SimplifiedOffer,
     ArbitraryOffer,
     BookOffer
@@ -23,7 +23,7 @@ fake = Faker()
 
 class BaseOfferFactory:
 
-    __cls__ = BaseOffer
+    __cls__ = AbstractOffer
 
     def __init__(
         self,
@@ -147,7 +147,7 @@ class BaseOfferFactory:
             **kwargs,
         )
 
-    @mock.patch.multiple(BaseOffer, __abstractmethods__=set())
+    @mock.patch.multiple(AbstractOffer, __abstractmethods__=set())
     def create(self, **kwargs) -> "__cls__":
         return self.__cls__(**self.get_values(**kwargs))
 

@@ -1,4 +1,4 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -6,7 +6,7 @@ from yandex_market_language.exceptions import ValidationError
 CONDITION_CHOICES = ("likenew", "used")
 
 
-class Condition(BaseModel):
+class Condition(AbstractModel):
     def __init__(self, condition_type: str, reason: str):
         self.condition_type = condition_type
         self.reason = reason

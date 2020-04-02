@@ -1,7 +1,7 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 
-class Option(BaseModel):
+class Option(AbstractModel):
     def __init__(self, cost, days, order_before=None):
         self.cost = cost
         self.days = days

@@ -1,4 +1,4 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -8,7 +8,7 @@ YEAR_CHOICES = [y for y in range(0, 19, 6)]
 MONTH_CHOICES = [m for m in range(0, 13)]
 
 
-class Age(BaseModel):
+class Age(AbstractModel):
     def __init__(self, unit: str, value):
         self.unit = unit
         self.value = value

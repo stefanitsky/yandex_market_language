@@ -1,9 +1,9 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
 
-class Parameter(BaseModel):
+class Parameter(AbstractModel):
     def __init__(self, name: str, value: str, unit: str = None):
         self.name = name
         self.value = value

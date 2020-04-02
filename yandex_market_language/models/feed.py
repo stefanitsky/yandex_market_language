@@ -1,12 +1,12 @@
 from datetime import datetime
 
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 from .shop import Shop
 
 DATE_FORMAT = "%Y-%m-%d %H:%M"
 
 
-class Feed(BaseModel):
+class Feed(AbstractModel):
     """
     YML Feed model.
 

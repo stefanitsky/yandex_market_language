@@ -1,6 +1,6 @@
 from . import fields
 
-from .base import BaseModel
+from .abstract import AbstractModel
 from .feed import Feed
 from .shop import Shop
 from .currency import Currency
@@ -16,7 +16,7 @@ from .age import Age
 
 __all__ = [
     "fields",
-    "BaseModel",
+    "AbstractModel",
     "Feed",
     "Shop",
     "Currency",

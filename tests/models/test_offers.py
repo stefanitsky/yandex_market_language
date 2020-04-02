@@ -11,7 +11,7 @@ from tests.factories import (
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.offers import (
-    BaseOffer,
+    AbstractOffer,
     SimplifiedOffer,
     ArbitraryOffer,
     BookOffer,
@@ -20,7 +20,7 @@ from yandex_market_language.models.offers import (
 
 class BaseOfferModelTestCase(ModelTestCase):
     def test_cls_type(self):
-        self.assertEqual(BaseOffer.__TYPE__, None)
+        self.assertEqual(AbstractOffer.__TYPE__, None)
 
     def test_to_xml_offer_type(self):
         o = BaseOfferFactory().create()
@@ -208,7 +208,7 @@ class BaseOfferModelTestCase(ModelTestCase):
     @mock.patch("yandex_market_language.models.Dimensions.from_xml")
     @mock.patch("yandex_market_language.models.Parameter.from_xml")
     @mock.patch("yandex_market_language.models.Option.from_xml")
-    @mock.patch.multiple(BaseOffer, __abstractmethods__=set())
+    @mock.patch.multiple(AbstractOffer, __abstractmethods__=set())
     def test_from_xml(
         self,
         option_p,
@@ -227,8 +227,8 @@ class BaseOfferModelTestCase(ModelTestCase):
         price_p.return_value = o.price
         condition_p.return_value = o.condition
         age_p.return_value = o.age
-        kwargs = BaseOffer.from_xml(el)
-        self.assertEqual(o.to_dict(), BaseOffer(**kwargs).to_dict())
+        kwargs = AbstractOffer.from_xml(el)
+        self.assertEqual(o.to_dict(), AbstractOffer(**kwargs).to_dict())
         self.assertEqual(option_p.call_count, len(options))
         self.assertEqual(parameter_p.call_count, len(o.parameters))
         self.assertEqual(dimensions_p.call_count, 1)
@@ -296,7 +296,7 @@ class ArbitraryOfferTestCase(ModelTestCase):
         model = values.pop("model")
         type_prefix = values.pop("type_prefix")
 
-        # Change offer type for BaseOffer cls and create base element
+        # Change offer type for AbstractOffer cls and create base element
         BaseOfferFactory.__cls__.__TYPE__ = ArbitraryOffer.__TYPE__
         expected_el = BaseOfferFactory(**values).create().to_xml()
 
@@ -357,7 +357,7 @@ class BookOfferTestCase(ModelTestCase):
         for k in self.KEYS:
             book_offer_values[k] = values.pop(k)
 
-        # Change offer type for BaseOffer cls and create base element
+        # Change offer type for AbstractOffer cls and create base element
         BaseOfferFactory.__cls__.__TYPE__ = BookOffer.__TYPE__
         expected_el = BaseOfferFactory(**values).create().to_xml()
 

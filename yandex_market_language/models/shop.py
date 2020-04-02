@@ -1,9 +1,9 @@
 from typing import List
 
-from .base import BaseModel, XMLElement, XMLSubElement
+from .abstract import AbstractModel, XMLElement, XMLSubElement
 from .currency import Currency
 from .category import Category
-from .offers import BaseOffer, SimplifiedOffer, ArbitraryOffer, BookOffer
+from .offers import AbstractOffer, SimplifiedOffer, ArbitraryOffer, BookOffer
 from .option import Option
 from . import fields
 
@@ -14,7 +14,7 @@ class Shop(
     fields.EnableAutoDiscountField,
     fields.DeliveryOptionsField,
     fields.PickupOptionsField,
-    BaseModel
+    AbstractModel
 ):
     def __init__(
         self,
@@ -23,7 +23,7 @@ class Shop(
         url: str,
         currencies: List[Currency],
         categories: List[Category],
-        offers: List[BaseOffer],
+        offers: List[AbstractOffer],
         platform: str = None,
         version: str = None,
         agency: str = None,

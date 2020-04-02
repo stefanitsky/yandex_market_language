@@ -1,11 +1,11 @@
 from typing import Optional
 
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
 
-class Price(BaseModel):
+class Price(AbstractModel):
     def __init__(self, value, is_starting=False):
         self.value = value
         self.is_starting = is_starting
@@ -41,5 +41,5 @@ class Price(BaseModel):
         return el
 
     @staticmethod
-    def from_xml(el: XMLElement) -> "BaseModel":
+    def from_xml(el: XMLElement) -> "AbstractModel":
         return Price(el.text, el.attrib.get("from", False))

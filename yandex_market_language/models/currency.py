@@ -1,6 +1,6 @@
 from typing import Optional
 
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -9,7 +9,7 @@ CURRENCY_CHOICES = ("RUR", "RUB", "UAH", "BYN", "KZT", "USD", "EUR")
 RATE_CHOICES = ("CBRF", "NBU", "NBK", "CB")
 
 
-class Currency(BaseModel):
+class Currency(AbstractModel):
     def __init__(self, currency, rate, plus=None):
         self.currency = currency
         self.rate = rate

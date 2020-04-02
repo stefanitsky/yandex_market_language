@@ -1,9 +1,9 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 from yandex_market_language.exceptions import ValidationError
 
 
-class Dimensions(BaseModel):
+class Dimensions(AbstractModel):
     def __init__(self, length, wight, height):
         self.length = length
         self.width = wight

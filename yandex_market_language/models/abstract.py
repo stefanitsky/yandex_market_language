@@ -9,7 +9,7 @@ XMLElement = ET.Element
 XMLSubElement = ET.SubElement
 
 
-class BaseModel(ABC):
+class AbstractModel(ABC):
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
         raise NotImplementedError
@@ -113,5 +113,5 @@ class BaseModel(ABC):
         return self.clean_dict if clean else self.create_dict()
 
     @staticmethod
-    def from_xml(el: XMLElement) -> "BaseModel":
+    def from_xml(el: XMLElement) -> "AbstractModel":
         raise NotImplementedError

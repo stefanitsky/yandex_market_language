@@ -1,7 +1,7 @@
-from .base import BaseModel, XMLElement
+from .abstract import AbstractModel, XMLElement
 
 
-class Category(BaseModel):
+class Category(AbstractModel):
     def __init__(self, category_id, name, parent_id=None):
         self.category_id = category_id
         self.name = name
