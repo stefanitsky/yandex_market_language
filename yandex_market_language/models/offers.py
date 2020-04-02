@@ -15,6 +15,7 @@ from . import fields
 
 
 EXPIRY_FORMAT = "YYYY-MM-DDThh:mm"
+DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 class AbstractOffer(
@@ -789,3 +790,85 @@ class MedicineOffer(AbstractOffer):
     def from_xml(offer_el: XMLElement, **mapping) -> "MedicineOffer":
         kwargs = AbstractOffer.from_xml(offer_el)
         return MedicineOffer(**kwargs)
+
+
+class EventTicketOffer(AbstractOffer):
+    """
+    EventTicket offer.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/export/event-tickets.html
+    """
+
+    __TYPE__ = "event-ticket"
+
+    def __init__(
+        self,
+        name: str,
+        place: str,
+        date,
+        hall: str = None,
+        hall_part: str = None,
+        is_premiere=None,
+        is_kids=None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.name = name
+        self.place = place
+        self.hall = hall
+        self.hall_part = hall_part
+        self.date = date
+        self.is_premiere = is_premiere
+        self.is_kids = is_kids
+
+    @property
+    def date(self) -> datetime:
+        return datetime.strptime(self._date, DATE_FORMAT)
+
+    @date.setter
+    def date(self, dt):
+        self._date = self._is_valid_datetime(dt, DATE_FORMAT, "date")
+
+    @property
+    def is_premiere(self) -> Optional[bool]:
+        return self._str_to_bool(self._is_premiere)
+
+    @is_premiere.setter
+    def is_premiere(self, value):
+        self._is_premiere = self._is_valid_bool(value, "is_premiere", True)
+
+    @property
+    def is_kids(self) -> Optional[bool]:
+        return self._str_to_bool(self._is_kids)
+
+    @is_kids.setter
+    def is_kids(self, value):
+        self._is_kids = self._is_valid_bool(value, "is_kids", True)
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            name=self.name,
+            place=self.place,
+            hall=self.hall,
+            hall_part=self.hall_part,
+            date=self.date,
+            is_premiere=self.is_premiere,
+            is_kids=self.is_kids,
+        )
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        return super().create_xml(
+            name="name",
+            place="place",
+            hall="hall",
+            hall_part="hall_part",
+            date="_date",
+            is_premiere="_is_premiere",
+            is_kids="_is_kids",
+        )
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "EventTicketOffer":
+        kwargs = AbstractOffer.from_xml(offer_el)
+        return EventTicketOffer(**kwargs)

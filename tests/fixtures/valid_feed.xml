@@ -231,8 +231,9 @@
               <hall>Большой зал</hall>
               <hall_part>Партер р. 1-5</hall_part>
               <date>2012-02-25 12:03:14</date>
-              <is_premiere>0</is_premiere>
-              <is_kids>0</is_kids>
+              <is_premiere>true</is_premiere>
+              <is_kids>true</is_kids>
+              <min-quantity>1</min-quantity>
               <description>
               Концерт Дмитрия Хворостовского и Национального филармонического оркестра России...
               </description>

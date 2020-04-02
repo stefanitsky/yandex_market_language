@@ -2,6 +2,7 @@ from unittest import mock
 
 from yandex_market_language.models.offers import (
     EXPIRY_FORMAT,
+    DATE_FORMAT,
     AbstractOffer,
     SimplifiedOffer,
     ArbitraryOffer,
@@ -9,7 +10,8 @@ from yandex_market_language.models.offers import (
     BookOffer,
     AudioBookOffer,
     MusicVideoOffer,
-    MedicineOffer
+    MedicineOffer,
+    EventTicketOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -343,3 +345,39 @@ class MedicineOfferFactory(AbstractOfferFactory):
 
     def get_values(self, **kwargs) -> dict:
         return super().get_values(name=self.name)
+
+
+class EventTicketOfferFactory(AbstractOfferFactory):
+
+    __cls__ = EventTicketOffer
+
+    def __init__(
+        self,
+        name=fake.name(),
+        place=fake.pystr(),
+        date=fake.date(DATE_FORMAT),
+        hall=fake.pystr(),
+        hall_part=fake.pystr(),
+        is_premiere=fake.pybool(),
+        is_kids=fake.pybool(),
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.name = name
+        self.place = place
+        self.date = date
+        self.hall = hall
+        self.hall_part = hall_part
+        self.is_premiere = is_premiere
+        self.is_kids = is_kids
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
+            name=self.name,
+            place=self.place,
+            date=self.date,
+            hall=self.hall,
+            hall_part=self.hall_part,
+            is_premiere=self.is_premiere,
+            is_kids=self.is_kids,
+        )

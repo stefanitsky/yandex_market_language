@@ -22,7 +22,7 @@ class Age(AbstractModel):
 
     @unit.setter
     def unit(self, value):
-        if value not in UNIT_CHOICES:
+        if value and value not in UNIT_CHOICES:
             raise ValidationError("unit must be a valid choice: {c}".format(
                 c=", ".join(UNIT_CHOICES)
             ))
@@ -61,7 +61,10 @@ class Age(AbstractModel):
         return dict(unit=self.unit, value=self.value)
 
     def create_xml(self, **kwargs) -> XMLElement:
-        el = XMLElement("age", {"unit": self.unit})
+        attribs = {}
+        if self._unit:
+            attribs["unit"] = self._unit
+        el = XMLElement("age", attribs)
         el.text = self._value
         return el
 
