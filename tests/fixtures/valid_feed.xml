@@ -156,6 +156,9 @@
               <year>2008</year>
               <ISBN>978-5-9677-0757-5</ISBN>
               <language>ru</language>
+              <delivery>true</delivery>
+              <pickup>false</pickup>
+              <min-quantity>1</min-quantity>
               <performed_by>Николай Фоменко</performed_by>
               <performance_type>радиоспектакль</performance_type>
               <storage>CD</storage>
