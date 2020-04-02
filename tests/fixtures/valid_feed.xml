@@ -239,6 +239,29 @@
               </description>
               <age>6</age>
             </offer>
+            <offer id="ALCO111" type="alco" bid="80">
+                <name>Игристое вино брют розовое Santa Margherita Rose Италия, 0.75 л</name>
+                <vendor>Santa Margherita</vendor>
+                <url>http://shop.seller.ru/products/342995</url>
+                <price>1750</price>
+                <oldprice>1600</oldprice>
+                <currencyId>RUR</currencyId>
+                <categoryId>3</categoryId>
+                <picture>http://media.seller.ru/shop/342995_large.jpg</picture>
+                <description>Прекрасный аперитив. Отлично сочетается с морепродуктами и белым
+                    мясом птицы.
+                </description>
+                <country_of_origin>Италия</country_of_origin>
+                <min-quantity>1</min-quantity>
+                <delivery>false</delivery>
+                <pickup>true</pickup>
+                <param name="Объем" unit="л">0.75</param>
+                <param name="содержание сахара">брют</param>
+                <param name="год урожая">2016</param>
+                <param name="крепость">12.5%</param>
+                <param name="цвет">розовое</param>
+                <barcode>4607071772810</barcode>
+            </offer>
         </offers>
 <!--        <gifts>-->
 <!--            <gift id="33">-->
