@@ -278,28 +278,29 @@ class AbstractOffer(
             offer_el.attrib["available"] = self._available
 
         # Add simple values
-        for tag, attr in (
-            ("vendor", "vendor"),
-            ("vendorCode", "vendor_code"),
-            ("url", "url"),
-            ("oldprice", "old_price"),
-            ("enable_auto_discounts", "_enable_auto_discounts"),
-            ("currencyId", "currency"),
-            ("categoryId", "category_id"),
-            ("delivery", "_delivery"),
-            ("pickup", "_pickup"),
-            ("store", "_store"),
-            ("description", "description"),
-            ("sales_notes", "sales_notes"),
-            ("min-quantity", "_min_quantity"),
-            ("manufacturer_warranty", "_manufacturer_warranty"),
-            ("country_of_origin", "country_of_origin"),
-            ("adult", "_adult"),
-            ("expiry", "_expiry"),
-            ("weight", "_weight"),
-            ("downloadable", "_downloadable"),
-            ("group_id", "_group_id"),
-        ):
+        for tag, attr in {
+            "vendor": "vendor",
+            "vendorCode": "vendor_code",
+            "url": "url",
+            "oldprice": "old_price",
+            "enable_auto_discounts": "_enable_auto_discounts",
+            "currencyId": "currency",
+            "categoryId": "category_id",
+            "delivery": "_delivery",
+            "pickup": "_pickup",
+            "store": "_store",
+            "description": "description",
+            "sales_notes": "sales_notes",
+            "min-quantity": "_min_quantity",
+            "manufacturer_warranty": "_manufacturer_warranty",
+            "country_of_origin": "country_of_origin",
+            "adult": "_adult",
+            "expiry": "_expiry",
+            "weight": "_weight",
+            "downloadable": "_downloadable",
+            "group_id": "_group_id",
+            **kwargs,
+        }.items():
             value = getattr(self, attr)
             if value:
                 el = XMLSubElement(offer_el, tag)
@@ -586,25 +587,19 @@ class AbstractBookOffer(AbstractOffer, ABC):
 
     @abstractmethod
     def create_xml(self, **kwargs) -> XMLElement:
-        offer_el = super().create_xml(**kwargs)
-
-        for tag, attr in {
-            "name": "name",
-            "publisher": "publisher",
-            "ISBN": "isbn",
-            "author": "author",
-            "series": "series",
-            "year": "_year",
-            "volume": "_volume",
-            "part": "_part",
-            "language": "language",
-            "table_of_contents": "table_of_contents",
+        offer_el = super().create_xml(
+            name="name",
+            publisher="publisher",
+            ISBN="isbn",
+            author="author",
+            series="series",
+            year="_year",
+            volume="_volume",
+            part="_part",
+            language="language",
+            table_of_contents="table_of_contents",
             **kwargs
-        }.items():
-            v = getattr(self, attr)
-            if v:
-                el = XMLSubElement(offer_el, tag)
-                el.text = v
+        )
 
         return offer_el
 
@@ -651,7 +646,8 @@ class BookOffer(AbstractBookOffer):
 
     def create_xml(self, **kwargs) -> XMLElement:
         offer_el = super().create_xml(
-            binding="binding", page_extent="_page_extent"
+            binding="binding",
+            page_extent="_page_extent"
         )
         return offer_el
 
