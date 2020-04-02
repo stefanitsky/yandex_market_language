@@ -512,15 +512,10 @@ class ArbitraryOffer(AbstractOffer):
         return ArbitraryOffer(**kwargs)
 
 
-class BookOffer(AbstractOffer):
+class AbstractBookOffer(AbstractOffer, ABC):
     """
-    Special offer type for books.
-
-    Yandex.Market docs:
-    https://yandex.ru/support/partnermarket/export/books.html
+    Abstract book offer for book & audio book offer types.
     """
-
-    __TYPE__ = "book"
 
     def __init__(
         self,
@@ -535,8 +530,6 @@ class BookOffer(AbstractOffer):
         part=None,
         language: str = None,
         table_of_contents=None,
-        binding=None,
-        page_extent=None,
         **kwargs
     ):
         super().__init__(age=age, **kwargs)
@@ -550,8 +543,6 @@ class BookOffer(AbstractOffer):
         self.part = part
         self.language = language
         self.table_of_contents = table_of_contents
-        self.binding = binding
-        self.page_extent = page_extent
 
     @property
     def year(self) -> Optional[int]:
@@ -577,6 +568,71 @@ class BookOffer(AbstractOffer):
     def part(self, value):
         self._part = self._is_valid_int(value, "part", True)
 
+    @abstractmethod
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            name=self.name,
+            publisher=self.publisher,
+            isbn=self.isbn,
+            author=self.author,
+            series=self.series,
+            year=self.year,
+            volume=self.volume,
+            part=self.part,
+            language=self.language,
+            table_of_contents=self.table_of_contents,
+            **kwargs
+        )
+
+    @abstractmethod
+    def create_xml(self, **kwargs) -> XMLElement:
+        offer_el = super().create_xml(**kwargs)
+
+        for tag, attr in {
+            "name": "name",
+            "publisher": "publisher",
+            "ISBN": "isbn",
+            "author": "author",
+            "series": "series",
+            "year": "_year",
+            "volume": "_volume",
+            "part": "_part",
+            "language": "language",
+            "table_of_contents": "table_of_contents",
+            **kwargs
+        }.items():
+            v = getattr(self, attr)
+            if v:
+                el = XMLSubElement(offer_el, tag)
+                el.text = v
+
+        return offer_el
+
+    @staticmethod
+    @abstractmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> dict:
+        mapping.update({
+            "publisher": "publisher",
+            "ISBN": "isbn",
+        })
+        return AbstractOffer.from_xml(offer_el, **mapping)
+
+
+class BookOffer(AbstractBookOffer):
+    """
+    Special offer type for books.
+
+    Yandex.Market docs:
+    https://yandex.ru/support/partnermarket/export/books.html
+    """
+
+    __TYPE__ = "book"
+
+    def __init__(self, binding=None, page_extent=None, **kwargs):
+        super().__init__(**kwargs)
+        self.binding = binding
+        self.page_extent = page_extent
+
     @property
     def page_extent(self) -> Optional[int]:
         return int(self._page_extent) if self._page_extent else None
@@ -590,50 +646,16 @@ class BookOffer(AbstractOffer):
 
     def create_dict(self, **kwargs) -> dict:
         return super().create_dict(
-            name=self.name,
-            publisher=self.publisher,
-            isbn=self.isbn,
-            author=self.author,
-            series=self.series,
-            year=self.year,
-            volume=self.volume,
-            part=self.part,
-            language=self.language,
-            table_of_contents=self.table_of_contents,
-            binding=self.binding,
-            page_extent=self.page_extent,
-            **kwargs
+            binding=self.binding, page_extent=self.page_extent
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
-        offer_el = super().create_xml(**kwargs)
-
-        for tag, attr in (
-            ("name", "name"),
-            ("publisher", "publisher"),
-            ("ISBN", "isbn"),
-            ("author", "author"),
-            ("series", "series"),
-            ("year", "_year"),
-            ("volume", "_volume"),
-            ("part", "_part"),
-            ("language", "language"),
-            ("table_of_contents", "table_of_contents"),
-            ("binding", "binding"),
-            ("page_extent", "_page_extent"),
-        ):
-            v = getattr(self, attr)
-            if v:
-                el = XMLSubElement(offer_el, tag)
-                el.text = v
-
+        offer_el = super().create_xml(
+            binding="binding", page_extent="_page_extent"
+        )
         return offer_el
 
     @staticmethod
     def from_xml(offer_el: XMLElement, **mapping) -> "BookOffer":
-        mapping.update({
-            "publisher": "publisher",
-            "ISBN": "isbn",
-        })
-        kwargs = AbstractOffer.from_xml(offer_el, **mapping)
+        kwargs = AbstractBookOffer.from_xml(offer_el, **mapping)
         return BookOffer(**kwargs)

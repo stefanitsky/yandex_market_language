@@ -5,6 +5,7 @@ from yandex_market_language.models.offers import (
     AbstractOffer,
     SimplifiedOffer,
     ArbitraryOffer,
+    AbstractBookOffer,
     BookOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
@@ -186,9 +187,9 @@ class ArbitraryOfferFactory(BaseOfferFactory):
         )
 
 
-class BookOfferFactory(BaseOfferFactory):
+class AbstractBookOfferFactory(BaseOfferFactory):
 
-    __cls__ = BookOffer
+    __cls__ = AbstractBookOffer
 
     def __init__(
         self,
@@ -203,8 +204,6 @@ class BookOfferFactory(BaseOfferFactory):
         part=fake.pyint(),
         language=fake.pystr(),
         table_of_contents=fake.text(),
-        binding=fake.pystr(),
-        page_extent=fake.pyint(),
         **kwargs
     ):
         super().__init__(age=age, **kwargs)
@@ -218,8 +217,6 @@ class BookOfferFactory(BaseOfferFactory):
         self.part = part
         self.language = language
         self.table_of_contents = table_of_contents
-        self.binding = binding
-        self.page_extent = page_extent
 
     def get_values(self, **kwargs) -> dict:
         return super().get_values(
@@ -233,6 +230,30 @@ class BookOfferFactory(BaseOfferFactory):
             part=self.part,
             language=self.language,
             table_of_contents=self.table_of_contents,
+            **kwargs
+        )
+
+    @mock.patch.multiple(AbstractBookOffer, __abstractmethods__=set())
+    def create(self, **kwargs) -> "__cls__":
+        return self.__cls__(**self.get_values(**kwargs))
+
+
+class BookOfferFactory(AbstractBookOfferFactory):
+
+    __cls__ = BookOffer
+
+    def __init__(
+        self,
+        binding=fake.pystr(),
+        page_extent=fake.pyint(),
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.binding = binding
+        self.page_extent = page_extent
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
             binding=self.binding,
             page_extent=self.page_extent,
         )
