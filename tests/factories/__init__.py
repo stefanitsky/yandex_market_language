@@ -4,12 +4,13 @@ from .category import CategoryFactory
 from .option import OptionFactory
 from .price import PriceFactory
 from .offers import (
-    BaseOfferFactory,
+    AbstractOfferFactory,
     SimplifiedOfferFactory,
     ArbitraryOfferFactory,
-    AbstractBookOffer,
+    AbstractBookOfferFactory,
     BookOfferFactory,
     AudioBookOfferFactory,
+    MusicVideoOfferFactory,
 )
 from .parameter import ParameterFactory
 from .condition import ConditionFactory
@@ -23,12 +24,13 @@ __all__ = [
     "CategoryFactory",
     "OptionFactory",
     "PriceFactory",
-    "BaseOfferFactory",
+    "AbstractOfferFactory",
     "SimplifiedOfferFactory",
     "ArbitraryOfferFactory",
-    "AbstractBookOffer",
+    "AbstractBookOfferFactory",
     "BookOfferFactory",
     "AudioBookOfferFactory",
+    "MusicVideoOfferFactory",
     "ParameterFactory",
     "ConditionFactory",
     "DimensionsFactory",

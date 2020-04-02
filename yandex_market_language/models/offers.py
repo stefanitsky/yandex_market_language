@@ -513,7 +513,7 @@ class ArbitraryOffer(AbstractOffer):
         return ArbitraryOffer(**kwargs)
 
 
-class AbstractBookOffer(AbstractOffer, ABC):
+class AbstractBookOffer(fields.YearField, AbstractOffer, ABC):
     """
     Abstract book offer for book & audio book offer types.
     """
@@ -544,14 +544,6 @@ class AbstractBookOffer(AbstractOffer, ABC):
         self.part = part
         self.language = language
         self.table_of_contents = table_of_contents
-
-    @property
-    def year(self) -> Optional[int]:
-        return int(self._year) if self._year else None
-
-    @year.setter
-    def year(self, value):
-        self._year = self._is_valid_int(value, "year", True)
 
     @property
     def volume(self) -> Optional[int]:
@@ -706,3 +698,68 @@ class AudioBookOffer(AbstractBookOffer):
         mapping.update({"format": "audio_format"})
         kwargs = AbstractBookOffer.from_xml(offer_el, **mapping)
         return AudioBookOffer(**kwargs)
+
+
+class MusicVideoOffer(fields.YearField, AbstractOffer):
+    """
+    Music or video offer.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/export/music-video.html
+    """
+
+    __TYPE__ = "artist.title"
+
+    def __init__(
+        self,
+        title: str,
+        artist: str = None,
+        year=None,
+        media: str = None,
+        starring: str = None,
+        director: str = None,
+        original_name: str = None,
+        country: str = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.artist = artist
+        self.title = title
+        self.year = year
+        self.media = media
+        self.starring = starring
+        self.director = director
+        self.original_name = original_name
+        self.country = country
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            artist=self.artist,
+            title=self.title,
+            year=self.year,
+            media=self.media,
+            starring=self.starring,
+            director=self.director,
+            original_name=self.original_name,
+            country=self.country,
+        )
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        return super().create_xml(
+            artist="artist",
+            title="title",
+            year="_year",
+            media="media",
+            starring="starring",
+            director="director",
+            originalName="original_name",
+            country="country",
+        )
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "MusicVideoOffer":
+        mapping.update({
+            "originalName": "original_name"
+        })
+        kwargs = AbstractOffer.from_xml(offer_el, **mapping)
+        return MusicVideoOffer(**kwargs)

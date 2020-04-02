@@ -3,13 +3,14 @@ from unittest import mock
 
 from tests.cases import ModelTestCase, ET, fake
 from tests.factories import (
-    BaseOfferFactory,
+    AbstractOfferFactory,
     SimplifiedOfferFactory,
     ArbitraryOfferFactory,
+    AbstractBookOfferFactory,
+    AudioBookOfferFactory,
     BookOfferFactory,
+    MusicVideoOfferFactory
 )
-from tests.factories.offers import AbstractBookOfferFactory, \
-    AudioBookOfferFactory
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.offers import (
@@ -18,7 +19,8 @@ from yandex_market_language.models.offers import (
     ArbitraryOffer,
     BookOffer,
     AbstractBookOffer,
-    AudioBookOffer
+    AudioBookOffer,
+    MusicVideoOffer
 )
 
 
@@ -27,13 +29,13 @@ class BaseOfferModelTestCase(ModelTestCase):
         self.assertEqual(AbstractOffer.__TYPE__, None)
 
     def test_to_xml_offer_type(self):
-        o = BaseOfferFactory().create()
+        o = AbstractOfferFactory().create()
         o.__TYPE__ = "test"
         el = o.to_xml()
         self.assertEqual(el.attrib["type"], "test")
 
     def test_to_xml_available_attr(self):
-        o = BaseOfferFactory(available=False).create()
+        o = AbstractOfferFactory(available=False).create()
         el = o.create_xml()
         self.assertEqual(el.attrib["available"], "false")
         o.available = True
@@ -44,7 +46,7 @@ class BaseOfferModelTestCase(ModelTestCase):
         self.assertEqual(el.attrib.get("available"), None)
 
     def test_to_dict(self):
-        o = BaseOfferFactory().create()
+        o = AbstractOfferFactory().create()
         d = o.to_dict()
         expected_keys = [
             "type",
@@ -86,7 +88,7 @@ class BaseOfferModelTestCase(ModelTestCase):
         self.assertEqual(sorted(d.keys()), sorted(expected_keys))
 
     def test_to_xml(self):
-        o = BaseOfferFactory().create()
+        o = AbstractOfferFactory().create()
         el = o.to_xml()
 
         attributes = {"id": o.offer_id, "bid": o.bid}
@@ -170,14 +172,14 @@ class BaseOfferModelTestCase(ModelTestCase):
         self.assertElementsEquals(el, expected_el)
 
     def test_min_quantity_property_default(self):
-        o = BaseOfferFactory().create()
+        o = AbstractOfferFactory().create()
         o.min_quantity = None
         self.assertEqual(o._min_quantity, "1")
 
     def test_expiry_property_dost_not_match_format_error(self):
         with self.assertRaises(ValidationError) as e:
             expiry = "err"
-            BaseOfferFactory(expiry=expiry).create()
+            AbstractOfferFactory(expiry=expiry).create()
             expected_err = "time data {d} does not match format '{f}'".format(
                 d=expiry, f=models.offers.EXPIRY_FORMAT
             )
@@ -185,23 +187,23 @@ class BaseOfferModelTestCase(ModelTestCase):
 
     def test_expiry_property_datetime_to_str(self):
         dt = datetime.now()
-        o = BaseOfferFactory(expiry=dt).create()
+        o = AbstractOfferFactory(expiry=dt).create()
         self.assertEqual(o._expiry, dt.strftime(models.offers.EXPIRY_FORMAT))
 
     def test_expiry_property_wrong_value_specified(self):
         with self.assertRaises(ValidationError) as e:
-            BaseOfferFactory(expiry=1).create()
+            AbstractOfferFactory(expiry=1).create()
             self.assertEqual(str(e), "expiry must be a valid datetime")
 
     def test_expiry_property_none(self):
-        o = BaseOfferFactory(expiry=None).create()
+        o = AbstractOfferFactory(expiry=None).create()
         self.assertEqual(o._expiry, None)
         self.assertEqual(o.expiry, None)
 
     def test_group_id_not_valid_maximum_length(self):
         with self.assertRaises(ValidationError) as e:
             group_id = fake.pyint(min_value=1000000000, max_value=9999999999)
-            BaseOfferFactory(group_id=group_id).create()
+            AbstractOfferFactory(group_id=group_id).create()
             self.assertEqual(
                 str(e), "group_id must be an integer, maximum 9 characters."
             )
@@ -222,7 +224,7 @@ class BaseOfferModelTestCase(ModelTestCase):
         condition_p,
         age_p,
     ):
-        o = BaseOfferFactory().create()
+        o = AbstractOfferFactory().create()
         el = o.to_xml()
         options = o.delivery_options + o.pickup_options
         option_p.side_effect = options
@@ -260,7 +262,7 @@ class SimplifiedOfferModelTestCase(ModelTestCase):
 
         values = f.get_values()
         name = values.pop("name")
-        expected_el = BaseOfferFactory(**values).create().to_xml()
+        expected_el = AbstractOfferFactory(**values).create().to_xml()
 
         name_el = ET.Element("name")
         name_el.text = name
@@ -301,8 +303,8 @@ class ArbitraryOfferTestCase(ModelTestCase):
         type_prefix = values.pop("type_prefix")
 
         # Change offer type for AbstractOffer cls and create base element
-        BaseOfferFactory.__cls__.__TYPE__ = ArbitraryOffer.__TYPE__
-        expected_el = BaseOfferFactory(**values).create().to_xml()
+        AbstractOfferFactory.__cls__.__TYPE__ = ArbitraryOffer.__TYPE__
+        expected_el = AbstractOfferFactory(**values).create().to_xml()
 
         # Add model
         model_el = ET.SubElement(expected_el, "model")
@@ -356,7 +358,7 @@ class AbstractBookOfferTestCase(ModelTestCase):
             book_offer_values[k] = values.pop(k)
 
         # Change offer type for AbstractOffer cls and create base element
-        expected_el = BaseOfferFactory(**values).create().to_xml()
+        expected_el = AbstractOfferFactory(**values).create().to_xml()
 
         for tag, attr in (
             ("name", "name"),
@@ -474,4 +476,43 @@ class AudioBookOfferTestCase(ModelTestCase):
     def test_from_xml(self):
         o = AudioBookOfferFactory().create()
         parsed_o = AudioBookOffer.from_xml(o.to_xml())
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())
+
+
+class MusicVideoOfferTestCase(ModelTestCase):
+    KEYS = (
+        "artist",
+        "title",
+        "year",
+        "media",
+        "starring",
+        "director",
+        "original_name",
+        "country"
+    )
+
+    MAPPING = {
+        "artist": "artist",
+        "title": "title",
+        "year": "year",
+        "media": "media",
+        "starring": "starring",
+        "director": "director",
+        "originalName": "original_name",
+        "country": "country",
+    }
+
+    def test_type(self):
+        self.assertEqual(MusicVideoOffer.__TYPE__, "artist.title")
+
+    def test_to_dict(self):
+        o = MusicVideoOfferFactory().create()
+        d = o.to_dict()
+        self.assertTrue(all(k in d for k in self.KEYS))
+        for k in self.KEYS:
+            self.assertEqual(d[k], getattr(o, k))
+
+    def test_from_xml(self):
+        o = MusicVideoOfferFactory().create()
+        parsed_o = MusicVideoOffer.from_xml(o.to_xml())
         self.assertEqual(o.to_dict(), parsed_o.to_dict())

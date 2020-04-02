@@ -181,6 +181,7 @@
               <url>https://example.shop/product_page.asp?pid=4</url>
               <price>93</price>
               <oldprice>100</oldprice>
+              <min-quantity>1</min-quantity>
               <currencyId>RUR</currencyId>
               <categoryId>2</categoryId>
               <picture>https://example.shop/img/model_4.jpg</picture>

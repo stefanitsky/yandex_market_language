@@ -7,7 +7,8 @@ from yandex_market_language.models.offers import (
     ArbitraryOffer,
     AbstractBookOffer,
     BookOffer,
-    AudioBookOffer
+    AudioBookOffer,
+    MusicVideoOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -23,7 +24,7 @@ from .age import AgeFactory
 fake = Faker()
 
 
-class BaseOfferFactory:
+class AbstractOfferFactory:
 
     __cls__ = AbstractOffer
 
@@ -154,7 +155,7 @@ class BaseOfferFactory:
         return self.__cls__(**self.get_values(**kwargs))
 
 
-class SimplifiedOfferFactory(BaseOfferFactory):
+class SimplifiedOfferFactory(AbstractOfferFactory):
 
     __cls__ = SimplifiedOffer
 
@@ -166,7 +167,7 @@ class SimplifiedOfferFactory(BaseOfferFactory):
         return super().get_values(name=self.name)
 
 
-class ArbitraryOfferFactory(BaseOfferFactory):
+class ArbitraryOfferFactory(AbstractOfferFactory):
 
     __cls__ = ArbitraryOffer
 
@@ -188,7 +189,7 @@ class ArbitraryOfferFactory(BaseOfferFactory):
         )
 
 
-class AbstractBookOfferFactory(BaseOfferFactory):
+class AbstractBookOfferFactory(AbstractOfferFactory):
 
     __cls__ = AbstractBookOffer
 
@@ -287,5 +288,45 @@ class AudioBookOfferFactory(AbstractBookOfferFactory):
             storage=self.storage,
             audio_format=self.audio_format,
             recording_length=self.recording_length,
+            **kwargs
+        )
+
+
+class MusicVideoOfferFactory(AbstractOfferFactory):
+
+    __cls__ = MusicVideoOffer
+
+    def __init__(
+        self,
+        artist: str = fake.name(),
+        title: str = fake.words(),
+        year: str = fake.year(),
+        media: str = fake.pystr(),
+        starring: str = fake.name(),
+        director: str = fake.name(),
+        original_name: str = fake.name(),
+        country: str = fake.pystr(),
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.artist = artist
+        self.title = title
+        self.year = year
+        self.media = media
+        self.starring = starring
+        self.director = director
+        self.original_name = original_name
+        self.country = country
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
+            artist=self.artist,
+            title=self.title,
+            year=self.year,
+            media=self.media,
+            starring=self.starring,
+            director=self.director,
+            original_name=self.original_name,
+            country=self.country,
             **kwargs
         )
