@@ -9,6 +9,7 @@ from .offers import (
     ArbitraryOfferFactory,
     AbstractBookOffer,
     BookOfferFactory,
+    AudioBookOfferFactory,
 )
 from .parameter import ParameterFactory
 from .condition import ConditionFactory
@@ -27,6 +28,7 @@ __all__ = [
     "ArbitraryOfferFactory",
     "AbstractBookOffer",
     "BookOfferFactory",
+    "AudioBookOfferFactory",
     "ParameterFactory",
     "ConditionFactory",
     "DimensionsFactory",

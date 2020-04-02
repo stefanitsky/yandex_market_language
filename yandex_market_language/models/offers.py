@@ -655,3 +655,54 @@ class BookOffer(AbstractBookOffer):
     def from_xml(offer_el: XMLElement, **mapping) -> "BookOffer":
         kwargs = AbstractBookOffer.from_xml(offer_el, **mapping)
         return BookOffer(**kwargs)
+
+
+class AudioBookOffer(AbstractBookOffer):
+    """
+    Audio book offer.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/export/audiobooks.html
+    """
+
+    __TYPE__ = "audiobook"
+
+    def __init__(
+        self,
+        performed_by: str = None,
+        performance_type: str = None,
+        storage: str = None,
+        audio_format: str = None,
+        recording_length: str = None,
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.performed_by = performed_by
+        self.performance_type = performance_type
+        self.storage = storage
+        self.audio_format = audio_format
+        self.recording_length = recording_length
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(
+            performed_by=self.performed_by,
+            performance_type=self.performance_type,
+            storage=self.storage,
+            audio_format=self.audio_format,
+            recording_length=self.recording_length
+        )
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        return super().create_xml(
+            performed_by="performed_by",
+            performance_type="performance_type",
+            storage="storage",
+            audio_format="audio_format",
+            recording_length="recording_length"
+        )
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "AudioBookOffer":
+        mapping.update({"format": "audio_format"})
+        kwargs = AbstractBookOffer.from_xml(offer_el, **mapping)
+        return AudioBookOffer(**kwargs)

@@ -8,7 +8,8 @@ from tests.factories import (
     ArbitraryOfferFactory,
     BookOfferFactory,
 )
-from tests.factories.offers import AbstractBookOfferFactory
+from tests.factories.offers import AbstractBookOfferFactory, \
+    AudioBookOfferFactory
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.offers import (
@@ -16,7 +17,9 @@ from yandex_market_language.models.offers import (
     SimplifiedOffer,
     ArbitraryOffer,
     BookOffer,
-    AbstractBookOffer)
+    AbstractBookOffer,
+    AudioBookOffer
+)
 
 
 class BaseOfferModelTestCase(ModelTestCase):
@@ -380,6 +383,9 @@ class AbstractBookOfferTestCase(ModelTestCase):
 
 
 class BookOfferTestCase(ModelTestCase):
+    def test_type(self):
+        self.assertEqual(BookOffer.__TYPE__, "book")
+
     def test_to_dict(self):
         o = BookOfferFactory().create()
         d = o.to_dict()
@@ -423,3 +429,48 @@ class BookOfferTestCase(ModelTestCase):
             v = fake.pyint(min_value=-100, max_value=-1)
             BookOfferFactory(page_extent=v).create()
             self.assertEqual(str(e), "page_extent must be positive int")
+
+
+class AudioBookOfferTestCase(ModelTestCase):
+    KEYS = (
+        "performed_by",
+        "performance_type",
+        "storage",
+        "audio_format",
+        "recording_length",
+    )
+
+    def test_type(self):
+        self.assertEqual(AudioBookOffer.__TYPE__, "audiobook")
+
+    def test_to_dict(self):
+        o = AudioBookOfferFactory().create()
+        d = o.to_dict()
+
+        self.assertTrue(all(k in d for k in self.KEYS))
+        for k in self.KEYS:
+            self.assertEqual(d[k], getattr(o, k))
+
+    def test_to_xml(self):
+        f = AudioBookOfferFactory()
+        o = f.create()
+        el = o.to_xml()
+
+        values = f.get_values()
+        audio_book_values = {}
+        for k in self.KEYS:
+            audio_book_values[k] = values.pop(k)
+
+        AbstractBookOfferFactory.__cls__.__TYPE__ = AudioBookOffer.__TYPE__
+        expected_el = AbstractBookOfferFactory(**values).create().to_xml()
+
+        for k in self.KEYS:
+            el_ = ET.SubElement(expected_el, k)
+            el_.text = audio_book_values[k]
+
+        self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        o = AudioBookOfferFactory().create()
+        parsed_o = AudioBookOffer.from_xml(o.to_xml())
+        self.assertEqual(o.to_dict(), parsed_o.to_dict())

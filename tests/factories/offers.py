@@ -6,7 +6,8 @@ from yandex_market_language.models.offers import (
     SimplifiedOffer,
     ArbitraryOffer,
     AbstractBookOffer,
-    BookOffer
+    BookOffer,
+    AudioBookOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -256,4 +257,35 @@ class BookOfferFactory(AbstractBookOfferFactory):
         return super().get_values(
             binding=self.binding,
             page_extent=self.page_extent,
+        )
+
+
+class AudioBookOfferFactory(AbstractBookOfferFactory):
+
+    __cls__ = AudioBookOffer
+
+    def __init__(
+        self,
+        performed_by=fake.name(),
+        performance_type=fake.random_element(["радиоспектакль", "начитано"]),
+        storage=fake.random_element(["CD", "касета", "flash"]),
+        audio_format=fake.random_element(["mp3", "wav"]),
+        recording_length=fake.random_element(["22:08", "13:37"]),
+        **kwargs
+    ):
+        super().__init__(**kwargs)
+        self.performed_by = performed_by
+        self.performance_type = performance_type
+        self.storage = storage
+        self.audio_format = audio_format
+        self.recording_length = recording_length
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(
+            performed_by=self.performed_by,
+            performance_type=self.performance_type,
+            storage=self.storage,
+            audio_format=self.audio_format,
+            recording_length=self.recording_length,
+            **kwargs
         )
