@@ -1,5 +1,7 @@
+from typing import List
 from unittest import mock
 
+from yandex_market_language.models import Parameter
 from yandex_market_language.models.offers import (
     EXPIRY_FORMAT,
     DATE_FORMAT,
@@ -11,7 +13,8 @@ from yandex_market_language.models.offers import (
     AudioBookOffer,
     MusicVideoOffer,
     MedicineOffer,
-    EventTicketOffer
+    EventTicketOffer,
+    AlcoholOffer,
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -381,3 +384,32 @@ class EventTicketOfferFactory(AbstractOfferFactory):
             is_premiere=self.is_premiere,
             is_kids=self.is_kids,
         )
+
+
+class AlcoholOfferFactory(AbstractOfferFactory):
+
+    __cls__ = AlcoholOffer
+
+    def __init__(
+        self,
+        name: str = fake.pystr(),
+        vendor: str = fake.pystr(),
+        barcodes: List[str] = None,
+        parameters: List[Parameter] = None,
+        **kwargs
+    ):
+        if barcodes is None:
+            barcodes = [fake.pystr() for _ in range(3)]
+        if parameters is None:
+            parameters = [ParameterFactory() for _ in range(3)]
+
+        super().__init__(
+            vendor=vendor,
+            barcodes=barcodes,
+            parameters=parameters,
+            **kwargs
+        )
+        self.name = name
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(name=self.name)

@@ -11,7 +11,7 @@ from .offers import (
     AudioBookOffer,
     MusicVideoOffer,
     MedicineOffer,
-    EventTicketOffer)
+    EventTicketOffer, AlcoholOffer)
 from .option import Option
 from . import fields
 
@@ -184,6 +184,8 @@ class Shop(
                         offers.append(MedicineOffer.from_xml(offer_el))
                     elif offer_type == "event-ticket":
                         offers.append(EventTicketOffer.from_xml(offer_el))
+                    elif offer_type == "alco":
+                        offers.append(AlcoholOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
             # elif el.tag == "gifts":
             #     pass

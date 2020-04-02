@@ -13,6 +13,7 @@ from .offers import (
     MusicVideoOfferFactory,
     MedicineOfferFactory,
     EventTicketOfferFactory,
+    AlcoholOfferFactory,
 )
 from .parameter import ParameterFactory
 from .condition import ConditionFactory
@@ -35,6 +36,7 @@ __all__ = [
     "MusicVideoOfferFactory",
     "MedicineOfferFactory",
     "EventTicketOfferFactory",
+    "AlcoholOfferFactory",
     "ParameterFactory",
     "ConditionFactory",
     "DimensionsFactory",

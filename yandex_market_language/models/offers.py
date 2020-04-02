@@ -872,3 +872,41 @@ class EventTicketOffer(AbstractOffer):
     def from_xml(offer_el: XMLElement, **mapping) -> "EventTicketOffer":
         kwargs = AbstractOffer.from_xml(offer_el)
         return EventTicketOffer(**kwargs)
+
+
+class AlcoholOffer(AbstractOffer):
+    """
+    Alcohol offer.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/export/alcohol.html
+    """
+
+    __TYPE__ = "alco"
+
+    def __init__(
+        self,
+        name: str,
+        vendor: str,
+        barcodes: List[str],
+        parameters: List[Parameter],
+        **kwargs
+    ):
+        super().__init__(
+            vendor=vendor,
+            barcodes=barcodes,
+            parameters=parameters,
+            **kwargs
+        )
+        self.name = name
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(name=self.name)
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        return super().create_xml(name="name")
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "AlcoholOffer":
+        kwargs = AbstractOffer.from_xml(offer_el)
+        return AlcoholOffer(**kwargs)

@@ -15,6 +15,7 @@ from .offers import (
     MusicVideoOffer,
     MedicineOffer,
     EventTicketOffer,
+    AlcoholOffer,
 )
 from .parameter import Parameter
 from .condition import Condition
@@ -38,6 +39,7 @@ __all__ = [
     "MusicVideoOffer",
     "MedicineOffer",
     "EventTicketOffer",
+    "AlcoholOffer",
     "Parameter",
     "Condition",
     "Dimensions",

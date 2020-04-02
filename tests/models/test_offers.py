@@ -10,7 +10,7 @@ from tests.factories import (
     AudioBookOfferFactory,
     BookOfferFactory,
     MusicVideoOfferFactory,
-    MedicineOfferFactory, EventTicketOfferFactory)
+    MedicineOfferFactory, EventTicketOfferFactory, AlcoholOfferFactory)
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.offers import (
@@ -22,7 +22,7 @@ from yandex_market_language.models.offers import (
     AudioBookOffer,
     MusicVideoOffer,
     MedicineOffer,
-    EventTicketOffer)
+    EventTicketOffer, AlcoholOffer)
 
 
 class BaseOfferModelTestCase(ModelTestCase):
@@ -549,3 +549,14 @@ class EventTicketOfferTestCase(ModelTestCase):
         self.assertTrue(all(k in d for k in keys))
         for k in keys:
             self.assertEqual(d[k], getattr(o, k))
+
+
+class AlcoholOfferTestCase(ModelTestCase):
+    def test_type(self):
+        self.assertEqual(AlcoholOffer.__TYPE__, "alco")
+
+    def test_to_dict(self):
+        o = AlcoholOfferFactory().create()
+        d = o.to_dict()
+        self.assertTrue(all(k in d for k in ("name",)))
+        self.assertEqual(d["name"], o.name)
