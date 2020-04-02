@@ -56,7 +56,9 @@ class AbstractModelTestCase(ModelTestCase):
 
     def test_is_valid_float_returns_not_converted_float(self):
         v = fake.pyfloat()
-        r = models.AbstractModel._is_valid_float(v, "test", convert_to_str=False)
+        r = models.AbstractModel._is_valid_float(
+            v, "test", convert_to_str=False
+        )
         self.assertEqual(v, r)
 
     def test_is_valid_float_raises_validation_error(self):

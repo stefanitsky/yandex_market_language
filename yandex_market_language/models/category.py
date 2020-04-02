@@ -2,6 +2,12 @@ from .abstract import AbstractModel, XMLElement
 
 
 class Category(AbstractModel):
+    """
+    Category model for shop.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/categories.html
+    """
     def __init__(self, category_id, name, parent_id=None):
         self.category_id = category_id
         self.name = name
@@ -14,14 +20,18 @@ class Category(AbstractModel):
 
     def create_xml(self, **kwargs) -> XMLElement:
         attribs = {"id": self.category_id}
+
         if self.parent_id:
             attribs["parentId"] = self.parent_id
+
         el = XMLElement("category", attribs)
         el.text = self.name
         return el
 
     @staticmethod
     def from_xml(el: XMLElement) -> "Category":
-        el.attrib["category_id"] = el.attrib.pop("id")
-        el.attrib["parent_id"] = el.attrib.pop("parentId", None)
-        return Category(name=el.text, **el.attrib)
+        return Category(
+            category_id=el.attrib["id"],
+            name=el.text,
+            parent_id=el.attrib.get("parentId")
+        )

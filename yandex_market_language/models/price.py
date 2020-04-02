@@ -2,10 +2,11 @@ from typing import Optional
 
 from .abstract import AbstractModel, XMLElement
 
-from yandex_market_language.exceptions import ValidationError
-
 
 class Price(AbstractModel):
+    """
+    Actual offer price model.
+    """
     def __init__(self, value, is_starting=False):
         self.value = value
         self.is_starting = is_starting
@@ -19,25 +20,23 @@ class Price(AbstractModel):
         self._is_starting = self._is_valid_bool(value, "is_starting", True)
 
     @property
-    def value(self):
-        return self._value
+    def value(self) -> float:
+        return float(self._value)
 
     @value.setter
     def value(self, v):
-        try:
-            float(v)
-            self._value = str(v)
-        except (TypeError, ValueError):
-            raise ValidationError("price can be int or float type")
+        self._value = self._is_valid_float(v, "price")
 
     def create_dict(self, **kwargs) -> dict:
         return dict(value=self.value, is_starting=self.is_starting)
 
     def create_xml(self, **kwargs) -> XMLElement:
         el = XMLElement("price")
+
         if self.is_starting:
             el.attrib["from"] = "true"
-        el.text = self.value
+
+        el.text = self._value
         return el
 
     @staticmethod

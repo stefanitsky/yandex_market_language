@@ -10,6 +10,13 @@ RATE_CHOICES = ("CBRF", "NBU", "NBK", "CB")
 
 
 class Currency(AbstractModel):
+    """
+    Currency model.
+    Used to create a list of shop currency rates.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/currencies.html
+    """
     def __init__(self, currency, rate, plus=None):
         self.currency = currency
         self.rate = rate

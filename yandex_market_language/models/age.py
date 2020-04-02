@@ -9,6 +9,9 @@ MONTH_CHOICES = [m for m in range(0, 13)]
 
 
 class Age(AbstractModel):
+    """
+    Age category of the offer.
+    """
     def __init__(self, unit: str, value):
         self.unit = unit
         self.value = value
@@ -34,6 +37,7 @@ class Age(AbstractModel):
         try:
             v = int(v)
 
+            # Check valid choices for specified unit
             not_valid, choices = False, None
             if self.unit == "year":
                 if v not in YEAR_CHOICES:
@@ -41,6 +45,8 @@ class Age(AbstractModel):
             else:
                 if v not in MONTH_CHOICES:
                     not_valid, choices = True, MONTH_CHOICES
+
+            # Raise ValidationError if choice is not valid
             if not_valid:
                 raise ValidationError(
                     "value for unit 'year' must be a valid choice: "

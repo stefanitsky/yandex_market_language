@@ -2,6 +2,13 @@ from .abstract import AbstractModel, XMLElement
 
 
 class Option(AbstractModel):
+    """
+    Option model for both the delivery option and the pickup option.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/delivery-options.html
+    https://yandex.ru/support/partnermarket/elements/pickup-options.html
+    """
     def __init__(self, cost, days, order_before=None):
         self.cost = cost
         self.days = days

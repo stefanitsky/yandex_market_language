@@ -24,6 +24,9 @@ class AbstractOffer(
     AbstractModel,
     ABC
 ):
+    """
+    Abstract offer model for all other offer models.
+    """
 
     __TYPE__ = None
 
@@ -115,7 +118,7 @@ class AbstractOffer(
 
     @pickup.setter
     def pickup(self, value):
-        if value is None:
+        if value is None:  # sets default True value for pickup
             value = True
         self._pickup = self._is_valid_bool(value, "pickup")
 
@@ -133,7 +136,7 @@ class AbstractOffer(
 
     @min_quantity.setter
     def min_quantity(self, value):
-        if value is None:
+        if value is None:  # sets default value for min_quantity
             self._min_quantity = "1"
         else:
             self._min_quantity = self._is_valid_int(value, "min_quantity")
@@ -209,12 +212,13 @@ class AbstractOffer(
     def group_id(self, value):
         value = self._is_valid_int(value, "group_id", True)
 
+        # Validate group id and raise an error if it's not valid
         if len(str(value)) > 9:
             raise ValidationError(
                 "group_id must be an integer, maximum 9 characters."
             )
-        else:
-            self._group_id = str(value) if value else None
+
+        self._group_id = str(value) if value else None
 
     @abstractmethod
     def create_dict(self, **kwargs) -> dict:
@@ -333,8 +337,9 @@ class AbstractOffer(
                 b_el.text = b
 
         # Add parameters
-        for p in self.parameters:
-            p.to_xml(offer_el)
+        if self.parameters:
+            for p in self.parameters:
+                p.to_xml(offer_el)
 
         # Add condition
         if self.condition:
@@ -359,6 +364,9 @@ class AbstractOffer(
     @staticmethod
     @abstractmethod
     def from_xml(offer_el: XMLElement, **mapping) -> dict:
+        """
+        Abstract method for parsing the xml element into a dictionary.
+        """
         kwargs = {}
         mapping = {
             "vendorCode": "vendor_code",

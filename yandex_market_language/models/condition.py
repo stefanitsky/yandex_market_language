@@ -7,6 +7,13 @@ CONDITION_CHOICES = ("likenew", "used")
 
 
 class Condition(AbstractModel):
+    """
+    Condition model.
+    Used for used goods and goods discounted due to deficiencies.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/condition.html
+    """
     def __init__(self, condition_type: str, reason: str):
         self.condition_type = condition_type
         self.reason = reason

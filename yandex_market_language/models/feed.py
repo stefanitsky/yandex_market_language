@@ -10,7 +10,8 @@ class Feed(AbstractModel):
     """
     YML Feed model.
 
-    Docs: https://yandex.ru/support/partnermarket/export/yml.html
+    Docs:
+    https://yandex.ru/support/partnermarket/export/yml.html
     """
     def __init__(self, shop: Shop, date: datetime.date = None):
         self.shop = shop

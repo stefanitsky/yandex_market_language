@@ -16,6 +16,12 @@ class Shop(
     fields.PickupOptionsField,
     AbstractModel
 ):
+    """
+    Shop model.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/shop.html
+    """
     def __init__(
         self,
         name: str,
