@@ -763,3 +763,29 @@ class MusicVideoOffer(fields.YearField, AbstractOffer):
         })
         kwargs = AbstractOffer.from_xml(offer_el, **mapping)
         return MusicVideoOffer(**kwargs)
+
+
+class MedicineOffer(AbstractOffer):
+    """
+    Medicine offer.
+
+    Docs:
+    https://yandex.ru/support/partnermarket/export/medicine.html
+    """
+
+    __TYPE__ = "medicine"
+
+    def __init__(self, name, delivery, pickup, **kwargs):
+        super().__init__(delivery=delivery, pickup=pickup, **kwargs)
+        self.name = name
+
+    def create_dict(self, **kwargs) -> dict:
+        return super().create_dict(name=self.name)
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        return super().create_xml(name="name")
+
+    @staticmethod
+    def from_xml(offer_el: XMLElement, **mapping) -> "MedicineOffer":
+        kwargs = AbstractOffer.from_xml(offer_el)
+        return MedicineOffer(**kwargs)

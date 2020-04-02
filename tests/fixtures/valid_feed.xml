@@ -194,7 +194,8 @@
               <age unit="year">18</age>
               <barcode>3456789012345</barcode>
             </offer>
-            <offer id="12541M" type="medicine" bid="80" cbid="90">
+<!--            <offer id="12541M" type="medicine" bid="80" cbid="90">-->
+            <offer id="12541M" type="medicine" bid="80">
               <name>БАД Селен-актив n30 таблетки</name>
               <vendor>ОАО ДИОД Завод эко.тех.и питания</vendor>
               <vendorCode>123456</vendorCode>
@@ -205,13 +206,14 @@
               <price>1000</price>
               <delivery>false</delivery>
               <pickup>true</pickup>
+              <min-quantity>1</min-quantity>
               <store>true</store>
               <barcode>4981046350037</barcode>
               <sales_notes>Самовывоз возможен через 3 часа после заказа</sales_notes>
               <description>Биоусвояемый селен 50 мкг, витамин С 50 мг. Селен-актив обеспечивает
             оптимальную и постоянную антиоксидантную защиту.</description>
               <country_of_origin>Россия</country_of_origin>
-              <expiry>P1Y2M10DT2H30M</expiry>
+<!--              <expiry>P1Y2M10DT2H30M</expiry>-->
               <param name="Побочные действия">нет</param>
             </offer>
             <offer id="123144ET" type="event-ticket" bid="80">

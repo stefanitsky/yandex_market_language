@@ -8,7 +8,8 @@ from yandex_market_language.models.offers import (
     AbstractBookOffer,
     BookOffer,
     AudioBookOffer,
-    MusicVideoOffer
+    MusicVideoOffer,
+    MedicineOffer
 )
 from yandex_market_language.models.currency import CURRENCY_CHOICES
 from faker import Faker
@@ -330,3 +331,15 @@ class MusicVideoOfferFactory(AbstractOfferFactory):
             country=self.country,
             **kwargs
         )
+
+
+class MedicineOfferFactory(AbstractOfferFactory):
+
+    __cls__ = MedicineOffer
+
+    def __init__(self, name: str = fake.pystr(), **kwargs):
+        super().__init__(**kwargs)
+        self.name = name
+
+    def get_values(self, **kwargs) -> dict:
+        return super().get_values(name=self.name)

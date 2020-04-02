@@ -9,7 +9,9 @@ from .offers import (
     ArbitraryOffer,
     BookOffer,
     AudioBookOffer,
-    MusicVideoOffer)
+    MusicVideoOffer,
+    MedicineOffer,
+)
 from .option import Option
 from . import fields
 
@@ -178,6 +180,8 @@ class Shop(
                         offers.append(AudioBookOffer.from_xml(offer_el))
                     elif offer_type == "artist.title":
                         offers.append(MusicVideoOffer.from_xml(offer_el))
+                    elif offer_type == "medicine":
+                        offers.append(MedicineOffer.from_xml(offer_el))
                 kwargs["offers"] = offers
             # elif el.tag == "gifts":
             #     pass

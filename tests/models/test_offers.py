@@ -9,8 +9,8 @@ from tests.factories import (
     AbstractBookOfferFactory,
     AudioBookOfferFactory,
     BookOfferFactory,
-    MusicVideoOfferFactory
-)
+    MusicVideoOfferFactory,
+    MedicineOfferFactory)
 from yandex_market_language import models
 from yandex_market_language.exceptions import ValidationError
 from yandex_market_language.models.offers import (
@@ -20,8 +20,8 @@ from yandex_market_language.models.offers import (
     BookOffer,
     AbstractBookOffer,
     AudioBookOffer,
-    MusicVideoOffer
-)
+    MusicVideoOffer,
+    MedicineOffer)
 
 
 class BaseOfferModelTestCase(ModelTestCase):
@@ -516,3 +516,14 @@ class MusicVideoOfferTestCase(ModelTestCase):
         o = MusicVideoOfferFactory().create()
         parsed_o = MusicVideoOffer.from_xml(o.to_xml())
         self.assertEqual(o.to_dict(), parsed_o.to_dict())
+
+
+class MedicineOfferTestCase(ModelTestCase):
+    def test_type(self):
+        self.assertEqual(MedicineOffer.__TYPE__, "medicine")
+
+    def test_to_dict(self):
+        o = MedicineOfferFactory().create()
+        d = o.to_dict()
+        self.assertTrue("name" in d)
+        self.assertEqual(d["name"], o.name)
