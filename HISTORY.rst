@@ -2,6 +2,12 @@
 History
 =======
 
+0.6.0 (2020-04-06)
+------------------
+* Added all missed models: Gifts & Promos.
+* Added cbid warning message on set (field is deprecated).
+* Added creation of an XML file from the Feed model.
+
 0.5.0 (2020-04-02)
 ------------------
 * Added missed offers of types: audiobook, artist.title, medicine, event-ticket & alco.
@@ -9,7 +15,7 @@ History
 
 0.4.0 (2020-04-01)
 ------------------
-* Added xml parsing for all models, except: Gitfts, Promos and another types of offers like audiobooks, medicine etc.
+* Added xml parsing for all models, except: Gifts, Promos and another types of offers like audiobooks, medicine etc.
 * Fixed fields parsing for datetime fields & fields that can be None.
 * Added new field for offer: supplier.
 

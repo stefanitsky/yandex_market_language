@@ -39,6 +39,15 @@ Features
 * Convert dict-like objects into the ready-to-use XML file.
 * Validation for in-out data.
 
+
+TODO
+----
+
+* |checkbox_unchecked| Full models validation support as in the Yandex.Market.
+* |checkbox_unchecked| Simplify models (code refactoring + DRY).
+* |checkbox_unchecked| Add custom exceptions on parse / convert to get more information.
+* |checkbox_unchecked| Documentation in Russian.
+
 Credits
 -------
 
@@ -46,3 +55,12 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+
+
+.. |checkbox_checked| raw:: html
+
+    <input checked=""  disabled="" type="checkbox">
+
+.. |checkbox_unchecked| raw:: html
+
+    <input disabled="" type="checkbox">
