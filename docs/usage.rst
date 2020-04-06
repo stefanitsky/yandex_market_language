@@ -4,7 +4,7 @@ Usage
 
 To use Yandex Market Language (YML) for Python in a project::
 
-    import yandex_market_language
+    from yandex_market_language import parse, convert
 
 
 Models
@@ -31,14 +31,51 @@ Or XML element::
     b'<category id="1">Shoes</category>'
 
 
-Parser
---------
+Parser / Converter
+------------------
 
 You can parse XML files into ready-to-use Feed model instance with parser::
 
-    >>> from yandex_market_language import parser
-    >>> p = parser.YMLParser("./tests/fixtures/valid_feed.xml")
-    >>> feed = p.parse()
+    >>> from yandex_market_language import parse, convert
+    >>> feed = parse("tests/fixtures/valid_feed.xml")
     >>> feed
-    <yandex_market_language.models.feed.Feed object at 0x107724370>
+    <yandex_market_language.models.feed.Feed object at 0x10d99fdf0>
     >>> feed.to_dict()
+    {
+        'shop': {
+            'name': 'ZS',
+            'company': 'ZoneSmart',
+            'url': 'https://zonesmart.ru',
+            ...
+            'offers': [
+                'type': None,
+                'vendor': 'Brother',
+                'vendor_code': 'ABC1234'
+                ...
+            ]
+            ...
+        }
+    }
+
+And convert Feed model instances into xml files::
+
+    >>> convert("converted_from_feed_model.xml", feed)
+    >>> feed = parse("converted_from_feed_model.xml")
+    >>> feed
+    <yandex_market_language.models.feed.Feed object at 0x10d8bdee0>
+    >>> feed.to_dict()
+    {
+        'shop': {
+            'name': 'ZS',
+            'company': 'ZoneSmart',
+            'url': 'https://zonesmart.ru',
+            ...
+            'offers': [
+                'type': None,
+                'vendor': 'Brother',
+                'vendor_code': 'ABC1234'
+                ...
+            ]
+            ...
+        }
+    }
