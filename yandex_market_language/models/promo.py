@@ -4,6 +4,9 @@ from yandex_market_language.models.abstract import XMLElement, XMLSubElement
 
 
 class Promo(models.AbstractModel):
+    """
+    Docs: https://yandex.ru/support/partnermarket/elements/promo-gift.html
+    """
 
     MAPPING = {
         "start-date": "start_date",
@@ -85,6 +88,9 @@ class Promo(models.AbstractModel):
 
 
 class Purchase(models.AbstractModel):
+    """
+    Docs: https://yandex.ru/support/partnermarket/elements/promo-gift.html
+    """
     def __init__(self, products: t.List["Product"], required_quantity="1"):
         self.required_quantity = required_quantity
         self.products = products
@@ -122,6 +128,9 @@ class Purchase(models.AbstractModel):
 
 
 class Product(models.AbstractModel):
+    """
+    Docs: https://yandex.ru/support/partnermarket/elements/promo-gift.html
+    """
     def __init__(self, offer_id: str = None, category_id: str = None):
         self.offer_id = offer_id
         self.category_id = category_id
@@ -149,6 +158,10 @@ class Product(models.AbstractModel):
 
 
 class PromoGift(models.AbstractModel):
+    """
+    Docs:
+    https://yandex.ru/support/partnermarket/elements/promo-gift.html
+    """
     def __init__(self, offer_id: str = None, gift_id: str = None):
         self.offer_id = offer_id
         self.gift_id = gift_id
@@ -157,7 +170,11 @@ class PromoGift(models.AbstractModel):
         return dict(offer_id=self.offer_id, gift_id=self.gift_id)
 
     def create_xml(self, **kwargs) -> XMLElement:
-        attribs = {"offer-id": self.offer_id, "gift-id": self.gift_id}
+        attribs = {}
+        if self.offer_id:
+            attribs["offer-id"] = self.offer_id
+        elif self.gift_id:
+            attribs["gift-id"] = self.gift_id
         return XMLElement("promo-gift", attribs)
 
     @staticmethod

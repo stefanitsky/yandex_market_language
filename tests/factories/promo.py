@@ -28,10 +28,19 @@ Purchase = create_random_purchase
 
 
 def create_random_promo_gift(
-    gift_id=fake.pystr(),
-    offer_id=fake.pystr(),
+    gift_id=None,
+    offer_id=None,
 ) -> "models.PromoGift":
-    return models.PromoGift(gift_id, offer_id)
+    if gift_id is None and offer_id is None:
+        random_id_key = fake.random_element(["gift_id", "offer_id"])
+        kwargs = {random_id_key: fake.pystr()}
+    elif gift_id:
+        kwargs = {"gift_id": gift_id}
+    elif offer_id:
+        kwargs = {"offer_id": offer_id}
+    else:
+        raise AttributeError("only one attr must be specified!")
+    return models.PromoGift(**kwargs)
 
 
 PromoGift = create_random_promo_gift

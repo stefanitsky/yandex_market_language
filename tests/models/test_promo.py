@@ -111,7 +111,11 @@ class PromoGiftTest(cases.ModelTestCase):
         pg = factories.PromoGift()
         el = pg.to_xml()
 
-        attribs = {"offer-id": pg.offer_id, "gift-id": pg.gift_id}
+        attribs = {}
+        if pg.offer_id:
+            attribs["offer-id"] = pg.offer_id
+        elif pg.gift_id:
+            attribs["gift-id"] = pg.gift_id
         expected_el = cases.ET.Element("promo-gift", attribs)
 
         self.assertElementsEquals(el, expected_el)
