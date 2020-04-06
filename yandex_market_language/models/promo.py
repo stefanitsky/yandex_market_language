@@ -134,3 +134,23 @@ class Product(models.AbstractModel):
             offer_id=product_el.attrib.get("offer-id"),
             category_id=product_el.attrib.get("category-id")
         )
+
+
+class PromoGift(models.AbstractModel):
+    def __init__(self, offer_id: str = None, gift_id: str = None):
+        self.offer_id = offer_id
+        self.gift_id = gift_id
+
+    def create_dict(self, **kwargs) -> dict:
+        return dict(offer_id=self.offer_id, gift_id=self.gift_id)
+
+    def create_xml(self, **kwargs) -> XMLElement:
+        attribs = {"offer-id": self.offer_id, "gift-id": self.gift_id}
+        return XMLElement("promo-gift", attribs)
+
+    @staticmethod
+    def from_xml(el: XMLElement) -> "PromoGift":
+        return PromoGift(
+            offer_id=el.attrib.get("offer-id"),
+            gift_id=el.attrib.get("gift-id")
+        )

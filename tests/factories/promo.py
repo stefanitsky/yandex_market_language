@@ -27,6 +27,16 @@ def create_random_purchase(
 Purchase = create_random_purchase
 
 
+def create_random_promo_gift(
+    gift_id=fake.pystr(),
+    offer_id=fake.pystr(),
+) -> "models.PromoGift":
+    return models.PromoGift(gift_id, offer_id)
+
+
+PromoGift = create_random_promo_gift
+
+
 def create_random_promo(
     promo_id=fake.pystr(),
     promo_type="gift with purchase",

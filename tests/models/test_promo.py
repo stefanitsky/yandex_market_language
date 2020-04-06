@@ -92,3 +92,26 @@ class ProductTest(cases.ModelTestCase):
         el = p.to_xml()
         parsed_p = models.Product.from_xml(el)
         self.assertEqual(p.to_dict(), parsed_p.to_dict())
+
+
+class PromoGiftTest(cases.ModelTestCase):
+    def test_to_dict(self):
+        pg = factories.PromoGift()
+        d = pg.to_dict()
+        expected_d = dict(gift_id=pg.gift_id, offer_id=pg.offer_id)
+        self.assertEqual(d, expected_d)
+
+    def test_to_xml(self):
+        pg = factories.PromoGift()
+        el = pg.to_xml()
+
+        attribs = {"offer-id": pg.offer_id, "gift-id": pg.gift_id}
+        expected_el = cases.ET.Element("promo-gift", attribs)
+
+        self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        pg = factories.PromoGift()
+        el = pg.to_xml()
+        parsed_pg = models.PromoGift.from_xml(el)
+        self.assertEqual(pg.to_dict(), parsed_pg.to_dict())
