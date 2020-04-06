@@ -13,6 +13,7 @@ class PromoTest(cases.ModelTestCase):
             end_date=p.end_date,
             description=p.description,
             url=p.url,
+            purchase=p.purchase.to_dict(),
         )
         self.assertEqual(d, expected_dict)
 
@@ -26,10 +27,68 @@ class PromoTest(cases.ModelTestCase):
             el_ = cases.ET.SubElement(expected_el, tag)
             el_.text = getattr(p, attr)
 
+        # Add purchase
+        p.purchase.to_xml(expected_el)
+
         self.assertElementsEquals(el, expected_el)
 
     def test_from_xml(self):
         p = factories.Promo()
         el = p.to_xml()
         parsed_p = models.Promo.from_xml(el)
+        self.assertEqual(p.to_dict(), parsed_p.to_dict())
+
+
+class PurchaseTest(cases.ModelTestCase):
+    def test_to_dict(self):
+        p = factories.Purchase()
+        d = p.to_dict()
+        expected_d = dict(
+            required_quantity=p.required_quantity,
+            products=[p.to_dict() for p in p.products]
+        )
+        self.assertEqual(d, expected_d)
+
+    def test_to_xml(self):
+        p = factories.Purchase()
+        el = p.to_xml()
+
+        expected_el = cases.ET.Element("purchase")
+
+        q_el = cases.ET.SubElement(expected_el, "required-quantity")
+        q_el.text = p.required_quantity
+
+        # Add products el
+        for _ in p.products:
+            _.to_xml(expected_el)
+
+        self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        p = factories.Purchase()
+        el = p.to_xml()
+        parsed_p = models.Purchase.from_xml(el)
+        self.assertEqual(p.to_dict(), parsed_p.to_dict())
+
+
+class ProductTest(cases.ModelTestCase):
+    def test_to_dict(self):
+        p = factories.Product()
+        d = p.to_dict()
+        expected_d = dict(offer_id=p.offer_id, category_id=p.category_id)
+        self.assertEqual(d, expected_d)
+
+    def test_to_xml(self):
+        p = factories.Product()
+        el = p.to_xml()
+
+        attribs = {"offer-id": p.offer_id, "category-id": p.category_id}
+        expected_el = cases.ET.Element("product", attribs)
+
+        self.assertElementsEquals(el, expected_el)
+
+    def test_from_xml(self):
+        p = factories.Product()
+        el = p.to_xml()
+        parsed_p = models.Product.from_xml(el)
         self.assertEqual(p.to_dict(), parsed_p.to_dict())
