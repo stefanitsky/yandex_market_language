@@ -17,6 +17,7 @@ class Promo(models.AbstractModel):
         promo_id: str,
         promo_type: str,
         purchase: "Purchase",
+        promo_gifts: t.List["PromoGift"],
         start_date=None,
         end_date=None,
         description=None,
@@ -29,6 +30,7 @@ class Promo(models.AbstractModel):
         self.description = description
         self.url = url
         self.purchase = purchase
+        self.promo_gifts = promo_gifts
 
     def create_dict(self, **kwargs) -> dict:
         return dict(
@@ -39,6 +41,7 @@ class Promo(models.AbstractModel):
             description=self.description,
             url=self.url,
             purchase=self.purchase.to_dict(),
+            promo_gifts=[pg.to_dict() for pg in self.promo_gifts],
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
@@ -54,6 +57,11 @@ class Promo(models.AbstractModel):
         # Add purchase el
         self.purchase.to_xml(promo_el)
 
+        # Add promo gifts
+        promo_gifts_el = XMLSubElement(promo_el, "promo-gifts")
+        for pg in self.promo_gifts:
+            pg.to_xml(promo_gifts_el)
+
         return promo_el
 
     @classmethod
@@ -61,6 +69,7 @@ class Promo(models.AbstractModel):
         kwargs = dict(
             promo_id=promo_el.attrib.get("id"),
             promo_type=promo_el.attrib.get("type"),
+            promo_gifts=[]
         )
 
         for el in promo_el:
@@ -68,6 +77,9 @@ class Promo(models.AbstractModel):
                 kwargs[cls.MAPPING[el.tag]] = el.text
             elif el.tag == "purchase":
                 kwargs["purchase"] = Purchase.from_xml(el)
+            elif el.tag == "promo-gifts":
+                for pg_el in el:
+                    kwargs["promo_gifts"].append(PromoGift.from_xml(pg_el))
 
         return Promo(**kwargs)
 

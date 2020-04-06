@@ -45,7 +45,11 @@ def create_random_promo(
     description=fake.text(),
     url=fake.url(),
     purchase=Purchase(),
+    promo_gifts=None,
 ) -> "models.Promo":
+    if promo_gifts is None:
+        promo_gifts = [PromoGift() for _ in range(3)]
+
     return models.Promo(
         promo_id=promo_id,
         promo_type=promo_type,
@@ -54,6 +58,7 @@ def create_random_promo(
         description=description,
         url=url,
         purchase=purchase,
+        promo_gifts=promo_gifts,
     )
 
 

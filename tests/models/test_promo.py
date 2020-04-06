@@ -14,6 +14,7 @@ class PromoTest(cases.ModelTestCase):
             description=p.description,
             url=p.url,
             purchase=p.purchase.to_dict(),
+            promo_gifts=[pg.to_dict() for pg in p.promo_gifts],
         )
         self.assertEqual(d, expected_dict)
 
@@ -29,6 +30,11 @@ class PromoTest(cases.ModelTestCase):
 
         # Add purchase
         p.purchase.to_xml(expected_el)
+
+        # Add promo gifts
+        promo_gifts_el = cases.ET.SubElement(expected_el, "promo-gifts")
+        for pg in p.promo_gifts:
+            pg.to_xml(promo_gifts_el)
 
         self.assertElementsEquals(el, expected_el)
 
