@@ -21,6 +21,7 @@ from .dimensions import DimensionsFactory
 from .age import AgeFactory
 from .gift import GiftFactory
 from .promo import Promo, Purchase, Product, PromoGift
+from .feed import Feed
 
 
 __all__ = [
@@ -48,4 +49,5 @@ __all__ = [
     "Purchase",
     "Product",
     "PromoGift",
+    "Feed",
 ]

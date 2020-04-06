@@ -5,14 +5,14 @@ from operator import attrgetter
 from xml.etree import ElementTree as ET
 from unittest import TestCase
 
+from tests import factories
 from yandex_market_language import models
-from yandex_market_language.parser import YMLParser
+from yandex_market_language import parse, convert
 
 
-VALID_XML_PATH = os.path.join(
-    os.path.dirname(__file__),
-    "fixtures/valid_feed.xml"
-)
+BASE_DIR = os.path.dirname(__file__)
+VALID_XML_PATH = os.path.join(BASE_DIR, "fixtures/valid_feed.xml")
+TEST_XML_PATH = os.path.join(BASE_DIR, "test.xml")
 
 pattern = re.compile(r"\s+")
 
@@ -28,7 +28,7 @@ def clean_element_text(el: ET.Element):
         el.text = ""
 
 
-class YMLParserTestCase(TestCase):
+class YMLTestCase(TestCase):
     def assertElementsEquals(self, el1, el2):
         clean_element_text(el1)
         clean_element_text(el2)
@@ -52,12 +52,18 @@ class YMLParserTestCase(TestCase):
             self.assertEqual(el1_.tag, el2_.tag)
             self.compare_elements(el1_, el2_)
 
-    def test_parser_converts_valid_xml(self):
-        p = YMLParser(VALID_XML_PATH)
-        feed = p.parse()
+    def test_parses_valid_xml(self):
+        feed = parse(VALID_XML_PATH)
 
         source_xml = ET.parse(VALID_XML_PATH).getroot()
         expected_xml = feed.to_xml()
 
         self.assertIsInstance(feed, models.Feed)
         self.compare_elements(source_xml, expected_xml)
+
+    def test_converts_valid_feed(self):
+        feed = factories.Feed()
+        convert(TEST_XML_PATH, feed)
+        parsed_feed = parse(TEST_XML_PATH)
+        os.remove(TEST_XML_PATH)
+        self.assertEqual(feed.to_dict(), parsed_feed.to_dict())
