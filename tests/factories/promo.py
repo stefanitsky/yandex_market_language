@@ -72,4 +72,3 @@ def create_random_promo(
 
 
 Promo = create_random_promo
-
