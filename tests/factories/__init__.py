@@ -20,6 +20,7 @@ from .condition import ConditionFactory
 from .dimensions import DimensionsFactory
 from .age import AgeFactory
 from .gift import GiftFactory
+from .promo import Promo
 
 
 __all__ = [
@@ -43,4 +44,5 @@ __all__ = [
     "DimensionsFactory",
     "AgeFactory",
     "GiftFactory",
+    "Promo",
 ]

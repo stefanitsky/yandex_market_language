@@ -22,6 +22,7 @@ from .condition import Condition
 from .dimensions import Dimensions
 from .age import Age
 from .gift import Gift
+from .promo import Promo
 
 
 __all__ = [
@@ -46,4 +47,5 @@ __all__ = [
     "Dimensions",
     "Age",
     "Gift",
+    "Promo",
 ]
