@@ -12,13 +12,13 @@ class ValidationError(YMLException):
     pass
 
 
-# class ParseError(YMLException):
-#     """
-#     Base parse exception.
-#     """
-#     pass
-#
-#
+class ParseError(YMLException):
+    """
+    Base parse exception.
+    """
+    pass
+
+
 # class UnsupportedField(ParseError):
 #     """
 #     Unsupported field exception for parsing.

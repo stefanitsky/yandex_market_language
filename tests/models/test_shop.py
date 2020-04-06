@@ -1,19 +1,13 @@
 from unittest import mock
 
 from tests.cases import ModelTestCase, fake
-from tests.factories import (
-    ShopFactory,
-    SimplifiedOfferFactory,
-    ArbitraryOfferFactory,
-    BookOfferFactory
-)
-from yandex_market_language.exceptions import ValidationError
-from yandex_market_language.models import Shop
+from tests import factories
+from yandex_market_language import exceptions, models
 
 
 class ShopModelTestCase(ModelTestCase):
     def test_to_dict(self):
-        shop = ShopFactory()
+        shop = factories.ShopFactory()
         shop_dict = shop.to_dict()
         keys = sorted(list(shop_dict.keys()))
         expected_keys = sorted([
@@ -45,7 +39,7 @@ class ShopModelTestCase(ModelTestCase):
             self.assertEqual(shop_dict[k], getattr(shop, k))
 
     def test_to_xml(self):
-        shop = ShopFactory()
+        shop = factories.ShopFactory()
         shop_el = shop.to_xml()
         keys = sorted(list(el.tag for el in shop_el))
         expected_keys = sorted([
@@ -79,8 +73,8 @@ class ShopModelTestCase(ModelTestCase):
                 self.assertEqual(el.text, getattr(shop, el.tag))
 
     def test_url_validation_error(self):
-        with self.assertRaises(ValidationError) as e:
-            ShopFactory(url=fake.pystr(513, 513))
+        with self.assertRaises(exceptions.ValidationError) as e:
+            factories.ShopFactory(url=fake.pystr(513, 513))
             self.assertEqual(
                 str(e), "The maximum url length is 512 characters."
             )
@@ -101,13 +95,15 @@ class ShopModelTestCase(ModelTestCase):
         book_from_xml_p
     ):
         simplified_offers = [
-            SimplifiedOfferFactory().create() for _ in range(3)
+            factories.SimplifiedOfferFactory().create() for _ in range(3)
         ]
-        arbitrary_offers = [ArbitraryOfferFactory().create() for _ in range(3)]
-        book_offers = [BookOfferFactory().create() for _ in range(3)]
+        arbitrary_offers = [
+            factories.ArbitraryOfferFactory().create() for _ in range(3)
+        ]
+        book_offers = [factories.BookOfferFactory().create() for _ in range(3)]
         offers = simplified_offers + arbitrary_offers + book_offers
 
-        shop = ShopFactory(offers=offers)
+        shop = factories.ShopFactory(offers=offers)
         shop_el = shop.to_xml()
         options = shop.delivery_options + shop.pickup_options
 
@@ -118,7 +114,7 @@ class ShopModelTestCase(ModelTestCase):
         arbitrary_from_xml_p.side_effect = arbitrary_offers
         book_from_xml_p.side_effect = book_offers
 
-        parsed_shop = Shop.from_xml(shop_el)
+        parsed_shop = models.Shop.from_xml(shop_el)
         self.assertEqual(shop.to_dict(), parsed_shop.to_dict())
         self.assertEqual(currency_p.call_count, len(shop.currencies))
         self.assertEqual(category_p.call_count, len(shop.categories))
@@ -126,3 +122,15 @@ class ShopModelTestCase(ModelTestCase):
         self.assertEqual(simplified_from_xml_p.call_count, 3)
         self.assertEqual(arbitrary_from_xml_p.call_count, 3)
         self.assertEqual(book_from_xml_p.call_count, 3)
+
+    def test_unexpected_offer_type_error(self):
+        shop = factories.ShopFactory()
+        shop_el = shop.to_xml()
+        offer_type = "error"
+        shop_el.find("offers")[0].attrib["type"] = offer_type
+        with self.assertRaises(exceptions.ParseError) as e:
+            models.Shop.from_xml(shop_el)
+            self.assertEqual(
+                str(e),
+                "Got unexpected offer type: {0}".format(offer_type)
+            )

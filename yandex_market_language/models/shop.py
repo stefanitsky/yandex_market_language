@@ -1,19 +1,8 @@
 from typing import List
 
-from .abstract import AbstractModel, XMLElement, XMLSubElement
-from .currency import Currency
-from .category import Category
-from .offers import (
-    AbstractOffer,
-    SimplifiedOffer,
-    ArbitraryOffer,
-    BookOffer,
-    AudioBookOffer,
-    MusicVideoOffer,
-    MedicineOffer,
-    EventTicketOffer, AlcoholOffer)
-from .option import Option
-from . import fields
+from yandex_market_language import models, exceptions
+from yandex_market_language.models import fields
+from yandex_market_language.models.abstract import XMLElement, XMLSubElement
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -22,7 +11,7 @@ class Shop(
     fields.EnableAutoDiscountField,
     fields.DeliveryOptionsField,
     fields.PickupOptionsField,
-    AbstractModel
+    models.AbstractModel
 ):
     """
     Shop model.
@@ -35,15 +24,15 @@ class Shop(
         name: str,
         company: str,
         url: str,
-        currencies: List[Currency],
-        categories: List[Category],
-        offers: List[AbstractOffer],
+        currencies: List["models.Currency"],
+        categories: List["models.Category"],
+        offers: List["models.offers.AbstractOffer"],
         platform: str = None,
         version: str = None,
         agency: str = None,
         email: str = None,
-        delivery_options: List[Option] = None,
-        pickup_options: List[Option] = None,
+        delivery_options: List["models.Option"] = None,
+        pickup_options: List["models.Option"] = None,
         enable_auto_discounts=None,
     ):
         self.name = name
@@ -149,43 +138,48 @@ class Shop(
             if el.tag == "currencies":
                 currencies = []
                 for currency_el in el:
-                    currencies.append(Currency.from_xml(currency_el))
+                    currencies.append(models.Currency.from_xml(currency_el))
                 kwargs["currencies"] = currencies
             elif el.tag == "categories":
                 categories = []
                 for category_el in el:
-                    categories.append(Category.from_xml(category_el))
+                    categories.append(models.Category.from_xml(category_el))
                 kwargs["categories"] = categories
             elif el.tag == "delivery-options":
                 delivery_options = []
                 for option_el in el:
-                    delivery_options.append(Option.from_xml(option_el))
+                    delivery_options.append(models.Option.from_xml(option_el))
                 kwargs["delivery_options"] = delivery_options
             elif el.tag == "pickup-options":
                 pickup_options = []
                 for option_el in el:
-                    pickup_options.append(Option.from_xml(option_el))
+                    pickup_options.append(models.Option.from_xml(option_el))
                 kwargs["pickup_options"] = pickup_options
             elif el.tag == "offers":
                 offers = []
                 for offer_el in el:
                     offer_type = offer_el.attrib.get("type")
                     if offer_type is None:
-                        offers.append(SimplifiedOffer.from_xml(offer_el))
+                        offer = models.SimplifiedOffer.from_xml(offer_el)
                     elif offer_type == "vendor.model":
-                        offers.append(ArbitraryOffer.from_xml(offer_el))
+                        offer = models.ArbitraryOffer.from_xml(offer_el)
                     elif offer_type == "book":
-                        offers.append(BookOffer.from_xml(offer_el))
+                        offer = models.BookOffer.from_xml(offer_el)
                     elif offer_type == "audiobook":
-                        offers.append(AudioBookOffer.from_xml(offer_el))
+                        offer = models.AudioBookOffer.from_xml(offer_el)
                     elif offer_type == "artist.title":
-                        offers.append(MusicVideoOffer.from_xml(offer_el))
+                        offer = models.MusicVideoOffer.from_xml(offer_el)
                     elif offer_type == "medicine":
-                        offers.append(MedicineOffer.from_xml(offer_el))
+                        offer = models.MedicineOffer.from_xml(offer_el)
                     elif offer_type == "event-ticket":
-                        offers.append(EventTicketOffer.from_xml(offer_el))
+                        offer = models.EventTicketOffer.from_xml(offer_el)
                     elif offer_type == "alco":
-                        offers.append(AlcoholOffer.from_xml(offer_el))
+                        offer = models.AlcoholOffer.from_xml(offer_el)
+                    else:
+                        raise exceptions.ParseError(
+                            "Got unexpected offer type: {0}".format(offer_type)
+                        )
+                    offers.append(offer)
                 kwargs["offers"] = offers
             # elif el.tag == "gifts":
             #     pass
