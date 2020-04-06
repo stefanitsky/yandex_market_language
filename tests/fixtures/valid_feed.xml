@@ -194,8 +194,7 @@
               <age unit="year">18</age>
               <barcode>3456789012345</barcode>
             </offer>
-<!--            <offer id="12541M" type="medicine" bid="80" cbid="90">-->
-            <offer id="12541M" type="medicine" bid="80">
+            <offer id="12541M" type="medicine" bid="80" cbid="90">
               <name>БАД Селен-актив n30 таблетки</name>
               <vendor>ОАО ДИОД Завод эко.тех.и питания</vendor>
               <vendorCode>123456</vendorCode>

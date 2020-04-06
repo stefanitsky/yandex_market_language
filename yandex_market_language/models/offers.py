@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import List, Optional
+import warnings
 
 from yandex_market_language.exceptions import ValidationError
 
@@ -41,6 +42,7 @@ class AbstractOffer(
         vendor=None,
         vendor_code=None,
         bid=None,
+        cbid=None,
         old_price=None,
         enable_auto_discounts=None,
         pictures: List[str] = None,
@@ -72,6 +74,7 @@ class AbstractOffer(
         self.vendor_code = vendor_code
         self.offer_id = offer_id
         self.bid = bid
+        self.cbid = cbid
         self.url = url
         self.price = price
         self.old_price = old_price
@@ -102,6 +105,20 @@ class AbstractOffer(
         self.available = available
         self.age = age
         self.group_id = group_id
+
+    @property
+    def cbid(self):
+        return self._cbid
+
+    @cbid.setter
+    def cbid(self, value):
+        if value:
+            warnings.warn(
+                "The attribute cbid is deprecated. "
+                "Use the attribute bid instead.",
+                DeprecationWarning
+            )
+        self._cbid = value
 
     @property
     def delivery(self) -> bool:
@@ -274,6 +291,10 @@ class AbstractOffer(
         if self.bid:
             offer_el.attrib["bid"] = self.bid
 
+        # Add offer cbid attribute (deprecated)
+        if self.cbid:
+            offer_el.attrib["cbid"] = self.cbid
+
         # Add offer available attribute
         if self.available is not None:
             offer_el.attrib["available"] = self._available
@@ -425,6 +446,7 @@ class AbstractOffer(
 
         kwargs["offer_id"] = offer_el.attrib["id"]
         kwargs["bid"] = offer_el.attrib.get("bid")
+        kwargs["cbid"] = offer_el.attrib.get("cbid")
         kwargs["available"] = offer_el.attrib.get("available")
 
         return kwargs
