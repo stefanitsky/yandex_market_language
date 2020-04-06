@@ -263,12 +263,12 @@
                 <barcode>4607071772810</barcode>
             </offer>
         </offers>
-<!--        <gifts>-->
-<!--            <gift id="33">-->
-<!--                <name>Кружка 300 мл Brand 16</name>-->
-<!--                <picture>https://example.shop/promos/33.jpg</picture>-->
-<!--            </gift>-->
-<!--        </gifts>-->
+        <gifts>
+            <gift id="33">
+                <name>Кружка 300 мл Brand 16</name>
+                <picture>https://example.shop/promos/33.jpg</picture>
+            </gift>
+        </gifts>
 <!--        <promos>-->
 <!--            <promo id="PromoGift" type="gift with purchase">-->
 <!--                <start-date>2020-02-01 09:00:00</start-date>-->

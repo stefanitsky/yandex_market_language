@@ -1,14 +1,6 @@
-from yandex_market_language.models import Shop
+from yandex_market_language import models
+from tests import factories
 from faker import Faker
-
-from .currency import CurrencyFactory
-from .category import CategoryFactory
-from .option import OptionFactory
-from .offers import (
-    SimplifiedOfferFactory,
-    ArbitraryOfferFactory,
-    BookOfferFactory
-)
 
 fake = Faker()
 
@@ -27,23 +19,26 @@ def generate_random_shop(
     pickup_options=None,
     enable_auto_discounts=fake.pybool(),
     offers=None,
-):
+    gifts=None,
+) -> "models.Shop":
     if currencies is None:
-        currencies = [CurrencyFactory() for _ in range(3)]
+        currencies = [factories.CurrencyFactory() for _ in range(3)]
     if categories is None:
-        categories = [CategoryFactory() for _ in range(3)]
+        categories = [factories.CategoryFactory() for _ in range(3)]
     if delivery_options is None:
-        delivery_options = [OptionFactory() for _ in range(3)]
+        delivery_options = [factories.OptionFactory() for _ in range(3)]
     if pickup_options is None:
-        pickup_options = [OptionFactory() for _ in range(3)]
+        pickup_options = [factories.OptionFactory() for _ in range(3)]
     if offers is None:
         offers = [
-            SimplifiedOfferFactory().create(),
-            ArbitraryOfferFactory().create(),
-            BookOfferFactory().create(),
+            factories.SimplifiedOfferFactory().create(),
+            factories.ArbitraryOfferFactory().create(),
+            factories.BookOfferFactory().create(),
         ]
+    if gifts is None:
+        gifts = [factories.GiftFactory() for _ in range(3)]
 
-    return Shop(
+    return models.Shop(
         name=name,
         company=company,
         url=url,
@@ -57,6 +52,7 @@ def generate_random_shop(
         pickup_options=pickup_options,
         enable_auto_discounts=enable_auto_discounts,
         offers=offers,
+        gifts=gifts,
     )
 
 

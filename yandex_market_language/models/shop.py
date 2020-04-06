@@ -34,6 +34,7 @@ class Shop(
         delivery_options: List["models.Option"] = None,
         pickup_options: List["models.Option"] = None,
         enable_auto_discounts=None,
+        gifts: List["models.Gift"] = None,
     ):
         self.name = name
         self.company = company
@@ -48,6 +49,7 @@ class Shop(
         self.pickup_options = pickup_options
         self.enable_auto_discounts = enable_auto_discounts
         self.offers = offers
+        self.gifts = gifts
 
     @property
     def url(self):
@@ -74,6 +76,7 @@ class Shop(
             pickup_options=[o.to_dict() for o in self.pickup_options],
             enable_auto_discounts=self.enable_auto_discounts,
             offers=[o.to_dict() for o in self.offers],
+            gifts=[g.to_dict() for g in self.gifts] if self.gifts else [],
         )
 
     def create_xml(self, **kwargs) -> XMLElement:
@@ -128,6 +131,12 @@ class Shop(
         for o in self.offers:
             o.to_xml(offers_el)
 
+        # Add gifts
+        if self.gifts:
+            gifts_el = XMLSubElement(shop_el, "gifts")
+            for g in self.gifts:
+                g.to_xml(gifts_el)
+
         return shop_el
 
     @staticmethod
@@ -181,8 +190,12 @@ class Shop(
                         )
                     offers.append(offer)
                 kwargs["offers"] = offers
-            # elif el.tag == "gifts":
-            #     pass
+            elif el.tag == "gifts":
+                gifts = []
+                for gift_el in el:
+                    gifts.append(models.Gift.from_xml(gift_el))
+                if gifts:
+                    kwargs["gifts"] = gifts
             # elif el.tag == "promos":
             #     pass
             else:
