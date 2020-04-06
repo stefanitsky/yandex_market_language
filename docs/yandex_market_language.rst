@@ -19,10 +19,10 @@ yandex\_market\_language.exceptions module
    :undoc-members:
    :show-inheritance:
 
-yandex\_market\_language.parser module
---------------------------------------
+yandex\_market\_language.yml module
+-----------------------------------
 
-.. automodule:: yandex_market_language.parser
+.. automodule:: yandex_market_language.yml
    :members:
    :undoc-members:
    :show-inheritance:

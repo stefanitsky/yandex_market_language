@@ -57,7 +57,7 @@ You can parse XML files into ready-to-use Feed model instance with parser::
         }
     }
 
-And convert Feed model instances into xml files::
+And convert Feed model instances into XML files::
 
     >>> convert("converted_from_feed_model.xml", feed)
     >>> feed = parse("converted_from_feed_model.xml")
