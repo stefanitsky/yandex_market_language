@@ -25,6 +25,7 @@ class ShopModelTestCase(ModelTestCase):
             "enable_auto_discounts",
             "offers",
             "gifts",
+            "promos",
         ])
         self.assertEqual(keys, expected_keys)
         for k in (
@@ -58,6 +59,7 @@ class ShopModelTestCase(ModelTestCase):
             "enable_auto_discounts",
             "offers",
             "gifts",
+            "promos",
         ])
         self.assertEqual(keys, expected_keys)
         for el in shop_el:
@@ -68,6 +70,7 @@ class ShopModelTestCase(ModelTestCase):
                 "pickup-options",
                 "offers",
                 "gifts",
+                "promos",
             ):
                 continue
             elif el.tag == "enable_auto_discounts":
@@ -82,6 +85,7 @@ class ShopModelTestCase(ModelTestCase):
                 str(e), "The maximum url length is 512 characters."
             )
 
+    @mock.patch("yandex_market_language.models.Promo.from_xml")
     @mock.patch("yandex_market_language.models.Gift.from_xml")
     @mock.patch("yandex_market_language.models.BookOffer.from_xml")
     @mock.patch("yandex_market_language.models.ArbitraryOffer.from_xml")
@@ -98,6 +102,7 @@ class ShopModelTestCase(ModelTestCase):
         arbitrary_from_xml_p,
         book_from_xml_p,
         gift_from_xml_p,
+        promo_from_xml_p,
     ):
         simplified_offers = [
             factories.SimplifiedOfferFactory().create() for _ in range(3)
@@ -119,6 +124,7 @@ class ShopModelTestCase(ModelTestCase):
         arbitrary_from_xml_p.side_effect = arbitrary_offers
         book_from_xml_p.side_effect = book_offers
         gift_from_xml_p.side_effect = shop.gifts
+        promo_from_xml_p.side_effect = shop.promos
 
         parsed_shop = models.Shop.from_xml(shop_el)
         self.assertEqual(shop.to_dict(), parsed_shop.to_dict())
@@ -129,6 +135,7 @@ class ShopModelTestCase(ModelTestCase):
         self.assertEqual(arbitrary_from_xml_p.call_count, 3)
         self.assertEqual(book_from_xml_p.call_count, 3)
         self.assertEqual(gift_from_xml_p.call_count, len(shop.gifts))
+        self.assertEqual(promo_from_xml_p.call_count, len(shop.promos))
 
     def test_unexpected_offer_type_error(self):
         shop = factories.ShopFactory()

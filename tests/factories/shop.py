@@ -20,6 +20,7 @@ def generate_random_shop(
     enable_auto_discounts=fake.pybool(),
     offers=None,
     gifts=None,
+    promos=None,
 ) -> "models.Shop":
     if currencies is None:
         currencies = [factories.CurrencyFactory() for _ in range(3)]
@@ -37,6 +38,8 @@ def generate_random_shop(
         ]
     if gifts is None:
         gifts = [factories.GiftFactory() for _ in range(3)]
+    if promos is None:
+        promos = [factories.Promo() for _ in range(3)]
 
     return models.Shop(
         name=name,
@@ -53,6 +56,7 @@ def generate_random_shop(
         enable_auto_discounts=enable_auto_discounts,
         offers=offers,
         gifts=gifts,
+        promos=promos,
     )
 
 
