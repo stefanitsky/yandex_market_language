@@ -63,19 +63,25 @@ And convert Feed model instances into XML files::
     >>> feed = parse("converted_from_feed_model.xml")
     >>> feed
     <yandex_market_language.models.feed.Feed object at 0x10d8bdee0>
-    >>> feed.to_dict()
-    {
-        'shop': {
-            'name': 'ZS',
-            'company': 'ZoneSmart',
-            'url': 'https://zonesmart.ru',
+    >>> feed.to_xml()
+    <Element 'yml_catalog' at 0x000002121B634E00>
+    >>> from xml.etree import ElementTree as ET
+    >>> ET.tostring(feed.to_xml())
+    b'<yml_catalog date="2019-11-01 17:22">
+        <shop>
+            <name>ZS</name>
+            <company>ZoneSmart</company>
+            <url>https://zonesmart.ru</url>
             ...
-            'offers': [
-                'type': None,
-                'vendor': 'Brother',
-                'vendor_code': 'ABC1234'
+            <offers>
+                <offer>
+                    <name>...</name>
+                    <vendor>...</name>
+                    <vendorCode>...</vendorCode>
+                </offer>
                 ...
-            ]
+            </offers>
             ...
-        }
-    }
+        </shop>
+    </yml_catalog>
+
