@@ -7,6 +7,6 @@ tox==3.14.6
 coverage==5.1
 Sphinx==3.1.0
 twine>=1.15.0
-faker==4.0.3
+faker==4.1.0
 pytest==5.4.1
 pytest-runner==5.2
