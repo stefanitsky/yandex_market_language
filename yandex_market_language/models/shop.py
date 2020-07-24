@@ -1,11 +1,12 @@
+import inspect
 from typing import List
 
-from yandex_market_language import models, exceptions
-from yandex_market_language.models import fields
-from yandex_market_language.models.abstract import XMLElement, XMLSubElement
+from .. import exceptions
+from ..models import fields
+from ..models.abstract import XMLElement, XMLSubElement
 
-from yandex_market_language.exceptions import ValidationError
-
+from ..exceptions import ValidationError
+from .. import models
 
 class Shop(
     fields.EnableAutoDiscountField,
@@ -214,4 +215,7 @@ class Shop(
             else:
                 kwargs[el.tag] = el.text
 
+        args = inspect.getfullargspec(Shop.__init__).args[1:]
+        args = {*args}
+        kwargs = {key: value for (key, value) in kwargs.items() if key in args}
         return Shop(**kwargs)

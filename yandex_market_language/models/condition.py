@@ -1,6 +1,6 @@
 from .abstract import AbstractModel, XMLElement
 
-from yandex_market_language.exceptions import ValidationError
+from ..exceptions import ValidationError
 
 
 CONDITION_CHOICES = ("likenew", "used")

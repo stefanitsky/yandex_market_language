@@ -1,6 +1,6 @@
 import typing as t
-from yandex_market_language import models
-from yandex_market_language.models.abstract import XMLElement, XMLSubElement
+from .. import models
+from ..models.abstract import XMLElement, XMLSubElement
 
 
 class Promo(models.AbstractModel):
