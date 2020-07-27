@@ -14,6 +14,12 @@ class Condition(AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/condition.html
     """
+
+    __slots__ = [
+        '_condition_type',
+        'reason'
+    ]
+
     def __init__(self, condition_type: str, reason: str):
         self.condition_type = condition_type
         self.reason = reason

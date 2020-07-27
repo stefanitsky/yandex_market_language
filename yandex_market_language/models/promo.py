@@ -15,6 +15,17 @@ class Promo(models.AbstractModel):
         "url": "url",
     }
 
+    __slots__ = [
+        'promo_id',
+        'promo_type',
+        'purchase',
+        'promo_gifts',
+        'start_date',
+        'end_date',
+        'description',
+        'url'
+    ]
+
     def __init__(
         self,
         promo_id: str,
@@ -91,6 +102,12 @@ class Purchase(models.AbstractModel):
     """
     Docs: https://yandex.ru/support/partnermarket/elements/promo-gift.html
     """
+
+    __slots__ = [
+        'products',
+        'required_quantity'
+    ]
+
     def __init__(self, products: t.List["Product"], required_quantity="1"):
         self.required_quantity = required_quantity
         self.products = products
@@ -131,6 +148,12 @@ class Product(models.AbstractModel):
     """
     Docs: https://yandex.ru/support/partnermarket/elements/promo-gift.html
     """
+
+    __slots__ = [
+        'offer_id',
+        'category_id'
+    ]
+
     def __init__(self, offer_id: str = None, category_id: str = None):
         self.offer_id = offer_id
         self.category_id = category_id
@@ -162,6 +185,12 @@ class PromoGift(models.AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/promo-gift.html
     """
+
+    __slots__ = [
+        'offer_id',
+        'gift_id'
+    ]
+
     def __init__(self, offer_id: str = None, gift_id: str = None):
         self.offer_id = offer_id
         self.gift_id = gift_id

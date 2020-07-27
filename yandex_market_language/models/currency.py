@@ -17,6 +17,13 @@ class Currency(AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/currencies.html
     """
+
+    __slots__ = [
+        '_currency',
+        '_rate',
+        '_plus'
+    ]
+
     def __init__(self, currency, rate, plus=None):
         self.currency = currency
         self.rate = rate

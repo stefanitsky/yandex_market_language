@@ -10,6 +10,13 @@ class Parameter(AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/param.html
     """
+
+    __slots__ = [
+        'name',
+        'unit',
+        '_value'
+    ]
+
     def __init__(self, name: str, value: str, unit: str = None):
         self.name = name
         self.value = value

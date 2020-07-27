@@ -19,6 +19,25 @@ class Shop(
     Docs:
     https://yandex.ru/support/partnermarket/elements/shop.html
     """
+
+    __slots__ = [
+        '_url',
+        'name',
+        'company',
+        'currencies',
+        'categories',
+        'offers',
+        'platform',
+        'version',
+        'agency',
+        'email',
+        '_delivery_options',
+        '_pickup_options',
+        '_enable_auto_discounts',
+        'gifts',
+        'promos'
+    ]
+
     def __init__(
         self,
         name: str,
