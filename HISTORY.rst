@@ -2,6 +2,10 @@
 History
 =======
 
+0.6.1 (2020-07-28)
+------------------
+* Add __slots__ for all models to reduce RAM usage.
+
 0.6.0 (2020-04-06)
 ------------------
 * Added all missed models: Gifts & Promos.
