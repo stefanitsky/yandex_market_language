@@ -9,6 +9,13 @@ class Option(AbstractModel):
     https://yandex.ru/support/partnermarket/elements/delivery-options.html
     https://yandex.ru/support/partnermarket/elements/pickup-options.html
     """
+
+    __slots__ = [
+        'cost',
+        'days',
+        'order_before'
+    ]
+
     def __init__(self, cost, days, order_before=None):
         self.cost = cost
         self.days = days

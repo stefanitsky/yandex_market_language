@@ -7,6 +7,12 @@ class Price(AbstractModel):
     """
     Actual offer price model.
     """
+
+    __slots__ = [
+        '_value',
+        '_is_starting'
+    ]
+
     def __init__(self, value, is_starting=False):
         self.value = value
         self.is_starting = is_starting

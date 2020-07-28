@@ -13,6 +13,12 @@ class Feed(AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/export/yml.html
     """
+
+    __slots__ = [
+        'shop',
+        '_date'
+    ]
+
     def __init__(self, shop: Shop, date: datetime.date = None):
         self.shop = shop
         self.date = date

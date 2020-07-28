@@ -10,6 +10,13 @@ class Gift(abstract.AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/promo-gift.html
     """
+
+    __slots__ = [
+        'id',
+        'name',
+        'pictures'
+    ]
+
     def __init__(
         self,
         id: str,

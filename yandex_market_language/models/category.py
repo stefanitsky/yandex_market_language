@@ -8,6 +8,13 @@ class Category(AbstractModel):
     Docs:
     https://yandex.ru/support/partnermarket/elements/categories.html
     """
+
+    __slots__ = [
+        'category_id',
+        'name',
+        'parent_id'
+    ]
+
     def __init__(self, category_id, name, parent_id=None):
         self.category_id = category_id
         self.name = name

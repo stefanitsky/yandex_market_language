@@ -12,6 +12,12 @@ class Age(AbstractModel):
     """
     Age category of the offer.
     """
+
+    __slots__ = [
+        '_unit',
+        '_value'
+    ]
+
     def __init__(self, unit: str, value):
         self.unit = unit
         self.value = value

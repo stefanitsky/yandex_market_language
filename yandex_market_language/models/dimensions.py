@@ -6,6 +6,13 @@ class Dimensions(AbstractModel):
     Offer dimensions model (length, width, height) in the package in
     centimeters.
     """
+
+    __slots__ = [
+        '_length',
+        '_width',
+        '_height'
+    ]
+
     def __init__(self, length, wight, height):
         self.length = length
         self.width = wight
