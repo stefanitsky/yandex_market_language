@@ -23,7 +23,7 @@ setup(
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'License :: OSI Approved :: MIT',
         'Natural Language :: English',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
@@ -33,7 +33,7 @@ setup(
     ],
     description="Yandex Market Language for Python provides user-friendly interface for parsing or creating XML files.",
     install_requires=requirements,
-    license="GNU General Public License v3",
+    license="MIT",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='yandex_market_language',

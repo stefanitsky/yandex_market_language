@@ -26,7 +26,7 @@ Yandex Market Language (YML) for Python
 Yandex Market Language for Python provides user-friendly interface for parsing or creating XML files.
 
 
-* Free software: GNU General Public License v3
+* Free software: MIT
 * Documentation: https://yandex-market-language.readthedocs.io.
 * Usage: https://yandex-market-language.readthedocs.io/en/latest/usage.html
 
