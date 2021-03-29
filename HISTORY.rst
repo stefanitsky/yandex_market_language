@@ -2,6 +2,10 @@
 History
 =======
 
+0.6.2 (2021-30-03)
+------------------
+* Change license type to from GPLv2 to MIT.
+
 0.6.1 (2020-07-28)
 ------------------
 * Add __slots__ for all models to reduce RAM usage.
