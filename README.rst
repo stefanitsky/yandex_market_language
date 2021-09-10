@@ -1,3 +1,7 @@
+*******************************************************************
+❗️ Project is deprecated, instead of this you can simply use Pydantic_ ❗️
+*******************************************************************
+
 =======================================
 Yandex Market Language (YML) for Python
 =======================================
@@ -20,8 +24,6 @@ Yandex Market Language (YML) for Python
 .. image:: https://pyup.io/repos/github/stefanitsky/yandex_market_language/shield.svg
      :target: https://pyup.io/repos/github/stefanitsky/yandex_market_language/
      :alt: Updates
-
-
 
 Yandex Market Language for Python provides user-friendly interface for parsing or creating XML files.
 
@@ -55,3 +57,4 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _Pydantic: https://pydantic-docs.helpmanual.io/usage/models/
