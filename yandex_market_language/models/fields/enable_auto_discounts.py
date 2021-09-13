@@ -1,6 +1,6 @@
 from typing import Optional
 
-from yandex_market_language.exceptions import ValidationError
+from ...exceptions import ValidationError
 
 
 ENABLE_AUTO_DISCOUNTS_CHOICES = ("yes", "true", "1", "no", "false", "0")

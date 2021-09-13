@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional, Union
 from xml.etree import ElementTree as ET
 
-from yandex_market_language.exceptions import ValidationError
+from ..exceptions import ValidationError
 
 
 XMLElement = ET.Element

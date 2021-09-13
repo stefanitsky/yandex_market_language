@@ -1,6 +1,6 @@
 from typing import List
 
-from yandex_market_language.models import abstract
+from ..models import abstract
 
 
 class Gift(abstract.AbstractModel):

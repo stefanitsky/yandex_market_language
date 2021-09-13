@@ -2,7 +2,7 @@ from typing import Optional
 
 from .abstract import AbstractModel, XMLElement
 
-from yandex_market_language.exceptions import ValidationError
+from ..exceptions import ValidationError
 
 
 CURRENCY_CHOICES = ("RUR", "RUB", "UAH", "BYN", "KZT", "USD", "EUR")

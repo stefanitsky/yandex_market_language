@@ -1,7 +1,7 @@
 from xml.dom import minidom
 from xml.etree import ElementTree as ET
 
-from yandex_market_language.models import Feed
+from .models import Feed
 
 
 class YML:
